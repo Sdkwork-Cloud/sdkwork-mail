@@ -79,6 +79,24 @@
       "owner": "mail-platform",
       "compliance_level": "L2",
       "lifecycle_status": "active"
+    },
+    {
+      "table_name": "mail_template",
+      "owner": "mail-platform",
+      "compliance_level": "L2",
+      "lifecycle_status": "active"
+    },
+    {
+      "table_name": "mail_verification_challenge",
+      "owner": "mail-platform",
+      "compliance_level": "L2",
+      "lifecycle_status": "active"
+    },
+    {
+      "table_name": "mail_transactional_delivery",
+      "owner": "mail-platform",
+      "compliance_level": "L2",
+      "lifecycle_status": "active"
     }
   ]
 }

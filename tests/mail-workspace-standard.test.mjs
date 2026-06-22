@@ -64,8 +64,8 @@ test("sdkwork-mail mini program root exposes user Mail surface packages", () => 
   assert.ok(exists(`${appRoot}/src/app.json`), `${appRoot}/src/app.json must exist`);
   const appJson = JSON.parse(read(`${appRoot}/src/app.json`));
   assert.ok(
-    appJson.pages?.includes("pages/mail-inbox-room/index"),
-    `${appRoot}/src/app.json must include mail inbox room page`,
+    appJson.pages?.includes("pages/mail-message/index"),
+    `${appRoot}/src/app.json must include mail message detail page`,
   );
   const appConfig = JSON.parse(read(`${appRoot}/sdkwork.app.config.json`));
   assert.equal(appConfig.app?.runtime?.family, "mini-program");
@@ -341,7 +341,7 @@ test("sdkwork-mail client surfaces use app-scoped IAM session storage keys", () 
   for (const filePath of [
     "apps/sdkwork-mail-mini-program/src/pages/login/index.js",
     "apps/sdkwork-mail-mini-program/src/pages/mail-inboxs/index.js",
-    "apps/sdkwork-mail-mini-program/src/pages/mail-inbox-room/index.js",
+    "apps/sdkwork-mail-mini-program/src/pages/mail-message/index.js",
   ]) {
     const source = read(filePath);
     assert.doesNotMatch(source, /["']sdkwork\.Mail\.app\.session["']/u, `${filePath} must not hardcode legacy session storage key`);

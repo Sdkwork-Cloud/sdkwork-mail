@@ -12,7 +12,7 @@
   "mode": "apply",
   "hasChanges": false,
   "hasDestructiveChanges": false,
-  "changeFingerprint": "6b0011635576e2bcb792945aa04f0edd7ef5a4cffde0653c893ffbb3cc7d4bf4",
+  "changeFingerprint": "ee84b279c0a1c86e4b5a8ff4ccada4f3ac8df3d68ba2a1d14f1cfbe8c67b8acb",
   "changeImpact": {
     "schemaVersion": 1,
     "areas": [],
@@ -56,10 +56,10 @@
     "localVersions": []
   },
   "stats": {
-    "totalFiles": 39,
-    "models": 12,
-    "apis": 4,
-    "types": 14
+    "totalFiles": 48,
+    "models": 19,
+    "apis": 6,
+    "types": 21
   },
   "warnings": [],
   "syncSummary": {
@@ -67,10 +67,10 @@
     "controlPlaneEnabled": true,
     "writtenFiles": 0,
     "skippedScaffoldFiles": 2,
-    "skippedUnchangedGeneratedFiles": 37,
+    "skippedUnchangedGeneratedFiles": 46,
     "deletedGeneratedFiles": 0,
     "changeSummaryPath": ".sdkwork/sdkwork-generator-changes.json",
-    "changeFingerprint": "6b0011635576e2bcb792945aa04f0edd7ef5a4cffde0653c893ffbb3cc7d4bf4",
+    "changeFingerprint": "ee84b279c0a1c86e4b5a8ff4ccada4f3ac8df3d68ba2a1d14f1cfbe8c67b8acb",
     "changes": {
       "createdGeneratedFiles": [],
       "updatedGeneratedFiles": [],
@@ -91,6 +91,8 @@
         "src/api/mail-folders.ts",
         "src/api/mail-messages.ts",
         "src/api/mail-threads.ts",
+        "src/api/mail-transactional.ts",
+        "src/api/mail-verification.ts",
         "src/api/paths.ts",
         "src/auth/index.ts",
         "src/http/client.ts",
@@ -109,8 +111,15 @@
         "src/types/mail-message.ts",
         "src/types/mail-thread-list-response.ts",
         "src/types/mail-thread.ts",
+        "src/types/mail-transactional-delivery-response.ts",
+        "src/types/mail-transactional-delivery.ts",
         "src/types/problem-detail.ts",
+        "src/types/send-mail-verification-request.ts",
+        "src/types/send-mail-verification-response.ts",
+        "src/types/send-transactional-mail-request.ts",
         "src/types/update-mail-message-request.ts",
+        "src/types/verify-mail-code-request.ts",
+        "src/types/verify-mail-code-response.ts",
         "tsconfig.json"
       ],
       "deletedGeneratedFiles": [],

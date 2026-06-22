@@ -54,4 +54,13 @@ pub const MAIL_TABLES: &[MailTableContract] = &[
     MailTableContract {
         table_name: "mail_audit_log",
     },
+    MailTableContract {
+        table_name: "mail_template",
+    },
+    MailTableContract {
+        table_name: "mail_verification_challenge",
+    },
+    MailTableContract {
+        table_name: "mail_transactional_delivery",
+    },
 ];

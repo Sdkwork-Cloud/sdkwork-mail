@@ -7,8 +7,16 @@ test("sdkwork-mail migration contract rejects RTC media-session paths", () => {
     "apis/app-api/communication/sdkwork-mail-app-api.openapi.json",
     "utf8",
   );
+  const backendOpenApi = readFileSync(
+    "apis/backend-api/communication/sdkwork-mail-backend-api.openapi.json",
+    "utf8",
+  );
   assert.doesNotMatch(appOpenApi, /media_sessions|media_session|MailInboxs|rooms/u);
   assert.match(appOpenApi, /\/app\/v3\/api\/mail\/messages/u);
+  assert.match(appOpenApi, /\/app\/v3\/api\/mail\/verification\/send/u);
+  assert.match(appOpenApi, /\/app\/v3\/api\/mail\/transactional\/send/u);
+  assert.doesNotMatch(backendOpenApi, /MailProviderQueryJob|MailProviderQuerySnapshot|mail-inboxs|rooms/u);
+  assert.match(backendOpenApi, /\/backend\/v3\/api\/mail\/templates/u);
 });
 
 test("sdkwork-mail migration contract uses mail database tables", () => {

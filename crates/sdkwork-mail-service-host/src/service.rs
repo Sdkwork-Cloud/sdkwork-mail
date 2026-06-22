@@ -1,9 +1,12 @@
 use std::sync::Arc;
 
 use sdkwork_communication_mail_service::{
-    CreateMailMessageRequest, MailAccount, MailFolder, MailListWindowParams, MailMessage,
-    MailPersistenceError, MailPersistencePort, MailProviderAccount, MailThread,
-    NoopMailPersistencePort, UpdateMailMessageRequest, apply_list_window,
+    CreateMailMessageRequest, CreateMailTemplateRequest, MailAccount, MailFolder,
+    MailListWindowParams, MailMessage, MailPersistenceError, MailPersistencePort,
+    MailProviderAccount, MailTemplate, MailTemplateCategory, MailThread, MailTransactionalDelivery,
+    NoopMailPersistencePort, SendMailVerificationRequest, SendMailVerificationResult,
+    SendTransactionalMailRequest, UpdateMailMessageRequest, UpdateMailTemplateRequest,
+    VerifyMailCodeRequest, VerifyMailCodeResult, apply_list_window,
 };
 use sdkwork_router_mail_app_api::service::{
     MailAppApiError, MailAppApiFuture, MailAppApiService, MailListData, MailListRequest,
@@ -12,6 +15,8 @@ use sdkwork_router_mail_backend_api::service::{
     MailBackendApiError, MailBackendApiFuture, MailBackendApiService, MailBackendListData,
     MailBackendListRequest,
 };
+
+use crate::transactional;
 
 #[derive(Clone)]
 pub struct MailProductService {
@@ -183,6 +188,60 @@ impl MailAppApiService for MailProductService {
                 .map_err(map_persistence_error)
         })
     }
+
+    fn send_verification_code(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: SendMailVerificationRequest,
+    ) -> MailAppApiFuture<SendMailVerificationResult> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::send_verification_code(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                request,
+            )
+            .await
+        })
+    }
+
+    fn verify_verification_code(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: VerifyMailCodeRequest,
+    ) -> MailAppApiFuture<VerifyMailCodeResult> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::verify_verification_code(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                request,
+            )
+            .await
+        })
+    }
+
+    fn send_transactional_mail(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: SendTransactionalMailRequest,
+    ) -> MailAppApiFuture<MailTransactionalDelivery> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::send_transactional_mail(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                request,
+            )
+            .await
+        })
+    }
 }
 
 impl MailBackendApiService for MailProductService {
@@ -197,6 +256,128 @@ impl MailBackendApiService for MailProductService {
                 .list_provider_accounts(&request.tenant_id, &organization_id)
                 .await
                 .map_err(map_backend_persistence_error)?;
+            Ok(MailBackendListData {
+                items,
+                next_cursor: None,
+            })
+        })
+    }
+
+    fn list_templates(
+        &self,
+        request: MailBackendListRequest,
+        category: Option<MailTemplateCategory>,
+        purpose: Option<String>,
+    ) -> MailBackendApiFuture<MailBackendListData<MailTemplate>> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            let organization_id = organization_id_or_zero(&request.organization_id);
+            let items = transactional::list_templates(
+                persistence,
+                request.tenant_id,
+                organization_id,
+                category,
+                purpose,
+            )
+            .await?;
+            Ok(MailBackendListData {
+                items,
+                next_cursor: None,
+            })
+        })
+    }
+
+    fn create_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: CreateMailTemplateRequest,
+    ) -> MailBackendApiFuture<MailTemplate> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::create_template(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                request,
+            )
+            .await
+        })
+    }
+
+    fn retrieve_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        template_id: String,
+    ) -> MailBackendApiFuture<MailTemplate> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::retrieve_template(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                template_id,
+            )
+            .await
+        })
+    }
+
+    fn update_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        template_id: String,
+        request: UpdateMailTemplateRequest,
+    ) -> MailBackendApiFuture<MailTemplate> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::update_template(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                template_id,
+                request,
+            )
+            .await
+        })
+    }
+
+    fn delete_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        template_id: String,
+    ) -> MailBackendApiFuture<()> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::delete_template(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                template_id,
+            )
+            .await
+        })
+    }
+
+    fn list_transactional_deliveries(
+        &self,
+        request: MailBackendListRequest,
+        business_kind: Option<String>,
+        recipient_email: Option<String>,
+    ) -> MailBackendApiFuture<MailBackendListData<MailTransactionalDelivery>> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            let organization_id = organization_id_or_zero(&request.organization_id);
+            let items = transactional::list_transactional_deliveries(
+                persistence,
+                request.tenant_id,
+                organization_id,
+                business_kind,
+                recipient_email,
+            )
+            .await?;
             Ok(MailBackendListData {
                 items,
                 next_cursor: None,

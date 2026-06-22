@@ -21,6 +21,12 @@
     },
     {
       "name": "mailProviderWebhooks"
+    },
+    {
+      "name": "mailTemplates"
+    },
+    {
+      "name": "mailTransactionalDeliveries"
     }
   ],
   "security": [
@@ -106,6 +112,261 @@
           }
         },
         "security": []
+      }
+    },
+    "/backend/v3/api/mail/templates": {
+      "get": {
+        "tags": [
+          "mailTemplates"
+        ],
+        "operationId": "mail.templates.list",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.templates.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailTemplateListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "mailTemplates"
+        ],
+        "operationId": "mail.templates.create",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.templates.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMailTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailTemplateResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/backend/v3/api/mail/templates/{templateId}": {
+      "get": {
+        "tags": [
+          "mailTemplates"
+        ],
+        "operationId": "mail.templates.retrieve",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.templates.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailTemplateResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "mailTemplates"
+        ],
+        "operationId": "mail.templates.update",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.templates.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMailTemplateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailTemplateResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "mailTemplates"
+        ],
+        "operationId": "mail.templates.delete",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.templates.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/backend/v3/api/mail/transactional_deliveries": {
+      "get": {
+        "tags": [
+          "mailTransactionalDeliveries"
+        ],
+        "operationId": "mail.transactionalDeliveries.list",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.transactional_deliveries.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "businessKind",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipientEmail",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailTransactionalDeliveryListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     }
   },
@@ -211,10 +472,34 @@
           }
         }
       },
-      "MailProviderQueryJob": {
+      "MailTemplate": {
         "type": "object",
         "properties": {
           "id": {
+            "type": "string"
+          },
+          "templateKey": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "subjectTemplate": {
+            "type": "string"
+          },
+          "bodyHtmlTemplate": {
+            "type": "string"
+          },
+          "bodyTextTemplate": {
             "type": "string"
           },
           "status": {
@@ -222,14 +507,142 @@
           }
         }
       },
-      "MailProviderQuerySnapshot": {
+      "CreateMailTemplateRequest": {
         "type": "object",
+        "required": [
+          "templateKey",
+          "name",
+          "category",
+          "purpose",
+          "subjectTemplate"
+        ],
         "properties": {
-          "jobId": {
+          "templateKey": {
             "type": "string"
           },
-          "payload": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "subjectTemplate": {
+            "type": "string"
+          },
+          "bodyHtmlTemplate": {
+            "type": "string"
+          },
+          "bodyTextTemplate": {
+            "type": "string"
+          },
+          "variableSchema": {
             "type": "object"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      },
+      "UpdateMailTemplateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "subjectTemplate": {
+            "type": "string"
+          },
+          "bodyHtmlTemplate": {
+            "type": "string"
+          },
+          "bodyTextTemplate": {
+            "type": "string"
+          },
+          "variableSchema": {
+            "type": "object"
+          },
+          "status": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        }
+      },
+      "MailTemplateListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailTemplate"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "MailTemplateResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MailTemplate"
+          }
+        }
+      },
+      "MailTransactionalDelivery": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "templateKey": {
+            "type": "string"
+          },
+          "businessKind": {
+            "type": "string"
+          },
+          "recipientEmail": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sentAt": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
+        }
+      },
+      "MailTransactionalDeliveryListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailTransactionalDelivery"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
           }
         }
       }

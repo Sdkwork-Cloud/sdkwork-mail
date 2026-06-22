@@ -1627,6 +1627,7 @@ dependencies = [
  "sdkwork-utils-rust",
  "serde",
  "serde_json",
+ "uuid",
 ]
 
 [[package]]
@@ -1842,6 +1843,9 @@ dependencies = [
  "sdkwork-communication-mail-service",
  "sdkwork-router-mail-app-api",
  "sdkwork-router-mail-backend-api",
+ "sdkwork-utils-rust",
+ "serde_json",
+ "uuid",
 ]
 
 [[package]]

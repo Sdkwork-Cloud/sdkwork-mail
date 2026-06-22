@@ -1,6 +1,9 @@
 use std::sync::Arc;
 
-use axum::{Router, routing::get};
+use axum::{
+    Router,
+    routing::{get, post},
+};
 
 use crate::{handlers, service::MailAppApiService};
 
@@ -18,6 +21,18 @@ pub fn build_sdkwork_mail_app_api_router(service: Arc<dyn MailAppApiService>) ->
             get(handlers::retrieve_message)
                 .patch(handlers::update_message)
                 .delete(handlers::delete_message),
+        )
+        .route(
+            "/app/v3/api/mail/verification/send",
+            post(handlers::send_verification_code),
+        )
+        .route(
+            "/app/v3/api/mail/verification/verify",
+            post(handlers::verify_verification_code),
+        )
+        .route(
+            "/app/v3/api/mail/transactional/send",
+            post(handlers::send_transactional_mail),
         )
         .with_state(service)
 }

@@ -14,4 +14,4 @@ export const DEFAULT_APP_SESSION: MailAppSession = {
   userId: "user",
 };
 
-export const DEFAULT_APP_PERMISSION_SCOPE = "Mail.media_session.read Mail.media_session.write";
+export const DEFAULT_APP_PERMISSION_SCOPE = "mail.messages.read mail.messages.write mail.verification.write mail.transactional.write";

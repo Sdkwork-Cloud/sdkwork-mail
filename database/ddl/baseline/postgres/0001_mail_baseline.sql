@@ -279,3 +279,88 @@ CREATE TABLE mail_audit_log (
 
 CREATE INDEX idx_mail_audit_log_tenant_created
     ON mail_audit_log (tenant_id, organization_id, created_at DESC);
+
+-- Transactional / marketing mail: templates, verification challenges, delivery audit.
+
+CREATE TABLE mail_template (
+    id BIGINT NOT NULL,
+    uuid VARCHAR(64) NOT NULL,
+    tenant_id BIGINT NOT NULL,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    template_key VARCHAR(64) NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    category VARCHAR(32) NOT NULL DEFAULT 'transactional',
+    purpose VARCHAR(64) NOT NULL,
+    locale VARCHAR(16) NOT NULL DEFAULT 'zh-CN',
+    subject_template VARCHAR(998) NOT NULL,
+    body_html_template TEXT,
+    body_text_template TEXT,
+    variable_schema JSONB,
+    status INTEGER NOT NULL DEFAULT 1,
+    metadata JSONB,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    version BIGINT NOT NULL DEFAULT 0,
+    deleted_at TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT uk_mail_template_uuid UNIQUE (uuid),
+    CONSTRAINT uk_mail_template_tenant_key_locale UNIQUE (tenant_id, organization_id, template_key, locale)
+);
+
+CREATE INDEX idx_mail_template_tenant_purpose
+    ON mail_template (tenant_id, organization_id, purpose, status);
+
+CREATE TABLE mail_verification_challenge (
+    id BIGINT NOT NULL,
+    uuid VARCHAR(64) NOT NULL,
+    tenant_id BIGINT NOT NULL,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    recipient_email VARCHAR(320) NOT NULL,
+    purpose VARCHAR(64) NOT NULL,
+    code_hash VARCHAR(128) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    consumed_at TIMESTAMP,
+    attempt_count INTEGER NOT NULL DEFAULT 0,
+    max_attempts INTEGER NOT NULL DEFAULT 5,
+    delivery_id VARCHAR(64),
+    metadata JSONB,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    version BIGINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    CONSTRAINT uk_mail_verification_challenge_uuid UNIQUE (uuid)
+);
+
+CREATE INDEX idx_mail_verification_challenge_lookup
+    ON mail_verification_challenge (tenant_id, organization_id, recipient_email, purpose, consumed_at, expires_at DESC);
+
+CREATE TABLE mail_transactional_delivery (
+    id BIGINT NOT NULL,
+    uuid VARCHAR(64) NOT NULL,
+    tenant_id BIGINT NOT NULL,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    template_id VARCHAR(64),
+    template_key VARCHAR(64) NOT NULL,
+    business_kind VARCHAR(64) NOT NULL,
+    recipient_email VARCHAR(320) NOT NULL,
+    from_email VARCHAR(320),
+    subject VARCHAR(998) NOT NULL,
+    status INTEGER NOT NULL DEFAULT 0,
+    provider_account_id VARCHAR(64),
+    correlation_id VARCHAR(128),
+    last_error VARCHAR(2000),
+    sent_at TIMESTAMP,
+    metadata JSONB,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    version BIGINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    CONSTRAINT uk_mail_transactional_delivery_uuid UNIQUE (uuid)
+);
+
+CREATE UNIQUE INDEX uk_mail_transactional_delivery_correlation
+    ON mail_transactional_delivery (tenant_id, organization_id, correlation_id)
+    WHERE correlation_id IS NOT NULL;
+
+CREATE INDEX idx_mail_transactional_delivery_tenant_created
+    ON mail_transactional_delivery (tenant_id, organization_id, business_kind, created_at DESC);

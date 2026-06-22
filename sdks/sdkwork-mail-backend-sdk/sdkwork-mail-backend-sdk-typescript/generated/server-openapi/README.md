@@ -56,6 +56,8 @@ const client = new SdkworkBackendClient({
 
 - `client.mailProviderAccounts` - mail_provider_accounts API
 - `client.mailProviderWebhooks` - mail_provider_webhooks API
+- `client.mailTemplates` - mail_templates API
+- `client.mailTransactionalDeliveries` - mail_transactional_deliveries API
 
 ## Usage Examples
 
@@ -73,6 +75,28 @@ const result = await client.mailProviderAccounts.mail.providerAccounts.list();
 const provider = 'provider';
 const body = {};
 const result = await client.mailProviderWebhooks.mail.providerWebhooks.events.receive(provider, body);
+```
+
+### mail_templates
+
+```typescript
+// GET /backend/v3/api/mail/templates
+const params = {
+  category: 'category',
+  purpose: 'purpose',
+};
+const result = await client.mailTemplates.mail.templates.list(params);
+```
+
+### mail_transactional_deliveries
+
+```typescript
+// GET /backend/v3/api/mail/transactional_deliveries
+const params = {
+  businessKind: 'businessKind',
+  recipientEmail: 'recipientEmail',
+};
+const result = await client.mailTransactionalDeliveries.mail.transactionalDeliveries.list(params);
 ```
 
 ## Error Handling

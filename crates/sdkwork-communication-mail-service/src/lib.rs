@@ -4,6 +4,7 @@ pub mod error;
 pub mod list_window;
 pub mod models;
 pub mod persistence;
+pub mod transactional;
 
 pub use error::{MailResult, MailServiceError};
 pub use list_window::{
@@ -12,8 +13,15 @@ pub use list_window::{
 };
 pub use models::*;
 pub use persistence::{
-    MailPersistenceError, MailPersistenceFuture, MailPersistencePort, MailPersistenceResult,
-    NoopMailPersistencePort,
+    ActiveVerificationChallenge, MailPersistenceError, MailPersistenceFuture, MailPersistencePort,
+    MailPersistenceResult, NoopMailPersistencePort,
+};
+pub use transactional::{
+    DEFAULT_VERIFICATION_CODE_LENGTH, DEFAULT_VERIFICATION_MAX_ATTEMPTS,
+    DEFAULT_VERIFICATION_TTL_MINUTES, build_verification_variables, empty_object,
+    generate_numeric_verification_code, hash_verification_code, json_to_string_map,
+    merge_template_variables, normalize_email, purpose_to_template_key, render_template,
+    verification_purpose_key,
 };
 
 pub const MAIL_OWNER: &str = "sdkwork-mail";

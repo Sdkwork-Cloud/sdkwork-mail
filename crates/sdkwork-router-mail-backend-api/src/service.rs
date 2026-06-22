@@ -2,6 +2,10 @@ use std::future::Future;
 use std::pin::Pin;
 
 use sdkwork_communication_mail_service::MailProviderAccount;
+use sdkwork_communication_mail_service::{
+    CreateMailTemplateRequest, MailTemplate, MailTemplateCategory, MailTransactionalDelivery,
+    UpdateMailTemplateRequest,
+};
 use serde::{Deserialize, Serialize};
 
 pub type MailBackendApiFuture<T> =
@@ -73,4 +77,41 @@ pub trait MailBackendApiService: Send + Sync + 'static {
         &self,
         request: MailBackendListRequest,
     ) -> MailBackendApiFuture<MailBackendListData<MailProviderAccount>>;
+    fn list_templates(
+        &self,
+        request: MailBackendListRequest,
+        category: Option<MailTemplateCategory>,
+        purpose: Option<String>,
+    ) -> MailBackendApiFuture<MailBackendListData<MailTemplate>>;
+    fn create_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: CreateMailTemplateRequest,
+    ) -> MailBackendApiFuture<MailTemplate>;
+    fn retrieve_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        template_id: String,
+    ) -> MailBackendApiFuture<MailTemplate>;
+    fn update_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        template_id: String,
+        request: UpdateMailTemplateRequest,
+    ) -> MailBackendApiFuture<MailTemplate>;
+    fn delete_template(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        template_id: String,
+    ) -> MailBackendApiFuture<()>;
+    fn list_transactional_deliveries(
+        &self,
+        request: MailBackendListRequest,
+        business_kind: Option<String>,
+        recipient_email: Option<String>,
+    ) -> MailBackendApiFuture<MailBackendListData<MailTransactionalDelivery>>;
 }

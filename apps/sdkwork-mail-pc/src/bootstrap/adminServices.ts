@@ -1,14 +1,7 @@
 import {
-  ProviderAccountService,
-  ProviderApplicationService,
-  ProviderCredentialService,
-  ProviderPluginService,
-  ProviderProfileService,
-  ProviderQueryJobService,
-  ProviderRouteService,
-  ProviderSchemaService,
-  ProviderWebhookService,
-  RoomService,
+  MailProviderAccountService,
+  MailTemplateAdminService,
+  MailTransactionalDeliveryAdminService,
 } from "@sdkwork/Mail-pc-admin-core";
 
 import {
@@ -20,16 +13,9 @@ import { resolveEnvironment } from "./environment";
 import { getTokenManager } from "./tokenManager";
 
 export interface MailAdminServices {
-  accounts: ProviderAccountService;
-  applications: ProviderApplicationService;
-  credentials: ProviderCredentialService;
-  profiles: ProviderProfileService;
-  routes: ProviderRouteService;
-  schemas: ProviderSchemaService;
-  rooms: RoomService;
-  plugins: ProviderPluginService;
-  webhooks: ProviderWebhookService;
-  queryJobs: ProviderQueryJobService;
+  templates: MailTemplateAdminService;
+  deliveries: MailTransactionalDeliveryAdminService;
+  providerAccounts: MailProviderAccountService;
 }
 
 export function createAdminServices(): MailAdminServices {
@@ -48,15 +34,8 @@ export function createAdminServices(): MailAdminServices {
     : { tokenManager };
 
   return {
-    accounts: new ProviderAccountService(backendApiBaseUrl, clientOptions),
-    applications: new ProviderApplicationService(backendApiBaseUrl, clientOptions),
-    credentials: new ProviderCredentialService(backendApiBaseUrl, clientOptions),
-    profiles: new ProviderProfileService(backendApiBaseUrl, clientOptions),
-    routes: new ProviderRouteService(backendApiBaseUrl, clientOptions),
-    schemas: new ProviderSchemaService(backendApiBaseUrl, clientOptions),
-    rooms: new RoomService(backendApiBaseUrl, clientOptions),
-    plugins: new ProviderPluginService(backendApiBaseUrl, clientOptions),
-    webhooks: new ProviderWebhookService(backendApiBaseUrl, clientOptions),
-    queryJobs: new ProviderQueryJobService(backendApiBaseUrl, clientOptions),
+    templates: new MailTemplateAdminService(backendApiBaseUrl, clientOptions),
+    deliveries: new MailTransactionalDeliveryAdminService(backendApiBaseUrl, clientOptions),
+    providerAccounts: new MailProviderAccountService(backendApiBaseUrl, clientOptions),
   };
 }

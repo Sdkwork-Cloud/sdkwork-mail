@@ -35,7 +35,13 @@
     "configKeys": [],
     "ownedOperations": [
       "mail.providerAccounts.list",
-      "mail.providerWebhooks.events.receive"
+      "mail.providerWebhooks.events.receive",
+      "mail.templates.list",
+      "mail.templates.create",
+      "mail.templates.delete",
+      "mail.templates.retrieve",
+      "mail.templates.update",
+      "mail.transactionalDeliveries.list"
     ]
   },
   "verification": {

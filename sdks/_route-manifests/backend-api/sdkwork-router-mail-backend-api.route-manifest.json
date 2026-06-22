@@ -67,6 +67,162 @@
         "packageName": "sdkwork-router-mail-backend-api",
         "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
       }
+    },
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/mail/templates",
+      "operationId": "mail.templates.list",
+      "tags": ["mailTemplates"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.templates.read",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "list_templates" },
+      "schemas": {
+        "request": null,
+        "response": "MailTemplateListResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/templates",
+      "operationId": "mail.templates.create",
+      "tags": ["mailTemplates"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.templates.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "create_template" },
+      "schemas": {
+        "request": "CreateMailTemplateRequest",
+        "response": "MailTemplateResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/mail/templates/{templateId}",
+      "operationId": "mail.templates.retrieve",
+      "tags": ["mailTemplates"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.templates.read",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "retrieve_template" },
+      "schemas": {
+        "request": null,
+        "response": "MailTemplateResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "PATCH",
+      "path": "/backend/v3/api/mail/templates/{templateId}",
+      "operationId": "mail.templates.update",
+      "tags": ["mailTemplates"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.templates.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "update_template" },
+      "schemas": {
+        "request": "UpdateMailTemplateRequest",
+        "response": "MailTemplateResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/backend/v3/api/mail/templates/{templateId}",
+      "operationId": "mail.templates.delete",
+      "tags": ["mailTemplates"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.templates.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "delete_template" },
+      "schemas": {
+        "request": null,
+        "response": null,
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/mail/transactional_deliveries",
+      "operationId": "mail.transactionalDeliveries.list",
+      "tags": ["mailTransactionalDeliveries"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.transactional_deliveries.read",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "list_transactional_deliveries" },
+      "schemas": {
+        "request": null,
+        "response": "MailTransactionalDeliveryListResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
     }
   ]
 }

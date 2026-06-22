@@ -47,3 +47,12 @@ tables:
   - name: mail_audit_log
     lifecycle_status: active
     owner: mail-platform
+  - name: mail_template
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_verification_challenge
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_transactional_delivery
+    lifecycle_status: active
+    owner: mail-platform

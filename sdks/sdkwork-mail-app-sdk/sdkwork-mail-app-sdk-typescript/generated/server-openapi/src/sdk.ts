@@ -6,6 +6,8 @@ import { MailAccountsApi, createMailAccountsApi } from './api/mail-accounts';
 import { MailFoldersApi, createMailFoldersApi } from './api/mail-folders';
 import { MailThreadsApi, createMailThreadsApi } from './api/mail-threads';
 import { MailMessagesApi, createMailMessagesApi } from './api/mail-messages';
+import { MailVerificationApi, createMailVerificationApi } from './api/mail-verification';
+import { MailTransactionalApi, createMailTransactionalApi } from './api/mail-transactional';
 
 export class SdkworkAppClient {
   private httpClient: HttpClient;
@@ -14,6 +16,8 @@ export class SdkworkAppClient {
   public readonly mailFolders: MailFoldersApi;
   public readonly mailThreads: MailThreadsApi;
   public readonly mailMessages: MailMessagesApi;
+  public readonly mailVerification: MailVerificationApi;
+  public readonly mailTransactional: MailTransactionalApi;
 
   constructor(config: SdkworkAppConfig) {
     this.httpClient = createHttpClient(config);
@@ -24,6 +28,10 @@ export class SdkworkAppClient {
     this.mailThreads = createMailThreadsApi(this.httpClient);
 
     this.mailMessages = createMailMessagesApi(this.httpClient);
+
+    this.mailVerification = createMailVerificationApi(this.httpClient);
+
+    this.mailTransactional = createMailTransactionalApi(this.httpClient);
   }
   setAuthToken(token: string): this {
     this.httpClient.setAuthToken(token);

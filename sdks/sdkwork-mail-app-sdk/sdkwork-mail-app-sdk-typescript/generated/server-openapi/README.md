@@ -58,6 +58,8 @@ const client = new SdkworkAppClient({
 - `client.mailFolders` - mail_folders API
 - `client.mailThreads` - mail_threads API
 - `client.mailMessages` - mail_messages API
+- `client.mailVerification` - mail_verification API
+- `client.mailTransactional` - mail_transactional API
 
 ## Usage Examples
 
@@ -96,6 +98,36 @@ const params = {
   folderId: 'folderId',
 };
 const result = await client.mailMessages.mail.messages.list(params);
+```
+
+### mail_verification
+
+```typescript
+// POST /app/v3/api/mail/verification/send
+const body = {
+  recipientEmail: 'recipientEmail',
+  purpose: 'purpose',
+  templateKey: 'templateKey',
+  locale: 'locale',
+  variables: {},
+  correlationId: 'correlationId',
+};
+const result = await client.mailVerification.mail.verification.send(body);
+```
+
+### mail_transactional
+
+```typescript
+// POST /app/v3/api/mail/transactional/send
+const body = {
+  templateKey: 'templateKey',
+  recipientEmail: 'recipientEmail',
+  locale: 'locale',
+  variables: {},
+  correlationId: 'correlationId',
+  fromEmail: 'fromEmail',
+};
+const result = await client.mailTransactional.mail.transactional.send(body);
 ```
 
 ## Error Handling

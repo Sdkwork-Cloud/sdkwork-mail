@@ -155,7 +155,7 @@ describe("Mail pc architecture contract", () => {
       contracts: { sdkDependencies: string[] };
     };
 
-    expect(appSpec.component.domain).toBe("Mail");
+    expect(appSpec.component.domain).toBe("mail");
     expect(appSpec.component.type).toBe("pc-app-root");
     expect(appSpec.contracts.sdkDependencies).toContain("sdkwork-mail-app-sdk");
   });

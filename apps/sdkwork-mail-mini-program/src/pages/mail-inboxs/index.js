@@ -104,7 +104,7 @@ Page({
       return;
     }
     wx.navigateTo({
-      url: `/pages/mail-inbox-room/index?messageId=${encodeURIComponent(messageId)}`,
+      url: `/pages/mail-message/index?messageId=${encodeURIComponent(messageId)}`,
     });
   },
 });

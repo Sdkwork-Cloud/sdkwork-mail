@@ -6,7 +6,10 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use sdkwork_communication_mail_service::{CreateMailMessageRequest, UpdateMailMessageRequest};
+use sdkwork_communication_mail_service::{
+    CreateMailMessageRequest, SendMailVerificationRequest, SendTransactionalMailRequest,
+    UpdateMailMessageRequest, VerifyMailCodeRequest,
+};
 use sdkwork_mail_app_context::AppContext;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value as JsonValue, json};
@@ -180,6 +183,45 @@ pub async fn delete_message(
         Ok(()) => StatusCode::NO_CONTENT.into_response(),
         Err(error) => problem_response(error),
     }
+}
+
+pub async fn send_verification_code(
+    Extension(context): Extension<AppContext>,
+    State(service): State<Arc<dyn MailAppApiService>>,
+    Json(body): Json<SendMailVerificationRequest>,
+) -> Response {
+    let tenant_id = context.tenant_id.clone();
+    respond(
+        service
+            .send_verification_code(tenant_id, org_id(&context), body)
+            .await,
+    )
+}
+
+pub async fn verify_verification_code(
+    Extension(context): Extension<AppContext>,
+    State(service): State<Arc<dyn MailAppApiService>>,
+    Json(body): Json<VerifyMailCodeRequest>,
+) -> Response {
+    let tenant_id = context.tenant_id.clone();
+    respond(
+        service
+            .verify_verification_code(tenant_id, org_id(&context), body)
+            .await,
+    )
+}
+
+pub async fn send_transactional_mail(
+    Extension(context): Extension<AppContext>,
+    State(service): State<Arc<dyn MailAppApiService>>,
+    Json(body): Json<SendTransactionalMailRequest>,
+) -> Response {
+    let tenant_id = context.tenant_id.clone();
+    respond(
+        service
+            .send_transactional_mail(tenant_id, org_id(&context), body)
+            .await,
+    )
 }
 
 fn respond<T: Serialize>(result: Result<T, MailAppApiError>) -> Response {

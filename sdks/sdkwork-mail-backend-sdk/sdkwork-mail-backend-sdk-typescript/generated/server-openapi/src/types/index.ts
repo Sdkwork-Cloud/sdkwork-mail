@@ -5,5 +5,10 @@ export type { MailProviderAccountListResponse } from './mail-provider-account-li
 export type { MailProviderWebhookEventRequest } from './mail-provider-webhook-event-request';
 export type { MailProviderWebhookEventResponse } from './mail-provider-webhook-event-response';
 export type { MailProviderWebhookEvent } from './mail-provider-webhook-event';
-export type { MailProviderQueryJob } from './mail-provider-query-job';
-export type { MailProviderQuerySnapshot } from './mail-provider-query-snapshot';
+export type { MailTemplate } from './mail-template';
+export type { CreateMailTemplateRequest } from './create-mail-template-request';
+export type { UpdateMailTemplateRequest } from './update-mail-template-request';
+export type { MailTemplateListResponse } from './mail-template-list-response';
+export type { MailTemplateResponse } from './mail-template-response';
+export type { MailTransactionalDelivery } from './mail-transactional-delivery';
+export type { MailTransactionalDeliveryListResponse } from './mail-transactional-delivery-list-response';

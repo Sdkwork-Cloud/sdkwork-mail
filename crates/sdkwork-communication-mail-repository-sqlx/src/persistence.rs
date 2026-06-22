@@ -1,8 +1,12 @@
+use chrono::NaiveDateTime;
 use sdkwork_communication_mail_service::{
-    CreateMailMessageRequest, MailAccount, MailAccountStatus, MailAttachment, MailFolder,
-    MailFolderKind, MailMessage, MailMessageRecipient, MailPersistenceError, MailPersistenceFuture,
-    MailPersistencePort, MailPersistenceResult, MailProviderAccount, MailProviderAccountStatus,
-    MailRecipientKind, MailThread, UpdateMailMessageRequest, utc_now_rfc3339_millis,
+    ActiveVerificationChallenge, CreateMailMessageRequest, CreateMailTemplateRequest, MailAccount,
+    MailAccountStatus, MailAttachment, MailFolder, MailFolderKind, MailMessage,
+    MailMessageRecipient, MailPersistenceError, MailPersistenceFuture, MailPersistencePort,
+    MailPersistenceResult, MailProviderAccount, MailProviderAccountStatus, MailRecipientKind,
+    MailTemplate, MailTemplateCategory, MailTemplateStatus, MailThread, MailTransactionalDelivery,
+    MailTransactionalDeliveryStatus, MailVerificationPurpose, UpdateMailMessageRequest,
+    UpdateMailTemplateRequest, utc_now_rfc3339_millis,
 };
 use sdkwork_utils_rust::{is_blank, sha256_hash};
 use serde_json::json;
@@ -369,6 +373,628 @@ impl MailPersistencePort for MailPostgresPersistencePort {
                 .collect())
         })
     }
+
+    fn list_templates<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        category: Option<MailTemplateCategory>,
+        purpose: Option<&'a str>,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, Vec<MailTemplate>> {
+        Box::pin(async move {
+            let category_filter = category.map(template_category_to_db);
+            let rows = sqlx::query_as::<_, TemplateRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, template_key, name, category, purpose, locale,
+                       subject_template, body_html_template, body_text_template, variable_schema, status, metadata
+                FROM mail_template
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND deleted_at IS NULL
+                  AND ($3::varchar IS NULL OR category = $3)
+                  AND ($4::varchar IS NULL OR purpose = $4)
+                ORDER BY updated_at DESC
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(category_filter)
+            .bind(purpose)
+            .fetch_all(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(rows.into_iter().map(TemplateRow::into_template).collect())
+        })
+    }
+
+    fn retrieve_template<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        template_id: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailTemplate> {
+        Box::pin(async move {
+            let row = sqlx::query_as::<_, TemplateRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, template_key, name, category, purpose, locale,
+                       subject_template, body_html_template, body_text_template, variable_schema, status, metadata
+                FROM mail_template
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND uuid = $3
+                  AND deleted_at IS NULL
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(template_id)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?
+            .ok_or_else(|| {
+                MailPersistenceError::NotFound(format!("template not found: {template_id}"))
+            })?;
+
+            Ok(row.into_template())
+        })
+    }
+
+    fn retrieve_template_by_key<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        template_key: &'a str,
+        locale: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailTemplate> {
+        Box::pin(async move {
+            let row = sqlx::query_as::<_, TemplateRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, template_key, name, category, purpose, locale,
+                       subject_template, body_html_template, body_text_template, variable_schema, status, metadata
+                FROM mail_template
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND template_key = $3
+                  AND locale = $4
+                  AND deleted_at IS NULL
+                  AND status = 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(template_key)
+            .bind(locale)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?
+            .ok_or_else(|| {
+                MailPersistenceError::NotFound(format!(
+                    "template not found: {template_key}:{locale}"
+                ))
+            })?;
+
+            Ok(row.into_template())
+        })
+    }
+
+    fn create_template<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: CreateMailTemplateRequest,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailTemplate> {
+        Box::pin(async move {
+            let now = timestamp_now();
+            let template_uuid = Uuid::new_v4().to_string();
+            let locale = request.locale.clone().unwrap_or_else(|| "zh-CN".to_owned());
+            let variable_schema = request.variable_schema.clone().unwrap_or_else(|| json!({}));
+            let metadata = request.metadata.clone().unwrap_or_else(|| json!({}));
+
+            sqlx::query(
+                r#"
+                INSERT INTO mail_template (
+                    id, uuid, tenant_id, organization_id, template_key, name, category, purpose, locale,
+                    subject_template, body_html_template, body_text_template, variable_schema, status,
+                    metadata, created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7, $8, $9,
+                    $10, $11, $12, $13, 1,
+                    $14, $15, $15, 0
+                )
+                "#,
+            )
+            .bind(next_id())
+            .bind(&template_uuid)
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(&request.template_key)
+            .bind(&request.name)
+            .bind(template_category_to_db(request.category))
+            .bind(&request.purpose)
+            .bind(&locale)
+            .bind(&request.subject_template)
+            .bind(&request.body_html_template)
+            .bind(&request.body_text_template)
+            .bind(&variable_schema)
+            .bind(&metadata)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(MailTemplate {
+                id: template_uuid,
+                tenant_id: tenant_id.to_owned(),
+                organization_id: organization_id.to_owned(),
+                template_key: request.template_key,
+                name: request.name,
+                category: request.category,
+                purpose: request.purpose,
+                locale,
+                subject_template: request.subject_template,
+                body_html_template: request.body_html_template,
+                body_text_template: request.body_text_template,
+                variable_schema,
+                status: MailTemplateStatus::Active,
+                metadata,
+            })
+        })
+    }
+
+    fn update_template<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        template_id: &'a str,
+        request: UpdateMailTemplateRequest,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailTemplate> {
+        Box::pin(async move {
+            let existing = self
+                .retrieve_template(tenant_id, organization_id, template_id)
+                .await?;
+
+            let now = timestamp_now();
+            let name = request.name.unwrap_or(existing.name);
+            let category = request.category.unwrap_or(existing.category);
+            let purpose = request.purpose.unwrap_or(existing.purpose);
+            let subject_template = request
+                .subject_template
+                .unwrap_or(existing.subject_template);
+            let body_html_template = request.body_html_template.or(existing.body_html_template);
+            let body_text_template = request.body_text_template.or(existing.body_text_template);
+            let variable_schema = request.variable_schema.unwrap_or(existing.variable_schema);
+            let status = request.status.unwrap_or(existing.status);
+            let metadata = request.metadata.unwrap_or(existing.metadata);
+
+            sqlx::query(
+                r#"
+                UPDATE mail_template
+                SET name = $4,
+                    category = $5,
+                    purpose = $6,
+                    subject_template = $7,
+                    body_html_template = $8,
+                    body_text_template = $9,
+                    variable_schema = $10,
+                    status = $11,
+                    metadata = $12,
+                    updated_at = $13,
+                    version = version + 1
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND uuid = $3
+                  AND deleted_at IS NULL
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(template_id)
+            .bind(&name)
+            .bind(template_category_to_db(category))
+            .bind(&purpose)
+            .bind(&subject_template)
+            .bind(&body_html_template)
+            .bind(&body_text_template)
+            .bind(&variable_schema)
+            .bind(template_status_to_db(status))
+            .bind(&metadata)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(MailTemplate {
+                id: template_id.to_owned(),
+                tenant_id: tenant_id.to_owned(),
+                organization_id: organization_id.to_owned(),
+                template_key: existing.template_key,
+                name,
+                category,
+                purpose,
+                locale: existing.locale,
+                subject_template,
+                body_html_template,
+                body_text_template,
+                variable_schema,
+                status,
+                metadata,
+            })
+        })
+    }
+
+    fn delete_template<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        template_id: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, ()> {
+        Box::pin(async move {
+            let now = timestamp_now();
+            let result = sqlx::query(
+                r#"
+                UPDATE mail_template
+                SET deleted_at = $4, updated_at = $4, version = version + 1
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND uuid = $3
+                  AND deleted_at IS NULL
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(template_id)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            if result.rows_affected() == 0 {
+                return Err(MailPersistenceError::NotFound(format!(
+                    "template not found: {template_id}"
+                )));
+            }
+            Ok(())
+        })
+    }
+
+    fn create_verification_challenge<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        challenge_id: &'a str,
+        recipient_email: &'a str,
+        purpose: MailVerificationPurpose,
+        code_hash: &'a str,
+        expires_at: &'a str,
+        delivery_id: Option<&'a str>,
+        metadata: serde_json::Value,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, String> {
+        Box::pin(async move {
+            let now = timestamp_now();
+            let expires = parse_timestamp(expires_at)?;
+
+            sqlx::query(
+                r#"
+                INSERT INTO mail_verification_challenge (
+                    id, uuid, tenant_id, organization_id, recipient_email, purpose, code_hash,
+                    expires_at, attempt_count, max_attempts, delivery_id, metadata,
+                    created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7,
+                    $8, 0, 5, $9, $10,
+                    $11, $11, 0
+                )
+                "#,
+            )
+            .bind(next_id())
+            .bind(challenge_id)
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(recipient_email)
+            .bind(purpose.as_str())
+            .bind(code_hash)
+            .bind(expires)
+            .bind(delivery_id)
+            .bind(metadata)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(challenge_id.to_owned())
+        })
+    }
+
+    fn find_active_verification_challenge<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        recipient_email: &'a str,
+        purpose: MailVerificationPurpose,
+        challenge_id: Option<&'a str>,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, ActiveVerificationChallenge>
+    {
+        Box::pin(async move {
+            let row = if let Some(challenge_id) = challenge_id {
+                sqlx::query_as::<_, ChallengeRow>(
+                    r#"
+                    SELECT uuid, recipient_email, purpose, code_hash, expires_at, consumed_at,
+                           attempt_count, max_attempts, delivery_id
+                    FROM mail_verification_challenge
+                    WHERE tenant_id = $1::bigint
+                      AND organization_id = $2::bigint
+                      AND uuid = $3
+                      AND recipient_email = $4
+                      AND purpose = $5
+                      AND consumed_at IS NULL
+                    "#,
+                )
+                .bind(parse_id(tenant_id))
+                .bind(parse_id(organization_id))
+                .bind(challenge_id)
+                .bind(recipient_email)
+                .bind(purpose.as_str())
+                .fetch_optional(&self.pool)
+                .await
+                .map_err(map_sqlx_error)?
+            } else {
+                sqlx::query_as::<_, ChallengeRow>(
+                    r#"
+                    SELECT uuid, recipient_email, purpose, code_hash, expires_at, consumed_at,
+                           attempt_count, max_attempts, delivery_id
+                    FROM mail_verification_challenge
+                    WHERE tenant_id = $1::bigint
+                      AND organization_id = $2::bigint
+                      AND recipient_email = $3
+                      AND purpose = $4
+                      AND consumed_at IS NULL
+                    ORDER BY created_at DESC
+                    LIMIT 1
+                    "#,
+                )
+                .bind(parse_id(tenant_id))
+                .bind(parse_id(organization_id))
+                .bind(recipient_email)
+                .bind(purpose.as_str())
+                .fetch_optional(&self.pool)
+                .await
+                .map_err(map_sqlx_error)?
+            };
+
+            let row = row.ok_or_else(|| {
+                MailPersistenceError::NotFound("verification challenge not found".to_owned())
+            })?;
+
+            if row.consumed_at.is_some() {
+                return Err(MailPersistenceError::NotFound(
+                    "verification challenge already consumed".to_owned(),
+                ));
+            }
+            if row.expires_at <= timestamp_now() {
+                return Err(MailPersistenceError::Conflict(
+                    "verification challenge expired".to_owned(),
+                ));
+            }
+
+            Ok(row.into_active())
+        })
+    }
+
+    fn increment_verification_attempt<'a>(
+        &'a self,
+        challenge_id: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, ()> {
+        Box::pin(async move {
+            sqlx::query(
+                r#"
+                UPDATE mail_verification_challenge
+                SET attempt_count = attempt_count + 1,
+                    updated_at = $2,
+                    version = version + 1
+                WHERE uuid = $1
+                "#,
+            )
+            .bind(challenge_id)
+            .bind(timestamp_now())
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+            Ok(())
+        })
+    }
+
+    fn consume_verification_challenge<'a>(
+        &'a self,
+        challenge_id: &'a str,
+        consumed_at: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, ()> {
+        Box::pin(async move {
+            let consumed = parse_timestamp(consumed_at)?;
+            sqlx::query(
+                r#"
+                UPDATE mail_verification_challenge
+                SET consumed_at = $2,
+                    updated_at = $2,
+                    version = version + 1
+                WHERE uuid = $1
+                  AND consumed_at IS NULL
+                "#,
+            )
+            .bind(challenge_id)
+            .bind(consumed)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+            Ok(())
+        })
+    }
+
+    fn create_transactional_delivery<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        template_id: Option<&'a str>,
+        template_key: &'a str,
+        business_kind: &'a str,
+        recipient_email: &'a str,
+        from_email: Option<&'a str>,
+        subject: &'a str,
+        correlation_id: Option<&'a str>,
+        metadata: serde_json::Value,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailTransactionalDelivery>
+    {
+        Box::pin(async move {
+            let now = timestamp_now();
+            let delivery_uuid = Uuid::new_v4().to_string();
+
+            sqlx::query(
+                r#"
+                INSERT INTO mail_transactional_delivery (
+                    id, uuid, tenant_id, organization_id, template_id, template_key, business_kind,
+                    recipient_email, from_email, subject, status, correlation_id, metadata,
+                    created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7,
+                    $8, $9, $10, 0, $11, $12,
+                    $13, $13, 0
+                )
+                "#,
+            )
+            .bind(next_id())
+            .bind(&delivery_uuid)
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(template_id)
+            .bind(template_key)
+            .bind(business_kind)
+            .bind(recipient_email)
+            .bind(from_email)
+            .bind(subject)
+            .bind(correlation_id)
+            .bind(&metadata)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(MailTransactionalDelivery {
+                id: delivery_uuid,
+                tenant_id: tenant_id.to_owned(),
+                organization_id: organization_id.to_owned(),
+                template_id: template_id.map(str::to_owned),
+                template_key: template_key.to_owned(),
+                business_kind: business_kind.to_owned(),
+                recipient_email: recipient_email.to_owned(),
+                from_email: from_email.map(str::to_owned),
+                subject: subject.to_owned(),
+                status: MailTransactionalDeliveryStatus::Queued,
+                provider_account_id: None,
+                correlation_id: correlation_id.map(str::to_owned),
+                last_error: None,
+                sent_at: None,
+                metadata,
+                created_at: utc_now_rfc3339_millis(),
+            })
+        })
+    }
+
+    fn mark_transactional_delivery_sent<'a>(
+        &'a self,
+        delivery_id: &'a str,
+        sent_at: &'a str,
+        provider_account_id: Option<&'a str>,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailTransactionalDelivery>
+    {
+        Box::pin(async move {
+            let sent = parse_timestamp(sent_at)?;
+            let now = timestamp_now();
+            sqlx::query(
+                r#"
+                UPDATE mail_transactional_delivery
+                SET status = 1,
+                    sent_at = $2,
+                    provider_account_id = $3,
+                    updated_at = $4,
+                    version = version + 1
+                WHERE uuid = $1
+                "#,
+            )
+            .bind(delivery_id)
+            .bind(sent)
+            .bind(provider_account_id)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            load_delivery(&self.pool, delivery_id).await
+        })
+    }
+
+    fn mark_transactional_delivery_failed<'a>(
+        &'a self,
+        delivery_id: &'a str,
+        last_error: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailTransactionalDelivery>
+    {
+        Box::pin(async move {
+            let now = timestamp_now();
+            sqlx::query(
+                r#"
+                UPDATE mail_transactional_delivery
+                SET status = 2,
+                    last_error = $2,
+                    updated_at = $3,
+                    version = version + 1
+                WHERE uuid = $1
+                "#,
+            )
+            .bind(delivery_id)
+            .bind(last_error)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            load_delivery(&self.pool, delivery_id).await
+        })
+    }
+
+    fn list_transactional_deliveries<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        business_kind: Option<&'a str>,
+        recipient_email: Option<&'a str>,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, Vec<MailTransactionalDelivery>>
+    {
+        Box::pin(async move {
+            let rows = sqlx::query_as::<_, DeliveryRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, template_id, template_key, business_kind,
+                       recipient_email, from_email, subject, status, provider_account_id,
+                       correlation_id, last_error, sent_at, metadata, created_at
+                FROM mail_transactional_delivery
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND ($3::varchar IS NULL OR business_kind = $3)
+                  AND ($4::varchar IS NULL OR recipient_email = $4)
+                ORDER BY created_at DESC
+                LIMIT 200
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(business_kind)
+            .bind(recipient_email)
+            .fetch_all(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(rows.into_iter().map(DeliveryRow::into_delivery).collect())
+        })
+    }
 }
 
 fn map_sqlx_error(error: sqlx::Error) -> MailPersistenceError {
@@ -706,6 +1332,212 @@ impl ProviderAccountRow {
             } else {
                 MailProviderAccountStatus::Disabled
             },
+        }
+    }
+}
+
+async fn load_delivery(
+    pool: &PgPool,
+    delivery_id: &str,
+) -> MailPersistenceResult<MailTransactionalDelivery> {
+    let row = sqlx::query_as::<_, DeliveryRow>(
+        r#"
+        SELECT uuid, tenant_id, organization_id, template_id, template_key, business_kind,
+               recipient_email, from_email, subject, status, provider_account_id,
+               correlation_id, last_error, sent_at, metadata, created_at
+        FROM mail_transactional_delivery
+        WHERE uuid = $1
+        "#,
+    )
+    .bind(delivery_id)
+    .fetch_optional(pool)
+    .await
+    .map_err(map_sqlx_error)?
+    .ok_or_else(|| MailPersistenceError::NotFound(format!("delivery not found: {delivery_id}")))?;
+
+    Ok(row.into_delivery())
+}
+
+fn template_category_to_db(category: MailTemplateCategory) -> &'static str {
+    match category {
+        MailTemplateCategory::Transactional => "transactional",
+        MailTemplateCategory::Marketing => "marketing",
+    }
+}
+
+fn template_status_to_db(status: MailTemplateStatus) -> i32 {
+    match status {
+        MailTemplateStatus::Active => 1,
+        MailTemplateStatus::Disabled => 0,
+    }
+}
+
+fn db_template_category(value: &str) -> MailTemplateCategory {
+    if value == "marketing" {
+        MailTemplateCategory::Marketing
+    } else {
+        MailTemplateCategory::Transactional
+    }
+}
+
+fn db_template_status(value: i32) -> MailTemplateStatus {
+    if value == 1 {
+        MailTemplateStatus::Active
+    } else {
+        MailTemplateStatus::Disabled
+    }
+}
+
+fn db_delivery_status(value: i32) -> MailTransactionalDeliveryStatus {
+    match value {
+        1 => MailTransactionalDeliveryStatus::Sent,
+        2 => MailTransactionalDeliveryStatus::Failed,
+        _ => MailTransactionalDeliveryStatus::Queued,
+    }
+}
+
+fn db_verification_purpose(value: &str) -> MailVerificationPurpose {
+    match value {
+        "login_verification" => MailVerificationPurpose::LoginVerification,
+        "password_reset" => MailVerificationPurpose::PasswordReset,
+        "bind_email" => MailVerificationPurpose::BindEmail,
+        _ => MailVerificationPurpose::GenericOtp,
+    }
+}
+
+fn parse_timestamp(value: &str) -> MailPersistenceResult<NaiveDateTime> {
+    NaiveDateTime::parse_from_str(value, "%Y-%m-%d %H:%M:%S%.f")
+        .or_else(|_| NaiveDateTime::parse_from_str(value, "%Y-%m-%d %H:%M:%S"))
+        .or_else(|_| {
+            chrono::DateTime::parse_from_rfc3339(value)
+                .map(|value| value.naive_utc())
+                .map_err(|error| MailPersistenceError::Unavailable(error.to_string()))
+        })
+        .map_err(|error| MailPersistenceError::Unavailable(error.to_string()))
+}
+
+fn timestamp_now() -> NaiveDateTime {
+    sdkwork_utils_rust::now().naive_utc()
+}
+
+#[derive(sqlx::FromRow)]
+struct TemplateRow {
+    uuid: String,
+    tenant_id: i64,
+    organization_id: i64,
+    template_key: String,
+    name: String,
+    category: String,
+    purpose: String,
+    locale: String,
+    subject_template: String,
+    body_html_template: Option<String>,
+    body_text_template: Option<String>,
+    variable_schema: serde_json::Value,
+    status: i32,
+    metadata: serde_json::Value,
+}
+
+impl TemplateRow {
+    fn into_template(self) -> MailTemplate {
+        MailTemplate {
+            id: self.uuid,
+            tenant_id: self.tenant_id.to_string(),
+            organization_id: self.organization_id.to_string(),
+            template_key: self.template_key,
+            name: self.name,
+            category: db_template_category(&self.category),
+            purpose: self.purpose,
+            locale: self.locale,
+            subject_template: self.subject_template,
+            body_html_template: self.body_html_template,
+            body_text_template: self.body_text_template,
+            variable_schema: if self.variable_schema.is_null() {
+                json!({})
+            } else {
+                self.variable_schema
+            },
+            status: db_template_status(self.status),
+            metadata: if self.metadata.is_null() {
+                json!({})
+            } else {
+                self.metadata
+            },
+        }
+    }
+}
+
+#[derive(sqlx::FromRow)]
+struct ChallengeRow {
+    uuid: String,
+    recipient_email: String,
+    purpose: String,
+    code_hash: String,
+    expires_at: NaiveDateTime,
+    consumed_at: Option<NaiveDateTime>,
+    attempt_count: i32,
+    max_attempts: i32,
+    delivery_id: Option<String>,
+}
+
+impl ChallengeRow {
+    fn into_active(self) -> ActiveVerificationChallenge {
+        ActiveVerificationChallenge {
+            id: self.uuid,
+            recipient_email: self.recipient_email,
+            purpose: db_verification_purpose(&self.purpose),
+            code_hash: self.code_hash,
+            expires_at: self.expires_at.to_string(),
+            attempt_count: self.attempt_count,
+            max_attempts: self.max_attempts,
+            delivery_id: self.delivery_id,
+        }
+    }
+}
+
+#[derive(sqlx::FromRow)]
+struct DeliveryRow {
+    uuid: String,
+    tenant_id: i64,
+    organization_id: i64,
+    template_id: Option<String>,
+    template_key: String,
+    business_kind: String,
+    recipient_email: String,
+    from_email: Option<String>,
+    subject: String,
+    status: i32,
+    provider_account_id: Option<String>,
+    correlation_id: Option<String>,
+    last_error: Option<String>,
+    sent_at: Option<NaiveDateTime>,
+    metadata: serde_json::Value,
+    created_at: NaiveDateTime,
+}
+
+impl DeliveryRow {
+    fn into_delivery(self) -> MailTransactionalDelivery {
+        MailTransactionalDelivery {
+            id: self.uuid,
+            tenant_id: self.tenant_id.to_string(),
+            organization_id: self.organization_id.to_string(),
+            template_id: self.template_id,
+            template_key: self.template_key,
+            business_kind: self.business_kind,
+            recipient_email: self.recipient_email,
+            from_email: self.from_email,
+            subject: self.subject,
+            status: db_delivery_status(self.status),
+            provider_account_id: self.provider_account_id,
+            correlation_id: self.correlation_id,
+            last_error: self.last_error,
+            sent_at: self.sent_at.map(|value| value.to_string()),
+            metadata: if self.metadata.is_null() {
+                json!({})
+            } else {
+                self.metadata
+            },
+            created_at: self.created_at.to_string(),
         }
     }
 }

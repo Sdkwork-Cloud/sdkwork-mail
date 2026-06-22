@@ -1,31 +1,12 @@
-# Mail Runtime Plugins
+# Mail transport plugins
 
-## Purpose
+SDKWork Mail uses transport plugins under `plugins/` for outbound delivery and mailbox sync.
 
-`plugins/` stores Mail runtime provider plugin source packages.
+| Plugin | ID | Role |
+| --- | --- | --- |
+| `mail-smtp` | `mail-smtp` | SMTP outbound delivery for transactional and verification mail |
+| `mail-imap` | `mail-imap` | IMAP sync for inbox ingestion |
 
-## Owner
+Both plugins are registered as `communication/mail` capability components. Runtime SMTP/IMAP protocol logic is implemented incrementally in each plugin crate; the service host routes transactional sends through the configured provider account.
 
-sdkwork-mail.
-
-## Allowed Content
-
-- `Mail-agora/`, `Mail-aliyun/`, `Mail-livekit/`, `Mail-tencent/`, and `Mail-volcengine/` provider implementations.
-- Plugin-local component specs, source code, tests, and provider documentation.
-
-## Forbidden Content
-
-- Repository-local agent plugins; those belong in `.sdkwork/plugins/`.
-- Service or repository crates that belong in `crates/`.
-- Generated SDK transport output.
-- Provider secrets or runtime credential files.
-
-## Related Specs
-
-- `../sdkwork-specs/SDKWORK_WORKSPACE_SPEC.md`
-- `../sdkwork-specs/COMPONENT_SPEC.md`
-- `../sdkwork-specs/INTEGRATION_SPEC.md`
-
-## Verification
-
-Run `cargo test --workspace` and `node --test tests/Mail-workspace-standard.test.mjs`.
+Do not add RTC or realtime media provider plugins to this repository. Media runtime belongs in `sdkwork-im`, not `sdkwork-mail`.

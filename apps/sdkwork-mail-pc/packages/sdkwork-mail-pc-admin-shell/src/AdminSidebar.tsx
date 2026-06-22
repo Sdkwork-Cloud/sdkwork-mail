@@ -4,13 +4,9 @@ export function AdminSidebar() {
       <h2>Mail Admin</h2>
       <ul>
         <li><a href="#/admin/dashboard">Dashboard</a></li>
-        <li><a href="#/admin/provider-accounts">Provider Accounts</a></li>
-        <li><a href="#/admin/provider-profiles">Provider Profiles</a></li>
-        <li><a href="#/admin/provider-routes">Provider Routes</a></li>
-        <li><a href="#/admin/providers">Providers</a></li>
-        <li><a href="#/admin/wizard">Setup Wizard</a></li>
-        <li><a href="#/admin/webhook-events">Webhook Events</a></li>
-        <li><a href="#/admin/query-jobs">Query Jobs</a></li>
+        <li><a href="#/admin/templates">Mail Templates</a></li>
+        <li><a href="#/admin/deliveries">Delivery Audit</a></li>
+        <li><a href="#/admin/provider-accounts">Transport Providers</a></li>
         <li><a href="#/mail/inbox">App: Inbox</a></li>
       </ul>
     </nav>

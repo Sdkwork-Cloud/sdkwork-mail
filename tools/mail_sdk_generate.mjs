@@ -263,22 +263,28 @@ function validateOpenapi(family, openapi) {
       ? [
           "MailProviderAccount",
           "MailProviderWebhookEvent",
-          "MailProviderQueryJob",
-          "MailProviderQuerySnapshot",
+          "MailTemplate",
+          "MailTransactionalDelivery",
           "ProblemDetail",
         ]
-      : ["MailAccount", "MailFolder", "MailThread", "MailMessage", "ProblemDetail"];
+      : [
+          "MailAccount",
+          "MailFolder",
+          "MailThread",
+          "MailMessage",
+          "SendMailVerificationRequest",
+          "VerifyMailCodeRequest",
+          "SendTransactionalMailRequest",
+          "MailTransactionalDelivery",
+          "ProblemDetail",
+        ];
   for (const schemaName of requiredSchemas) {
     if (!openapi.components?.schemas?.[schemaName]) {
       throw new Error(`${family.authorityName} must expose ${schemaName}`);
     }
   }
   if (family.sdkType === "backend") {
-    for (const schemaName of [
-      "MailProviderWebhookEvent",
-      "MailProviderQueryJob",
-      "MailProviderQuerySnapshot",
-    ]) {
+    for (const schemaName of ["MailProviderWebhookEvent", "MailTemplate", "MailTransactionalDelivery"]) {
       if (!openapi.components?.schemas?.[schemaName]) {
         throw new Error(`${family.authorityName} must expose ${schemaName}`);
       }

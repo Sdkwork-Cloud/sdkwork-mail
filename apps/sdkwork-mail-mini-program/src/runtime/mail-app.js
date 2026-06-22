@@ -171,7 +171,7 @@ var DEFAULT_APP_SESSION = {
   organizationId: "default",
   userId: "user"
 };
-var DEFAULT_APP_PERMISSION_SCOPE = "Mail.media_session.read Mail.media_session.write";
+var DEFAULT_APP_PERMISSION_SCOPE = "mail.messages.read mail.messages.write mail.verification.write mail.transactional.write";
 
 // packages/sdkwork-mail-mp-core/src/session/appbaseAuthBridge.ts
 var CALLBACK_KEYS = {

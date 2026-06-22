@@ -2,7 +2,7 @@
   "pages": [
     "pages/login/index",
     "pages/mail-inboxs/index",
-    "pages/mail-inbox-room/index"
+    "pages/mail-message/index"
   ],
   "window": {
     "navigationBarTitleText": "SDKWork Mail",

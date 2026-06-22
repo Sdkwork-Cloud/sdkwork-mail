@@ -44,7 +44,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "b4665d256e06fd4746d11aeaae390fce63cf357ee514402a7663556f54ddf705"
+      "sha256": "3a498dd6b8c705c89e6468d25fe2d15c9fde6be83da8c76104d9a1ffc9f9dd00"
     },
     {
       "path": "sdkwork-sdk.json",
@@ -56,7 +56,7 @@
     },
     {
       "path": "src/api/index.ts",
-      "sha256": "7c625cf78c56916f2fdc7f5266c5ace05f84679a607621c405638c750eebcd68"
+      "sha256": "d26f3b357fb0d58e490c521d44654a1577ef6ab5e71cbbad58afe3ef776a2648"
     },
     {
       "path": "src/api/mail-accounts.ts",
@@ -73,6 +73,14 @@
     {
       "path": "src/api/mail-threads.ts",
       "sha256": "05391b7c124ee44ba8a9c960bea4d57e3c9dd2060a91e8ecfec67100250e0487"
+    },
+    {
+      "path": "src/api/mail-transactional.ts",
+      "sha256": "f8d4b5879b826ac6f3b3f17861287440e2bf7762c0dbaeaf6357c7c238a57d8c"
+    },
+    {
+      "path": "src/api/mail-verification.ts",
+      "sha256": "cde2815c1b1e476afb1d0bf403068d90c4d93601996223e2854c6303b74a424d"
     },
     {
       "path": "src/api/paths.ts",
@@ -96,7 +104,7 @@
     },
     {
       "path": "src/sdk.ts",
-      "sha256": "7ec664f8f15a76cc033359085adcc069c2a0ddbbee63f2b17f95883af7811383"
+      "sha256": "cba34a509786be9c68870d5bd183648cb1158bb806e83097c5ef1e92f57b4baf"
     },
     {
       "path": "src/types/common.ts",
@@ -108,7 +116,7 @@
     },
     {
       "path": "src/types/index.ts",
-      "sha256": "c089806ae7b6f73a3c8077aefb974ab884963c3dd25da8dba0f28550dab3ee39"
+      "sha256": "ba035664c221242f5d6dad00969a5464901d032534613a1f3964d27f866793b2"
     },
     {
       "path": "src/types/mail-account-list-response.ts",
@@ -147,12 +155,40 @@
       "sha256": "562608cca7ecaf1fef1c275385214bfc3efc4c57b6e1407605a1b7f91447eb42"
     },
     {
+      "path": "src/types/mail-transactional-delivery-response.ts",
+      "sha256": "dcf30c008cffdd9dff38bfb47e55e9dc3427cc190a98afd27660ed61326daf46"
+    },
+    {
+      "path": "src/types/mail-transactional-delivery.ts",
+      "sha256": "a5e0d938290cbe7f5ad6347e8044beaa22a4d44542555f9019e111fb7c56b010"
+    },
+    {
       "path": "src/types/problem-detail.ts",
       "sha256": "bb32b624ed9811bf9bd5c1515a2c0f79a629f66395e9e2370b8209b011669706"
     },
     {
+      "path": "src/types/send-mail-verification-request.ts",
+      "sha256": "9b0f4c98d8c9aa0954788d252c5c37aa025ab05487cc563bcb1f182401d661c2"
+    },
+    {
+      "path": "src/types/send-mail-verification-response.ts",
+      "sha256": "eaff8f99229a14d7fb20172581632a91380271f36fabdb0e0ed3ad9a22be58fe"
+    },
+    {
+      "path": "src/types/send-transactional-mail-request.ts",
+      "sha256": "1b613d5cbe97be9fdf0017652699f9fd8c8a752f7110fe449ce4e0ddc49417f2"
+    },
+    {
       "path": "src/types/update-mail-message-request.ts",
       "sha256": "546b920376fae3eefaf7c470d024e61e4277e0b42f62c23c35d7f25cf8262c2b"
+    },
+    {
+      "path": "src/types/verify-mail-code-request.ts",
+      "sha256": "d5a6698546b6eaf9600ec3434795ea0066244dc0e7a979fd23acd4b9325479ca"
+    },
+    {
+      "path": "src/types/verify-mail-code-response.ts",
+      "sha256": "694a3534e9fcf5cd65b9244f5eb3c0d737ae7e8d46b47fb9970c17e0fc2f67b0"
     },
     {
       "path": "tsconfig.json",

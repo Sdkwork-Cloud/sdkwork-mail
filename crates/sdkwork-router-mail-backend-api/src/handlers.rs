@@ -6,17 +6,24 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
+use sdkwork_communication_mail_service::{
+    CreateMailTemplateRequest, MailTemplateCategory, UpdateMailTemplateRequest,
+};
 use sdkwork_mail_app_context::AppContext;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value as JsonValue, json};
 
-use crate::service::{MailBackendApiService, MailBackendListRequest};
+use crate::service::{MailBackendApiError, MailBackendApiService, MailBackendListRequest};
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MailBackendListQuery {
     pub page: Option<u32>,
     pub page_size: Option<u32>,
+    pub category: Option<MailTemplateCategory>,
+    pub purpose: Option<String>,
+    pub business_kind: Option<String>,
+    pub recipient_email: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -72,6 +79,139 @@ pub async fn list_provider_accounts(
             }),
         )
             .into_response(),
+    }
+}
+
+fn list_request(context: &AppContext, query: &MailBackendListQuery) -> MailBackendListRequest {
+    MailBackendListRequest {
+        tenant_id: context.tenant_id.clone(),
+        organization_id: context.organization_id.clone(),
+        page: query.page,
+        page_size: query.page_size,
+    }
+}
+
+fn respond_ok<T: Serialize>(data: T) -> Response {
+    (
+        StatusCode::OK,
+        Json(MailApiEnvelope {
+            code: "ok".to_owned(),
+            message: "OK".to_owned(),
+            request_id: uuid::Uuid::new_v4().to_string(),
+            data,
+        }),
+    )
+        .into_response()
+}
+
+fn respond_error(error: MailBackendApiError) -> Response {
+    (
+        error.status_code(),
+        Json(MailProblemEnvelope {
+            code: error.code().to_owned(),
+            message: error.message().to_owned(),
+            request_id: uuid::Uuid::new_v4().to_string(),
+            data: json!({}),
+        }),
+    )
+        .into_response()
+}
+
+pub async fn list_templates(
+    Extension(context): Extension<AppContext>,
+    Query(query): Query<MailBackendListQuery>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+) -> Response {
+    match service
+        .list_templates(
+            list_request(&context, &query),
+            query.category,
+            query.purpose,
+        )
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn create_template(
+    Extension(context): Extension<AppContext>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+    Json(body): Json<CreateMailTemplateRequest>,
+) -> Response {
+    match service
+        .create_template(context.tenant_id, context.organization_id, body)
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn retrieve_template(
+    Extension(context): Extension<AppContext>,
+    Path(template_id): Path<String>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+) -> Response {
+    match service
+        .retrieve_template(context.tenant_id, context.organization_id, template_id)
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn update_template(
+    Extension(context): Extension<AppContext>,
+    Path(template_id): Path<String>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+    Json(body): Json<UpdateMailTemplateRequest>,
+) -> Response {
+    match service
+        .update_template(
+            context.tenant_id,
+            context.organization_id,
+            template_id,
+            body,
+        )
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn delete_template(
+    Extension(context): Extension<AppContext>,
+    Path(template_id): Path<String>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+) -> Response {
+    match service
+        .delete_template(context.tenant_id, context.organization_id, template_id)
+        .await
+    {
+        Ok(()) => StatusCode::NO_CONTENT.into_response(),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn list_transactional_deliveries(
+    Extension(context): Extension<AppContext>,
+    Query(query): Query<MailBackendListQuery>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+) -> Response {
+    match service
+        .list_transactional_deliveries(
+            list_request(&context, &query),
+            query.business_kind,
+            query.recipient_email,
+        )
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
     }
 }
 

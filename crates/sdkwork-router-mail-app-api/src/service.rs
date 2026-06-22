@@ -113,4 +113,22 @@ pub trait MailAppApiService: Send + Sync + 'static {
         organization_id: Option<String>,
         message_id: String,
     ) -> MailAppApiFuture<()>;
+    fn send_verification_code(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: sdkwork_communication_mail_service::SendMailVerificationRequest,
+    ) -> MailAppApiFuture<sdkwork_communication_mail_service::SendMailVerificationResult>;
+    fn verify_verification_code(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: sdkwork_communication_mail_service::VerifyMailCodeRequest,
+    ) -> MailAppApiFuture<sdkwork_communication_mail_service::VerifyMailCodeResult>;
+    fn send_transactional_mail(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: sdkwork_communication_mail_service::SendTransactionalMailRequest,
+    ) -> MailAppApiFuture<sdkwork_communication_mail_service::MailTransactionalDelivery>;
 }

@@ -122,6 +122,33 @@
       "systemOfRecord": true,
       "writeOwner": "sdkwork-communication-mail-repository-sqlx",
       "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_template",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_verification_challenge",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_transactional_delivery",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "audit_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
     }
   ]
 }

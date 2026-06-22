@@ -27,6 +27,12 @@
     },
     {
       "name": "mailMessages"
+    },
+    {
+      "name": "mailVerification"
+    },
+    {
+      "name": "mailTransactional"
     }
   ],
   "security": [
@@ -350,6 +356,96 @@
           }
         ]
       }
+    },
+    "/app/v3/api/mail/verification/send": {
+      "post": {
+        "tags": ["mailVerification"],
+        "operationId": "mail.verification.send",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.verification.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SendMailVerificationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SendMailVerificationResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "AuthToken": [], "AccessToken": [] }]
+      }
+    },
+    "/app/v3/api/mail/verification/verify": {
+      "post": {
+        "tags": ["mailVerification"],
+        "operationId": "mail.verification.verify",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.verification.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VerifyMailCodeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VerifyMailCodeResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "AuthToken": [], "AccessToken": [] }]
+      }
+    },
+    "/app/v3/api/mail/transactional/send": {
+      "post": {
+        "tags": ["mailTransactional"],
+        "operationId": "mail.transactional.send",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.transactional.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SendTransactionalMailRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/MailTransactionalDeliveryResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "AuthToken": [], "AccessToken": [] }]
+      }
     }
   },
   "components": {
@@ -610,6 +706,76 @@
           "data": {
             "$ref": "#/components/schemas/MailMessage"
           }
+        }
+      },
+      "SendMailVerificationRequest": {
+        "type": "object",
+        "required": ["recipientEmail", "purpose"],
+        "properties": {
+          "recipientEmail": { "type": "string" },
+          "purpose": { "type": "string" },
+          "templateKey": { "type": "string" },
+          "locale": { "type": "string" },
+          "variables": { "type": "object" },
+          "correlationId": { "type": "string" }
+        }
+      },
+      "SendMailVerificationResponse": {
+        "type": "object",
+        "properties": {
+          "challengeId": { "type": "string" },
+          "deliveryId": { "type": "string" },
+          "expiresAt": { "type": "string" },
+          "recipientEmail": { "type": "string" }
+        }
+      },
+      "VerifyMailCodeRequest": {
+        "type": "object",
+        "required": ["recipientEmail", "purpose", "code"],
+        "properties": {
+          "recipientEmail": { "type": "string" },
+          "purpose": { "type": "string" },
+          "code": { "type": "string" },
+          "challengeId": { "type": "string" }
+        }
+      },
+      "VerifyMailCodeResponse": {
+        "type": "object",
+        "properties": {
+          "verified": { "type": "boolean" },
+          "challengeId": { "type": "string" },
+          "consumedAt": { "type": "string" }
+        }
+      },
+      "SendTransactionalMailRequest": {
+        "type": "object",
+        "required": ["templateKey", "recipientEmail"],
+        "properties": {
+          "templateKey": { "type": "string" },
+          "recipientEmail": { "type": "string" },
+          "locale": { "type": "string" },
+          "variables": { "type": "object" },
+          "correlationId": { "type": "string" },
+          "fromEmail": { "type": "string" }
+        }
+      },
+      "MailTransactionalDelivery": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "templateKey": { "type": "string" },
+          "businessKind": { "type": "string" },
+          "recipientEmail": { "type": "string" },
+          "subject": { "type": "string" },
+          "status": { "type": "string" },
+          "sentAt": { "type": "string" },
+          "createdAt": { "type": "string" }
+        }
+      },
+      "MailTransactionalDeliveryResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/MailTransactionalDelivery" }
         }
       }
     }

@@ -4,18 +4,26 @@ import type { AuthTokenManager } from '@sdkwork/sdk-common';
 
 import { MailProviderAccountsApi, createMailProviderAccountsApi } from './api/mail-provider-accounts';
 import { MailProviderWebhooksApi, createMailProviderWebhooksApi } from './api/mail-provider-webhooks';
+import { MailTemplatesApi, createMailTemplatesApi } from './api/mail-templates';
+import { MailTransactionalDeliveriesApi, createMailTransactionalDeliveriesApi } from './api/mail-transactional-deliveries';
 
 export class SdkworkBackendClient {
   private httpClient: HttpClient;
 
   public readonly mailProviderAccounts: MailProviderAccountsApi;
   public readonly mailProviderWebhooks: MailProviderWebhooksApi;
+  public readonly mailTemplates: MailTemplatesApi;
+  public readonly mailTransactionalDeliveries: MailTransactionalDeliveriesApi;
 
   constructor(config: SdkworkBackendConfig) {
     this.httpClient = createHttpClient(config);
     this.mailProviderAccounts = createMailProviderAccountsApi(this.httpClient);
 
     this.mailProviderWebhooks = createMailProviderWebhooksApi(this.httpClient);
+
+    this.mailTemplates = createMailTemplatesApi(this.httpClient);
+
+    this.mailTransactionalDeliveries = createMailTransactionalDeliveriesApi(this.httpClient);
   }
   setAuthToken(token: string): this {
     this.httpClient.setAuthToken(token);

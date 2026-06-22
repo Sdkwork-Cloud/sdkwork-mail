@@ -41,7 +41,10 @@
       "mail.messages.delete",
       "mail.messages.retrieve",
       "mail.messages.update",
-      "mail.threads.list"
+      "mail.threads.list",
+      "mail.transactional.send",
+      "mail.verification.send",
+      "mail.verification.verify"
     ]
   },
   "verification": {

@@ -197,6 +197,84 @@
         "packageName": "sdkwork-router-mail-app-api",
         "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
       }
+    },
+    {
+      "method": "POST",
+      "path": "/app/v3/api/mail/verification/send",
+      "operationId": "mail.verification.send",
+      "tags": ["mailVerification"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "app-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.verification.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "send_verification_code" },
+      "schemas": {
+        "request": "SendMailVerificationRequest",
+        "response": "SendMailVerificationResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-app-api",
+        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/app/v3/api/mail/verification/verify",
+      "operationId": "mail.verification.verify",
+      "tags": ["mailVerification"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "app-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.verification.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "verify_verification_code" },
+      "schemas": {
+        "request": "VerifyMailCodeRequest",
+        "response": "VerifyMailCodeResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-app-api",
+        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/app/v3/api/mail/transactional/send",
+      "operationId": "mail.transactional.send",
+      "tags": ["mailTransactional"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "app-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.transactional.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "send_transactional_mail" },
+      "schemas": {
+        "request": "SendTransactionalMailRequest",
+        "response": "MailTransactionalDeliveryResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-app-api",
+        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+      }
     }
   ]
 }

@@ -170,3 +170,171 @@ pub struct UpdateMailMessageRequest {
     pub folder_id: Option<String>,
     pub is_draft: Option<bool>,
 }
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MailTemplateCategory {
+    Transactional,
+    Marketing,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MailTemplateStatus {
+    Active,
+    Disabled,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MailTemplate {
+    pub id: String,
+    pub tenant_id: String,
+    pub organization_id: String,
+    pub template_key: String,
+    pub name: String,
+    pub category: MailTemplateCategory,
+    pub purpose: String,
+    pub locale: String,
+    pub subject_template: String,
+    pub body_html_template: Option<String>,
+    pub body_text_template: Option<String>,
+    pub variable_schema: JsonValue,
+    pub status: MailTemplateStatus,
+    pub metadata: JsonValue,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateMailTemplateRequest {
+    pub template_key: String,
+    pub name: String,
+    pub category: MailTemplateCategory,
+    pub purpose: String,
+    pub locale: Option<String>,
+    pub subject_template: String,
+    pub body_html_template: Option<String>,
+    pub body_text_template: Option<String>,
+    pub variable_schema: Option<JsonValue>,
+    pub metadata: Option<JsonValue>,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateMailTemplateRequest {
+    pub name: Option<String>,
+    pub category: Option<MailTemplateCategory>,
+    pub purpose: Option<String>,
+    pub subject_template: Option<String>,
+    pub body_html_template: Option<String>,
+    pub body_text_template: Option<String>,
+    pub variable_schema: Option<JsonValue>,
+    pub status: Option<MailTemplateStatus>,
+    pub metadata: Option<JsonValue>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MailVerificationPurpose {
+    LoginVerification,
+    PasswordReset,
+    BindEmail,
+    GenericOtp,
+}
+
+impl MailVerificationPurpose {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::LoginVerification => "login_verification",
+            Self::PasswordReset => "password_reset",
+            Self::BindEmail => "bind_email",
+            Self::GenericOtp => "generic_otp",
+        }
+    }
+
+    pub fn default_template_key(self) -> &'static str {
+        match self {
+            Self::LoginVerification => "login_verification",
+            Self::PasswordReset => "password_reset",
+            Self::BindEmail => "bind_email",
+            Self::GenericOtp => "generic_otp",
+        }
+    }
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SendMailVerificationRequest {
+    pub recipient_email: String,
+    pub purpose: MailVerificationPurpose,
+    pub template_key: Option<String>,
+    pub locale: Option<String>,
+    pub variables: JsonValue,
+    pub correlation_id: Option<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SendMailVerificationResult {
+    pub challenge_id: String,
+    pub delivery_id: String,
+    pub expires_at: String,
+    pub recipient_email: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VerifyMailCodeRequest {
+    pub recipient_email: String,
+    pub purpose: MailVerificationPurpose,
+    pub code: String,
+    pub challenge_id: Option<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VerifyMailCodeResult {
+    pub verified: bool,
+    pub challenge_id: String,
+    pub consumed_at: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SendTransactionalMailRequest {
+    pub template_key: String,
+    pub recipient_email: String,
+    pub locale: Option<String>,
+    pub variables: JsonValue,
+    pub correlation_id: Option<String>,
+    pub from_email: Option<String>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MailTransactionalDeliveryStatus {
+    Queued,
+    Sent,
+    Failed,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MailTransactionalDelivery {
+    pub id: String,
+    pub tenant_id: String,
+    pub organization_id: String,
+    pub template_id: Option<String>,
+    pub template_key: String,
+    pub business_kind: String,
+    pub recipient_email: String,
+    pub from_email: Option<String>,
+    pub subject: String,
+    pub status: MailTransactionalDeliveryStatus,
+    pub provider_account_id: Option<String>,
+    pub correlation_id: Option<String>,
+    pub last_error: Option<String>,
+    pub sent_at: Option<String>,
+    pub metadata: JsonValue,
+    pub created_at: String,
+}
