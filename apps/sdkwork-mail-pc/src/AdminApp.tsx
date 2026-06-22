@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from "react";
 import { AdminLayout } from "@sdkwork/Mail-pc-admin-shell";
 import {
   MailProviderAccountList,
+  MailTemplateForm,
   MailTemplateList,
   MailTransactionalDeliveryList,
 } from "@sdkwork/Mail-pc-admin-core";
@@ -124,6 +125,13 @@ export function AdminApp({ route }: AdminAppProps) {
           <>
             <h2>Mail Templates</h2>
             <p>Login verification, password reset, OTP, and marketing templates.</p>
+            <MailTemplateForm
+              onSubmit={async (command) => {
+                await services.templates.create(command);
+                const items = await services.templates.list();
+                setTemplateItems(items);
+              }}
+            />
             <MailTemplateList
               items={templateItems}
               loading={templateLoading}

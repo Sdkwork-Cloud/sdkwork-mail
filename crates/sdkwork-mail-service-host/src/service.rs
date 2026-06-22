@@ -4,9 +4,10 @@ use sdkwork_communication_mail_service::{
     CreateMailMessageRequest, CreateMailTemplateRequest, MailAccount, MailFolder,
     MailListWindowParams, MailMessage, MailPersistenceError, MailPersistencePort,
     MailProviderAccount, MailTemplate, MailTemplateCategory, MailThread, MailTransactionalDelivery,
-    NoopMailPersistencePort, SendMailVerificationRequest, SendMailVerificationResult,
-    SendTransactionalMailRequest, UpdateMailMessageRequest, UpdateMailTemplateRequest,
-    VerifyMailCodeRequest, VerifyMailCodeResult, apply_list_window,
+    MailTransportPort, NoopMailPersistencePort, SendMailVerificationRequest,
+    SendMailVerificationResult, SendTransactionalMailRequest, UnconfiguredMailTransport,
+    UpdateMailMessageRequest, UpdateMailTemplateRequest, VerifyMailCodeRequest,
+    VerifyMailCodeResult, apply_list_window,
 };
 use sdkwork_router_mail_app_api::service::{
     MailAppApiError, MailAppApiFuture, MailAppApiService, MailListData, MailListRequest,
@@ -21,17 +22,26 @@ use crate::transactional;
 #[derive(Clone)]
 pub struct MailProductService {
     persistence: Arc<dyn MailPersistencePort>,
+    transport: Arc<dyn MailTransportPort>,
+    default_from_email: Option<String>,
 }
 
 impl MailProductService {
     pub fn new() -> Self {
         Self {
             persistence: Arc::new(NoopMailPersistencePort),
+            transport: Arc::new(UnconfiguredMailTransport),
+            default_from_email: read_default_from_email(),
         }
     }
 
     pub fn with_persistence(mut self, persistence: Arc<dyn MailPersistencePort>) -> Self {
         self.persistence = persistence;
+        self
+    }
+
+    pub fn with_transport(mut self, transport: Arc<dyn MailTransportPort>) -> Self {
+        self.transport = transport;
         self
     }
 }
@@ -196,9 +206,13 @@ impl MailAppApiService for MailProductService {
         request: SendMailVerificationRequest,
     ) -> MailAppApiFuture<SendMailVerificationResult> {
         let persistence = self.persistence.clone();
+        let transport = self.transport.clone();
+        let default_from_email = self.default_from_email.clone();
         Box::pin(async move {
             transactional::send_verification_code(
                 persistence,
+                transport,
+                default_from_email,
                 tenant_id,
                 organization_id_or_zero(&organization_id),
                 request,
@@ -232,9 +246,13 @@ impl MailAppApiService for MailProductService {
         request: SendTransactionalMailRequest,
     ) -> MailAppApiFuture<MailTransactionalDelivery> {
         let persistence = self.persistence.clone();
+        let transport = self.transport.clone();
+        let default_from_email = self.default_from_email.clone();
         Box::pin(async move {
             transactional::send_transactional_mail(
                 persistence,
+                transport,
+                default_from_email,
                 tenant_id,
                 organization_id_or_zero(&organization_id),
                 request,
@@ -430,4 +448,23 @@ fn map_backend_persistence_error(error: MailPersistenceError) -> MailBackendApiE
         MailPersistenceError::Conflict(message) => MailBackendApiError::Conflict(message),
         MailPersistenceError::Unavailable(message) => MailBackendApiError::Unavailable(message),
     }
+}
+
+fn read_default_from_email() -> Option<String> {
+    if let Ok(value) = std::env::var("SDKWORK_MAIL_SMTP_FROM_EMAIL") {
+        let trimmed = value.trim();
+        if !trimmed.is_empty() {
+            return Some(trimmed.to_owned());
+        }
+    }
+    if matches!(
+        std::env::var("SDKWORK_MAIL_TRANSPORT_MODE")
+            .ok()
+            .map(|value| value.trim().to_ascii_lowercase())
+            .as_deref(),
+        Some("log")
+    ) {
+        return Some("noreply@sdkwork-mail.local".to_owned());
+    }
+    None
 }

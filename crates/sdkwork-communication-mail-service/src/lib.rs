@@ -5,6 +5,7 @@ pub mod list_window;
 pub mod models;
 pub mod persistence;
 pub mod transactional;
+pub mod transport;
 
 pub use error::{MailResult, MailServiceError};
 pub use list_window::{
@@ -22,6 +23,10 @@ pub use transactional::{
     generate_numeric_verification_code, hash_verification_code, json_to_string_map,
     merge_template_variables, normalize_email, purpose_to_template_key, render_template,
     verification_purpose_key,
+};
+pub use transport::{
+    MailOutboundMessage, MailTransportError, MailTransportFuture, MailTransportPort,
+    UnconfiguredMailTransport,
 };
 
 pub const MAIL_OWNER: &str = "sdkwork-mail";

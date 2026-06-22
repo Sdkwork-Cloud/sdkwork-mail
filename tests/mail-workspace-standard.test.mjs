@@ -148,6 +148,9 @@ test("sdkwork-mail provider plugins live under plugins", () => {
     assert.equal(componentSpec.component?.domain, "communication");
     assert.equal(componentSpec.component?.capability, "mail");
   }
+  const smtpCargo = read("plugins/mail-smtp/Cargo.toml");
+  assert.match(smtpCargo, /lettre/u, "mail-smtp plugin must declare lettre for SMTP delivery");
+  assert.match(read("plugins/mail-smtp/src/lib.rs"), /MailTransportPort/u);
 });
 
 test("sdkwork-mail authority workspace does not require sdkwork-discovery without RPC services", () => {

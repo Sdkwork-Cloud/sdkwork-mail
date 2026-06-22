@@ -1,3 +1,4 @@
+pub mod outbound;
 pub mod service;
 pub mod transactional;
 

@@ -3,17 +3,21 @@ use std::sync::Arc;
 use sdkwork_communication_mail_service::{
     CreateMailTemplateRequest, DEFAULT_VERIFICATION_CODE_LENGTH, DEFAULT_VERIFICATION_TTL_MINUTES,
     MailPersistencePort, MailTemplate, MailTemplateCategory, MailTransactionalDelivery,
-    SendMailVerificationRequest, SendMailVerificationResult, SendTransactionalMailRequest,
-    UpdateMailTemplateRequest, VerifyMailCodeRequest, VerifyMailCodeResult,
-    build_verification_variables, generate_numeric_verification_code, hash_verification_code,
-    normalize_email, render_template, utc_now_rfc3339_millis,
+    MailTransportPort, SendMailVerificationRequest, SendMailVerificationResult,
+    SendTransactionalMailRequest, UpdateMailTemplateRequest, VerifyMailCodeRequest,
+    VerifyMailCodeResult, build_verification_variables, generate_numeric_verification_code,
+    hash_verification_code, json_to_string_map, normalize_email, utc_now_rfc3339_millis,
 };
 use sdkwork_router_mail_app_api::service::MailAppApiError;
 use sdkwork_router_mail_backend_api::service::MailBackendApiError;
 use serde_json::json;
 
+use crate::outbound::{render_template_bodies, resolve_from_email, send_outbound_mail};
+
 pub async fn send_verification_code(
     persistence: Arc<dyn MailPersistencePort>,
+    transport: Arc<dyn MailTransportPort>,
+    default_from_email: Option<String>,
     tenant_id: String,
     organization_id: String,
     request: SendMailVerificationRequest,
@@ -41,7 +45,18 @@ pub async fn send_verification_code(
         DEFAULT_VERIFICATION_TTL_MINUTES,
         &request.variables,
     );
-    let subject = render_template(&template.subject_template, &variables);
+    let (subject, body_text, body_html) = render_template_bodies(&template, &variables);
+    let from_email = resolve_from_email(None, default_from_email.as_deref())?;
+    send_outbound_mail(
+        transport,
+        from_email,
+        recipient_email.clone(),
+        subject.clone(),
+        body_text,
+        body_html,
+    )
+    .await?;
+
     let delivery = persistence
         .create_transactional_delivery(
             &tenant_id,
@@ -148,6 +163,8 @@ pub async fn verify_verification_code(
 
 pub async fn send_transactional_mail(
     persistence: Arc<dyn MailPersistencePort>,
+    transport: Arc<dyn MailTransportPort>,
+    default_from_email: Option<String>,
     tenant_id: String,
     organization_id: String,
     request: SendTransactionalMailRequest,
@@ -167,8 +184,20 @@ pub async fn send_transactional_mail(
         ));
     }
 
-    let variables = sdkwork_communication_mail_service::json_to_string_map(&request.variables);
-    let subject = render_template(&template.subject_template, &variables);
+    let variables = json_to_string_map(&request.variables);
+    let (subject, body_text, body_html) = render_template_bodies(&template, &variables);
+    let from_email =
+        resolve_from_email(request.from_email.as_deref(), default_from_email.as_deref())?;
+    send_outbound_mail(
+        transport.clone(),
+        from_email.clone(),
+        recipient_email.clone(),
+        subject.clone(),
+        body_text,
+        body_html,
+    )
+    .await?;
+
     let delivery = persistence
         .create_transactional_delivery(
             &tenant_id,

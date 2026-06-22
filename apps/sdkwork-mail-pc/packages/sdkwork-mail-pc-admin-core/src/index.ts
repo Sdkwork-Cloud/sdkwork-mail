@@ -11,6 +11,7 @@ export { MailProviderAccountService } from "./services/mailProviderAccountServic
 export type { MailTransportProviderAccount } from "./services/mailProviderAccountService";
 
 export { MailTemplateList } from "./components/MailTemplateList";
+export { MailTemplateForm } from "./components/MailTemplateForm";
 export { MailTransactionalDeliveryList } from "./components/MailTransactionalDeliveryList";
 export { MailProviderAccountList } from "./components/MailProviderAccountList";
 

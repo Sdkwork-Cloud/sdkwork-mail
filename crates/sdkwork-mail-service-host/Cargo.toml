@@ -6,6 +6,7 @@ license.workspace = true
 
 [dependencies]
 sdkwork-communication-mail-service.workspace = true
+sdkwork-mail-adapter-smtp.workspace = true
 sdkwork-router-mail-app-api.workspace = true
 sdkwork-router-mail-backend-api.workspace = true
 sdkwork-utils-rust.workspace = true
