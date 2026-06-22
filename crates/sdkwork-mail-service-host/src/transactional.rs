@@ -2,11 +2,12 @@ use std::sync::Arc;
 
 use sdkwork_communication_mail_service::{
     CreateMailTemplateRequest, DEFAULT_VERIFICATION_CODE_LENGTH, DEFAULT_VERIFICATION_TTL_MINUTES,
-    MailPersistencePort, MailTemplate, MailTemplateCategory, MailTransactionalDelivery,
-    MailTransportPort, SendMailVerificationRequest, SendMailVerificationResult,
-    SendTransactionalMailRequest, UpdateMailTemplateRequest, VerifyMailCodeRequest,
-    VerifyMailCodeResult, build_verification_variables, generate_numeric_verification_code,
-    hash_verification_code, json_to_string_map, normalize_email, utc_now_rfc3339_millis,
+    GrantMailMarketingConsentRequest, MailMarketingConsent, MailPersistencePort, MailTemplate,
+    MailTemplateCategory, MailTransactionalDelivery, MailTransportPort,
+    SendMailVerificationRequest, SendMailVerificationResult, SendTransactionalMailRequest,
+    UpdateMailTemplateRequest, VerifyMailCodeRequest, VerifyMailCodeResult,
+    build_verification_variables, generate_numeric_verification_code, hash_verification_code,
+    json_to_string_map, normalize_email, utc_now_rfc3339_millis,
 };
 use sdkwork_router_mail_app_api::service::MailAppApiError;
 use sdkwork_router_mail_backend_api::service::MailBackendApiError;
@@ -197,9 +198,15 @@ pub async fn send_transactional_mail(
         .map_err(map_app_persistence_error)?;
 
     if template.category == MailTemplateCategory::Marketing {
-        return Err(MailAppApiError::Forbidden(
-            "marketing mail requires explicit consent workflow".to_owned(),
-        ));
+        let has_consent = persistence
+            .has_active_marketing_consent(&tenant_id, &organization_id, &recipient_email)
+            .await
+            .map_err(map_app_persistence_error)?;
+        if !has_consent {
+            return Err(MailAppApiError::Forbidden(
+                "recipient has not granted marketing consent".to_owned(),
+            ));
+        }
     }
 
     let variables = json_to_string_map(&request.variables);
@@ -335,6 +342,42 @@ pub async fn list_transactional_deliveries(
             business_kind.as_deref(),
             recipient_email.as_deref(),
         )
+        .await
+        .map_err(map_backend_persistence_error)
+}
+
+pub async fn list_marketing_consents(
+    persistence: Arc<dyn MailPersistencePort>,
+    tenant_id: String,
+    organization_id: String,
+    recipient_email: Option<String>,
+) -> Result<Vec<MailMarketingConsent>, MailBackendApiError> {
+    persistence
+        .list_marketing_consents(&tenant_id, &organization_id, recipient_email.as_deref())
+        .await
+        .map_err(map_backend_persistence_error)
+}
+
+pub async fn grant_marketing_consent(
+    persistence: Arc<dyn MailPersistencePort>,
+    tenant_id: String,
+    organization_id: String,
+    request: GrantMailMarketingConsentRequest,
+) -> Result<MailMarketingConsent, MailBackendApiError> {
+    persistence
+        .grant_marketing_consent(&tenant_id, &organization_id, request)
+        .await
+        .map_err(map_backend_persistence_error)
+}
+
+pub async fn revoke_marketing_consent(
+    persistence: Arc<dyn MailPersistencePort>,
+    tenant_id: String,
+    organization_id: String,
+    consent_id: String,
+) -> Result<MailMarketingConsent, MailBackendApiError> {
+    persistence
+        .revoke_marketing_consent(&tenant_id, &organization_id, &consent_id)
         .await
         .map_err(map_backend_persistence_error)
 }

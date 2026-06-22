@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sdkwork-mail-sdk-provider-imap"
+version = "0.1.0"
+description = "Reserved Python provider package boundary for IMAP Mail Sync"
+requires-python = ">=3.11"
+
+[tool.setuptools]
+packages = ["sdkwork_mail_sdk_provider_imap"]
+
+[tool.sdkwork-mail-provider]
+providerKey = "imap"
+pluginId = "Mail-imap"
+driverId = "sdkwork-mail-driver-imap"
+packageIdentity = "sdkwork-mail-sdk-provider-imap"
+sourcePath = "sdkwork_mail_sdk_provider_imap/__init__.py"
+sourceSymbol = "MailProviderImapPackageContract"
+rootPublic = false
+status = "future-runtime-bridge-only"
+runtimeBridgeStatus = "reserved"

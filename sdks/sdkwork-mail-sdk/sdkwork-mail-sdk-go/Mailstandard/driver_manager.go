@@ -1,20 +1,20 @@
-package rtcstandard
+package Mailstandard
 
-type RtcDriverManager struct{}
+type MailDriverManager struct{}
 
-func (manager RtcDriverManager) resolveSelection(request RtcProviderSelectionRequest, defaultProviderKey string) RtcProviderSelection {
-    return ResolveRtcProviderSelection(request, defaultProviderKey)
+func (manager MailDriverManager) resolveSelection(request MailProviderSelectionRequest, defaultProviderKey string) MailProviderSelection {
+    return ResolveMailProviderSelection(request, defaultProviderKey)
 }
 
-func (manager RtcDriverManager) ResolveSelection(request RtcProviderSelectionRequest, defaultProviderKey string) RtcProviderSelection {
+func (manager MailDriverManager) ResolveSelection(request MailProviderSelectionRequest, defaultProviderKey string) MailProviderSelection {
     return manager.resolveSelection(request, defaultProviderKey)
 }
 
-func (manager RtcDriverManager) describeProviderSupport(providerKey string) RtcProviderSupport {
-    official := GetRtcProviderByProviderKey(providerKey) != nil
-    activation := GetRtcProviderActivationByProviderKey(providerKey)
+func (manager MailDriverManager) describeProviderSupport(providerKey string) MailProviderSupport {
+    official := GetMailProviderByProviderKey(providerKey) != nil
+    activation := GetMailProviderActivationByProviderKey(providerKey)
 
-    return CreateRtcProviderSupportState(RtcProviderSupportStateRequest{
+    return CreateMailProviderSupportState(MailProviderSupportStateRequest{
         ProviderKey: providerKey,
         Builtin:     activation != nil && activation.Builtin,
         Official:    official,
@@ -22,18 +22,18 @@ func (manager RtcDriverManager) describeProviderSupport(providerKey string) RtcP
     })
 }
 
-func (manager RtcDriverManager) DescribeProviderSupport(providerKey string) RtcProviderSupport {
+func (manager MailDriverManager) DescribeProviderSupport(providerKey string) MailProviderSupport {
     return manager.describeProviderSupport(providerKey)
 }
 
-func (manager RtcDriverManager) listProviderSupport() []RtcProviderSupport {
-    supports := make([]RtcProviderSupport, 0, len(OFFICIAL_RTC_PROVIDERS))
-    for _, entry := range OFFICIAL_RTC_PROVIDERS {
+func (manager MailDriverManager) listProviderSupport() []MailProviderSupport {
+    supports := make([]MailProviderSupport, 0, len(OFFICIAL_mail_PROVIDERS))
+    for _, entry := range OFFICIAL_mail_PROVIDERS {
         supports = append(supports, manager.describeProviderSupport(entry.ProviderKey))
     }
     return supports
 }
 
-func (manager RtcDriverManager) ListProviderSupport() []RtcProviderSupport {
+func (manager MailDriverManager) ListProviderSupport() []MailProviderSupport {
     return manager.listProviderSupport()
 }

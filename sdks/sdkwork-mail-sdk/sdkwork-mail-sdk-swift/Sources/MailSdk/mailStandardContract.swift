@@ -1,34 +1,36 @@
-public enum RtcStandardContract {
-    public static let symbol = "RtcStandardContract"
+public enum MailStandardContract {
+    public static let symbol = "MailStandardContract"
 }
 
-public protocol RtcProviderDriver {
+public protocol MailProviderDriver {
     var providerKey: String { get }
 }
 
-public protocol RtcDriverManager {
+public protocol MailDriverManager {
     func resolveDriver(providerKey: String)
 }
 
-public protocol RtcDataSource {
+public protocol MailDataSource {
     func createClient() async throws
 }
 
-public protocol RtcClient {
-    func join() async throws
-    func leave() async throws
-    func publish(trackId: String) async throws
-    func unpublish(trackId: String) async throws
-    func muteAudio(muted: Bool) async throws
-    func muteVideo(muted: Bool) async throws
+public protocol MailClient {
+    func connectTransport() async throws
+    func authenticateTransport() async throws
+    func disconnectTransport() async throws
+    func sendMail() async throws
+    func probeMailbox() async throws
+    func syncMailbox() async throws
+    func healthCheck() async throws
     func unwrap() -> Any?
 }
 
-public protocol RtcRuntimeController {
-    func join() async throws
-    func leave() async throws
-    func publish(trackId: String) async throws
-    func unpublish(trackId: String) async throws
-    func muteAudio(muted: Bool) async throws
-    func muteVideo(muted: Bool) async throws
+public protocol MailRuntimeController {
+    func connectTransport() async throws
+    func authenticateTransport() async throws
+    func disconnectTransport() async throws
+    func sendMail() async throws
+    func probeMailbox() async throws
+    func syncMailbox() async throws
+    func healthCheck() async throws
 }

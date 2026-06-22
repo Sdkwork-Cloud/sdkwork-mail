@@ -4,3 +4,4 @@ export { MailProviderAccountsApi, createMailProviderAccountsApi } from './mail-p
 export { MailProviderWebhooksApi, createMailProviderWebhooksApi } from './mail-provider-webhooks';
 export { MailTemplatesApi, createMailTemplatesApi } from './mail-templates';
 export { MailTransactionalDeliveriesApi, createMailTransactionalDeliveriesApi } from './mail-transactional-deliveries';
+export { MailMarketingConsentsApi, createMailMarketingConsentsApi } from './mail-marketing-consents';

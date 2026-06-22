@@ -1,8 +1,8 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
 using System.Collections.Generic;
 
-public enum RtcProviderSupportStatus
+public enum MailProviderSupportStatus
 {
     builtin_registered,
     official_registered,
@@ -10,22 +10,22 @@ public enum RtcProviderSupportStatus
     unknown,
 }
 
-public sealed record RtcProviderSupportStateRequest(
+public sealed record MailProviderSupportStateRequest(
     string providerKey,
     bool builtin,
     bool official,
     bool registered
 );
 
-public sealed record RtcProviderSupport(
+public sealed record MailProviderSupport(
     string providerKey,
-    RtcProviderSupportStatus status,
+    MailProviderSupportStatus status,
     bool builtin,
     bool official,
     bool registered
 )
 {
-    public static readonly IReadOnlyList<string> RtcProviderSupportStatuses =
+    public static readonly IReadOnlyList<string> MailProviderSupportStatuses =
     [
         "builtin_registered",
         "official_registered",
@@ -33,32 +33,32 @@ public sealed record RtcProviderSupport(
         "unknown",
     ];
 
-    public static RtcProviderSupportStatus ResolveRtcProviderSupportStatus(
-        RtcProviderSupportStateRequest request
+    public static MailProviderSupportStatus ResolveMailProviderSupportStatus(
+        MailProviderSupportStateRequest request
     )
     {
         if (request.official && request.registered)
         {
             return request.builtin
-                ? RtcProviderSupportStatus.builtin_registered
-                : RtcProviderSupportStatus.official_registered;
+                ? MailProviderSupportStatus.builtin_registered
+                : MailProviderSupportStatus.official_registered;
         }
 
         if (request.official)
         {
-            return RtcProviderSupportStatus.official_unregistered;
+            return MailProviderSupportStatus.official_unregistered;
         }
 
-        return RtcProviderSupportStatus.unknown;
+        return MailProviderSupportStatus.unknown;
     }
 
-    public static RtcProviderSupport CreateRtcProviderSupportState(
-        RtcProviderSupportStateRequest request
+    public static MailProviderSupport CreateMailProviderSupportState(
+        MailProviderSupportStateRequest request
     )
     {
-        return new RtcProviderSupport(
+        return new MailProviderSupport(
             request.providerKey,
-            ResolveRtcProviderSupportStatus(request),
+            ResolveMailProviderSupportStatus(request),
             request.builtin,
             request.official,
             request.registered

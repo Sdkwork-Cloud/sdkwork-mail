@@ -14,11 +14,11 @@ export const TYPESCRIPT_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCata
   runtimeBridge: true,
   currentRole: 'Executable reference implementation',
   workspaceSummary: 'This workspace is the executable reference implementation for provider-neutral Mail contracts, JDBC-style driver selection, standardized runtime lifecycle delegation, and provider package boundaries in sdkwork-mail-sdk.',
-  roleHighlights: freezeMailRuntimeValue(['provider-neutral Mail contracts', 'JDBC-style driver and data-source model', 'assembly-driven provider catalog at src/provider-catalog.ts', 'assembly-driven capability catalog at src/capability-catalog.ts with required-baseline and optional-advanced surface descriptors', 'assembly-driven provider extension catalog at src/provider-extension-catalog.ts with unwrap-only extension metadata', 'surface-aware capability negotiation and degradation helpers with supported, degraded, and unsupported outcomes', 'assembly-driven runtimeSurfaceStandard methodTerms join, leave, publish, unpublish, startScreenShare, stopScreenShare, muteAudio, and muteVideo', 'assembly-driven runtimeSurfaceStandard failureCode native_sdk_not_available when no runtime bridge is registered', 'root public runtime surface constants mail_RUNTIME_SURFACE_METHODS and mail_RUNTIME_SURFACE_FAILURE_CODE', 'assembly-driven default provider constants DEFAULT_mail_PROVIDER_KEY, DEFAULT_mail_PROVIDER_PLUGIN_ID, and DEFAULT_mail_PROVIDER_DRIVER_ID', 'official provider packages for volcengine, aliyun, tencent, agora, zego, livekit, twilio, jitsi, janus, and mediasoup', 'TypeScript provider package statuses standardize every executable provider as a package_reference_boundary', 'TypeScript runtime bridge baseline loads provider packages through the provider-package loader SPI'] as const),
+  roleHighlights: freezeMailRuntimeValue(['provider-neutral Mail contracts', 'JDBC-style driver and data-source model', 'assembly-driven provider catalog at src/provider-catalog.ts', 'assembly-driven capability catalog at src/capability-catalog.ts with required-baseline and optional-advanced surface descriptors', 'assembly-driven provider extension catalog at src/provider-extension-catalog.ts with unwrap-only extension metadata', 'surface-aware capability negotiation and degradation helpers with supported, degraded, and unsupported outcomes', 'assembly-driven runtimeSurfaceStandard methodTerms connectTransport, authenticateTransport, disconnectTransport, sendMail, probeMailbox, syncMailbox, healthCheck', 'assembly-driven runtimeSurfaceStandard failureCode native_sdk_not_available when no runtime bridge is registered', 'root public runtime surface constants mail_RUNTIME_SURFACE_METHODS and mail_RUNTIME_SURFACE_FAILURE_CODE', 'assembly-driven default provider constants DEFAULT_mail_PROVIDER_KEY, DEFAULT_mail_PROVIDER_PLUGIN_ID, and DEFAULT_mail_PROVIDER_DRIVER_ID', 'official provider packages for smtp and imap', 'TypeScript provider package statuses standardize every executable provider as a package_reference_boundary', 'TypeScript runtime bridge baseline loads provider packages through the provider-package loader SPI'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -32,8 +32,8 @@ export const TYPESCRIPT_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCata
     statusTerms: freezeMailRuntimeValue(['package-boundary', 'control-metadata-only'] as const),
   }),
   runtimeBaseline: freezeMailRuntimeValue({
-    vendorSdkPackage: '@sdkwork/Mail-sdk-provider-volcengine',
-    vendorSdkImportPath: '@sdkwork/Mail-sdk-provider-volcengine',
+    vendorSdkPackage: '@sdkwork/Mail-sdk-provider-smtp',
+    vendorSdkImportPath: '@sdkwork/Mail-sdk-provider-smtp',
     recommendedEntrypoint: 'installMailProviderPackage',
     smokeCommand: 'npm run smoke',
     smokeMode: 'runtime-backed',
@@ -78,12 +78,12 @@ export const FLUTTER_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalog
   controlSdk: true,
   runtimeBridge: true,
   currentRole: 'Executable mobile runtime baseline',
-  workspaceSummary: 'This workspace is the executable Flutter/mobile runtime baseline for provider-neutral Mail contracts, Volcengine default runtime binding, and JDBC-style driver selection in sdkwork-mail-sdk.',
-  roleHighlights: freezeMailRuntimeValue(['provider-neutral Mail contracts', 'JDBC-style driver manager and data source model for Flutter/mobile', 'official Volcengine Flutter runtime binding through the mail_sdk_provider_volcengine plugin package', 'assembly-driven provider catalog, capability catalog, provider extension catalog, and provider selection helpers', 'default mobile provider remains volcengine unless the caller explicitly overrides selection', 'mobile runtime bridge remains media/provider focused and leaves call signaling to IM'] as const),
+  workspaceSummary: 'This workspace is the executable Flutter/mobile runtime baseline for provider-neutral Mail contracts, SMTP default transport binding, and JDBC-style driver selection in sdkwork-mail-sdk.',
+  roleHighlights: freezeMailRuntimeValue(['provider-neutral Mail contracts', 'JDBC-style driver manager and data source model for Flutter/mobile', 'official SMTP Flutter runtime binding through the mail_sdk_provider_SMTP plugin package', 'assembly-driven provider catalog, capability catalog, provider extension catalog, and provider selection helpers', 'default mobile provider remains SMTP unless the caller explicitly overrides selection', 'mobile runtime bridge remains mail transport focused and leaves realtime signaling to IM'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -97,8 +97,8 @@ export const FLUTTER_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalog
     statusTerms: freezeMailRuntimeValue(['package-boundary', 'control-metadata-only'] as const),
   }),
   runtimeBaseline: freezeMailRuntimeValue({
-    vendorSdkPackage: 'mail_sdk_provider_volcengine',
-    vendorSdkImportPath: 'package:mail_sdk_provider_volcengine/mail_sdk_provider_volcengine.dart',
+    vendorSdkPackage: 'mail_sdk_provider_smtp',
+    vendorSdkImportPath: 'package:mail_sdk_provider_smtp/mail_sdk_provider_smtp.dart',
     recommendedEntrypoint: 'MailDataSource',
     smokeCommand: 'flutter analyze',
     smokeMode: 'analysis-backed',
@@ -140,11 +140,10 @@ export const FLUTTER_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalog
     sourceSymbolPattern: 'MailProvider{providerPascal}PackageContract',
     templateTokens: freezeMailRuntimeValue(['{providerKey}'] as const),
     sourceTemplateTokens: freezeMailRuntimeValue(['{providerKey}', '{providerPascal}'] as const),
-    referenceProviderKey: 'volcengine',
+    referenceProviderKey: 'smtp',
     referenceStatus: 'package_reference_boundary',
-    referenceRuntimeBridgeStatus: 'reference-baseline',
-    referenceVendorSdkPackage: 'volc_engine_Mail',
-    referenceVendorSdkVersion: '^3.60.4',
+    referenceRuntimeBridgeStatus: 'reserved',
+    referenceVendorSdkPackage: 'mail_sdk_provider_smtp',
     runtimeBridgeStatus: 'reserved',
     rootPublic: false,
     status: 'future-runtime-bridge-only',
@@ -164,9 +163,9 @@ export const RUST_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalogEnt
   workspaceSummary: 'This workspace is the reserved Rust standard boundary for provider metadata, selection, and future control-plane integration.',
   roleHighlights: freezeMailRuntimeValue(['provider metadata and driver selection standards', 'reserved Rust workspace boundary for control-plane expansion', 'no runtime bridge is claimed in the current landing', 'code-level MailStandardContract scaffold keeps provider-neutral core abstractions fixed before runtime bridge landing', 'metadata scaffold fixes provider catalog, capability catalog, provider extension catalog, and provider selection skeleton boundaries before runtime bridge landing', 'resolution scaffold fixes metadata-only driver manager, data source, provider support, and provider package loader boundaries before runtime bridge landing'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -235,9 +234,9 @@ export const JAVA_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalogEnt
   workspaceSummary: 'This workspace is the reserved Java standard boundary for provider metadata, driver selection, and future enterprise runtime integration.',
   roleHighlights: freezeMailRuntimeValue(['provider metadata and driver selection standards', 'reserved Java language boundary for future enterprise runtime integration', 'no runtime bridge is claimed in the current landing', 'code-level MailStandardContract scaffold keeps provider-neutral core abstractions fixed before runtime bridge landing', 'metadata scaffold fixes provider catalog, capability catalog, provider extension catalog, and provider selection skeleton boundaries before runtime bridge landing', 'resolution scaffold fixes metadata-only driver manager, data source, provider support, and provider package loader boundaries before runtime bridge landing'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -306,9 +305,9 @@ export const CSHARP_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalogE
   workspaceSummary: 'This workspace is the reserved C# standard boundary for provider metadata, driver selection, and future desktop or server-side control integration.',
   roleHighlights: freezeMailRuntimeValue(['provider metadata and driver selection standards', 'reserved C# language boundary for desktop or server-side control integration', 'no runtime bridge is claimed in the current landing', 'code-level MailStandardContract scaffold keeps provider-neutral core abstractions fixed before runtime bridge landing', 'metadata scaffold fixes provider catalog, capability catalog, provider extension catalog, and provider selection skeleton boundaries before runtime bridge landing', 'resolution scaffold fixes metadata-only driver manager, data source, provider support, and provider package loader boundaries before runtime bridge landing'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -377,9 +376,9 @@ export const SWIFT_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalogEn
   workspaceSummary: 'This workspace is the reserved Swift standard boundary for provider metadata, driver selection, and future iOS or macOS runtime bridge integration.',
   roleHighlights: freezeMailRuntimeValue(['provider metadata and driver selection standards', 'reserved Swift language boundary for iOS or macOS runtime bridge integration', 'no runtime bridge is claimed in the current landing', 'code-level MailStandardContract scaffold keeps provider-neutral core abstractions fixed before runtime bridge landing', 'metadata scaffold fixes provider catalog, capability catalog, provider extension catalog, and provider selection skeleton boundaries before runtime bridge landing', 'resolution scaffold fixes metadata-only driver manager, data source, provider support, and provider package loader boundaries before runtime bridge landing'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -448,9 +447,9 @@ export const KOTLIN_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalogE
   workspaceSummary: 'This workspace is the reserved Kotlin standard boundary for provider metadata, driver selection, and future Android runtime bridge integration.',
   roleHighlights: freezeMailRuntimeValue(['provider metadata and driver selection standards', 'reserved Kotlin language boundary for Android runtime bridge integration', 'no runtime bridge is claimed in the current landing', 'code-level MailStandardContract scaffold keeps provider-neutral core abstractions fixed before runtime bridge landing', 'metadata scaffold fixes provider catalog, capability catalog, provider extension catalog, and provider selection skeleton boundaries before runtime bridge landing', 'resolution scaffold fixes metadata-only driver manager, data source, provider support, and provider package loader boundaries before runtime bridge landing'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -519,9 +518,9 @@ export const GO_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalogEntry
   workspaceSummary: 'This workspace is the reserved Go standard boundary for provider metadata, driver selection, and future control-plane tooling integration.',
   roleHighlights: freezeMailRuntimeValue(['provider metadata and driver selection standards', 'reserved Go language boundary for control-plane tooling integration', 'no runtime bridge is claimed in the current landing', 'code-level MailStandardContract scaffold keeps provider-neutral core abstractions fixed before runtime bridge landing', 'metadata scaffold fixes provider catalog, capability catalog, provider extension catalog, and provider selection skeleton boundaries before runtime bridge landing', 'resolution scaffold fixes metadata-only driver manager, data source, provider support, and provider package loader boundaries before runtime bridge landing'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),
@@ -590,9 +589,9 @@ export const PYTHON_mail_LANGUAGE_WORKSPACE_ENTRY: MailLanguageWorkspaceCatalogE
   workspaceSummary: 'This workspace is the reserved Python standard boundary for provider metadata, driver selection, and future automation or control-plane integration.',
   roleHighlights: freezeMailRuntimeValue(['provider metadata and driver selection standards', 'reserved Python language boundary for automation or control-plane integration', 'no runtime bridge is claimed in the current landing', 'code-level MailStandardContract scaffold keeps provider-neutral core abstractions fixed before runtime bridge landing', 'metadata scaffold fixes provider catalog, capability catalog, provider extension catalog, and provider selection skeleton boundaries before runtime bridge landing', 'resolution scaffold fixes metadata-only driver manager, data source, provider support, and provider package loader boundaries before runtime bridge landing'] as const),
   defaultProviderContract: freezeMailRuntimeValue({
-    providerKey: 'volcengine',
-    pluginId: 'Mail-volcengine',
-    driverId: 'sdkwork-mail-driver-volcengine',
+    providerKey: 'smtp',
+    pluginId: 'Mail-smtp',
+    driverId: 'sdkwork-mail-driver-smtp',
   }),
   providerSelectionContract: freezeMailRuntimeValue({
     sourceTerms: freezeMailRuntimeValue(['provider_url', 'provider_key', 'tenant_override', 'deployment_profile', 'default_provider'] as const),

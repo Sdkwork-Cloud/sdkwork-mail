@@ -56,3 +56,6 @@ tables:
   - name: mail_transactional_delivery
     lifecycle_status: active
     owner: mail-platform
+  - name: mail_marketing_consent
+    lifecycle_status: active
+    owner: mail-platform

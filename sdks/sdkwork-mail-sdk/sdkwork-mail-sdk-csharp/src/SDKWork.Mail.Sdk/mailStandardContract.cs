@@ -1,55 +1,59 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
-public static class RtcStandardContract
+public static class MailStandardContract
 {
-    public const string Symbol = "RtcStandardContract";
+    public const string Symbol = "MailStandardContract";
 }
 
-public interface RtcProviderDriver<TNativeClient>
+public interface MailProviderDriver<TNativeClient>
 {
     string ProviderKey { get; }
 
-    RtcClient<TNativeClient> CreateClient();
+    MailClient<TNativeClient> CreateClient();
 }
 
-public interface RtcDriverManager<TNativeClient>
+public interface MailDriverManager<TNativeClient>
 {
-    RtcProviderDriver<TNativeClient> ResolveDriver(string providerKey);
+    MailProviderDriver<TNativeClient> ResolveDriver(string providerKey);
 }
 
-public interface RtcDataSource<TNativeClient>
+public interface MailDataSource<TNativeClient>
 {
-    RtcClient<TNativeClient> CreateClient();
+    MailClient<TNativeClient> CreateClient();
 }
 
-public interface RtcClient<TNativeClient>
+public interface MailClient<TNativeClient>
 {
-    void Join();
+    void ConnectTransport();
 
-    void Leave();
+    void AuthenticateTransport();
 
-    void Publish(string trackId);
+    void DisconnectTransport();
 
-    void Unpublish(string trackId);
+    void SendMail();
 
-    void MuteAudio(bool muted);
+    void ProbeMailbox();
 
-    void MuteVideo(bool muted);
+    void SyncMailbox();
+
+    void HealthCheck();
 
     TNativeClient? Unwrap();
 }
 
-public interface RtcRuntimeController<TNativeClient>
+public interface MailRuntimeController<TNativeClient>
 {
-    void Join();
+    void ConnectTransport();
 
-    void Leave();
+    void AuthenticateTransport();
 
-    void Publish(string trackId);
+    void DisconnectTransport();
 
-    void Unpublish(string trackId);
+    void SendMail();
 
-    void MuteAudio(bool muted);
+    void ProbeMailbox();
 
-    void MuteVideo(bool muted);
+    void SyncMailbox();
+
+    void HealthCheck();
 }

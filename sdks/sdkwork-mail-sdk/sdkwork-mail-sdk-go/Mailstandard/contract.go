@@ -1,34 +1,36 @@
-package rtcstandard
+package Mailstandard
 
-type RtcStandardContract struct{}
+type MailStandardContract struct{}
 
-type RtcProviderDriver interface {
+type MailProviderDriver interface {
     ProviderKey() string
 }
 
-type RtcDriverManager interface {
+type MailDriverManager interface {
     ResolveDriver(providerKey string)
 }
 
-type RtcDataSource interface {
+type MailDataSource interface {
     CreateClient()
 }
 
-type RtcClient interface {
-    Join() error
-    Leave() error
-    Publish(trackID string) error
-    Unpublish(trackID string) error
-    MuteAudio(muted bool) error
-    MuteVideo(muted bool) error
+type MailClient interface {
+    ConnectTransport() error
+    AuthenticateTransport() error
+    DisconnectTransport() error
+    SendMail() error
+    ProbeMailbox() error
+    SyncMailbox() error
+    HealthCheck() error
     Unwrap() any
 }
 
-type RtcRuntimeController interface {
-    Join() error
-    Leave() error
-    Publish(trackID string) error
-    Unpublish(trackID string) error
-    MuteAudio(muted bool) error
-    MuteVideo(muted bool) error
+type MailRuntimeController interface {
+    ConnectTransport() error
+    AuthenticateTransport() error
+    DisconnectTransport() error
+    SendMail() error
+    ProbeMailbox() error
+    SyncMailbox() error
+    HealthCheck() error
 }

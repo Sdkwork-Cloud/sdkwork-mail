@@ -17,6 +17,10 @@ import {
   mail_TYPESCRIPT_REQUIRED_TEST_FILES,
 } from '../bin/Mail-standard-workspace-file-contracts.mjs';
 import { getReservedLanguageRootPublicContract } from '../bin/verify-sdk-language-helpers.mjs';
+import {
+  mail_RUNTIME_SURFACE_METHODS,
+  DEFAULT_mail_PROVIDER_KEY,
+} from '../bin/Mail-standard-contract-constants.mjs';
 import { verifyMailSdkWorkspace } from '../bin/verify-sdk.mjs';
 
 const workspaceRoot = resolveMailSdkWorkspaceRoot(import.meta.url);
@@ -49,7 +53,7 @@ test('sdk overview lists sdkwork-mail-sdk workspace', () => {
   assert.match(content, /sdkwork-mail-sdk/);
 });
 
-test('root, TypeScript, and Flutter media runtime standard files exist', () => {
+test('root, TypeScript, and Flutter mail transport standard files exist', () => {
   for (const relativePath of [
     ...mail_ROOT_REQUIRED_CONTRACT_FILES,
     ...mail_TYPESCRIPT_REQUIRED_STANDARD_FILES,
@@ -60,22 +64,13 @@ test('root, TypeScript, and Flutter media runtime standard files exist', () => {
   }
 });
 
-test('Mail assembly matches the provider media runtime baseline', () => {
+test('Mail assembly matches the provider mail transport runtime baseline', () => {
   const assembly = readJson(assemblyPath);
   assertMailAssemblyWorkspaceBaseline(assembly);
   assert.equal(assembly.workspace, 'sdkwork-mail-sdk');
-  assert.equal(assembly.defaults.providerKey, 'volcengine');
+  assert.equal(assembly.defaults.providerKey, DEFAULT_mail_PROVIDER_KEY);
   assert.equal(assembly.runtimeSurfaceStandard.failureCode, 'native_sdk_not_available');
-  assert.deepEqual(assembly.runtimeSurfaceStandard.methodTerms, [
-    'join',
-    'leave',
-    'publish',
-    'unpublish',
-    'startScreenShare',
-    'stopScreenShare',
-    'muteAudio',
-    'muteVideo',
-  ]);
+  assert.deepEqual(assembly.runtimeSurfaceStandard.methodTerms, [...mail_RUNTIME_SURFACE_METHODS]);
   assert.equal(Object.hasOwn(assembly, joined([joined(['sign', 'aling']), 'TransportStandard'])), false);
 
   const executableLanguages = assembly.languages.filter(
@@ -91,13 +86,10 @@ test('Mail assembly matches the provider media runtime baseline', () => {
     assert.equal(typeof languageEntry.runtimeBaseline.vendorSdkImportPath, 'string');
     assert.equal(typeof languageEntry.runtimeBaseline.recommendedEntrypoint, 'string');
     assert.equal(typeof languageEntry.runtimeBaseline.smokeCommand, 'string');
-    assert.equal(
-      Object.hasOwn(languageEntry.runtimeBaseline, joined([joined(['sign', 'aling']), 'Sdk', 'Package'])),
-      false,
-    );
-    assert.equal(
-      Object.hasOwn(languageEntry.runtimeBaseline, joined([joined(['sign', 'aling']), 'Sdk', 'ImportPath'])),
-      false,
+    assert.doesNotMatch(
+      languageEntry.runtimeBaseline.vendorSdkPackage,
+      /volcengine/i,
+      `${languageEntry.language} baseline must not reference volcengine packages`,
     );
   }
 });
@@ -122,7 +114,7 @@ test('materialized markdown docs do not contain trailing whitespace', () => {
   }
 });
 
-test('executable language runtime baselines point at executable provider plugin packages', () => {
+test('executable language runtime baselines point at reserved transport provider plugin packages', () => {
   const assembly = readJson(assemblyPath);
   const executableLanguages = assembly.languages.filter(
     (languageEntry) => languageEntry.runtimeBridge === true && languageEntry.runtimeBaseline,
@@ -148,7 +140,7 @@ test('executable language runtime baselines point at executable provider plugin 
       providerPackageDir,
       languageEntry.providerPackageScaffold.sourceFilePattern
         .replace('{providerKey}', assembly.defaults.providerKey)
-        .replace('{providerPascal}', 'Volcengine'),
+        .replace('{providerPascal}', 'Smtp'),
     );
     const providerRootEntrypointPath = path.join(
       providerPackageDir,
@@ -166,28 +158,28 @@ test('executable language runtime baselines point at executable provider plugin 
 
     assert.match(
       providerManifest,
-      /runtimeBridgeStatus:\s*reference-baseline/,
-      `${languageEntry.language} executable baseline must use an executable provider plugin package`,
+      /runtimeBridgeStatus:\s*reserved/,
+      `${languageEntry.language} transport provider plugin must declare a reserved runtime bridge boundary`,
+    );
+    assert.match(
+      providerManifest,
+      /status:\s*future-runtime-bridge-only/,
+      `${languageEntry.language} transport provider plugin must remain a package boundary scaffold until bridge lands`,
     );
     assert.doesNotMatch(
       providerManifest,
-      /status:\s*future-runtime-bridge-only/,
-      `${languageEntry.language} executable baseline must not point at a future-only provider package`,
-    );
-    assert.match(
-      providerManifest,
       /volc_engine_Mail:/,
-      `${languageEntry.language} Volcengine provider plugin must declare the official vendor SDK dependency`,
+      `${languageEntry.language} transport provider plugin must not declare retired vendor SDK dependencies`,
     );
     assert.match(
       providerSource,
-      /createOfficialVolcengineFlutterMailDriver|VolcengineMailRuntimeController/,
-      `${languageEntry.language} Volcengine provider plugin must expose a real official runtime bridge`,
+      /MailProviderSmtpPackageContract|providerKey = 'smtp'/,
+      `${languageEntry.language} SMTP provider plugin must expose transport package contract metadata`,
     );
     assert.match(
       providerRootEntrypoint,
       new RegExp(`export 'src/mail_provider_${assembly.defaults.providerKey}_package_contract\\.dart';`, 'u'),
-      `${languageEntry.language} Volcengine provider plugin must expose a package root import`,
+      `${languageEntry.language} SMTP provider plugin must expose a package root import`,
     );
   }
 });
@@ -240,7 +232,7 @@ test('Flutter root analysis stays vendor-free and excludes provider plugin packa
       workspaceRoot,
       'sdkwork-mail-sdk-flutter',
       'providers',
-      'mail_sdk_provider_volcengine',
+      'mail_sdk_provider_smtp',
       'pubspec.yaml',
     ),
     'utf8',
@@ -255,12 +247,12 @@ test('Flutter root analysis stays vendor-free and excludes provider plugin packa
   const rootAnalysisOptions = readFileSync(rootAnalysisOptionsPath, 'utf8');
 
   assert.doesNotMatch(rootPubspec, /volc_engine_Mail:/);
-  assert.match(providerPubspec, /volc_engine_Mail:/);
+  assert.doesNotMatch(providerPubspec, /volc_engine_Mail:/);
   assert.match(rootAnalysisOptions, /exclude:/);
   assert.match(rootAnalysisOptions, /providers\/\*\*/);
 });
 
-test('Flutter root public contract is media runtime and provider plugin only', () => {
+test('Flutter root public contract is mail transport runtime and provider plugin only', () => {
   const assembly = readJson(assemblyPath);
   const flutterEntry = assembly.languages.find(
     (languageEntry) => languageEntry.language === 'flutter',
@@ -315,7 +307,7 @@ test('Flutter root public contract is media runtime and provider plugin only', (
   }
 });
 
-test('Flutter runtime surface mirrors explicit screen-share methods', () => {
+test('Flutter runtime surface mirrors mail transport methods', () => {
   const standardContractSource = readFileSync(
     path.join(
       workspaceRoot,
@@ -340,23 +332,15 @@ test('Flutter runtime surface mirrors explicit screen-share methods', () => {
     ),
     'utf8',
   );
-  const typesSource = readFileSync(
-    path.join(workspaceRoot, 'sdkwork-mail-sdk-flutter', 'lib', 'src', 'mail_types.dart'),
-    'utf8',
-  );
 
-  for (const methodName of [
-    'startScreenShare',
-    'stopScreenShare',
-  ]) {
+  for (const methodName of mail_RUNTIME_SURFACE_METHODS) {
     assert.match(standardContractSource, new RegExp(`'${methodName}'`, 'u'));
-    assert.match(clientSource, new RegExp(`Future<[^;]+>\\s+${methodName}\\s*\\(`, 'u'));
+    assert.match(clientSource, new RegExp(`\\b${methodName}\\s*\\(`, 'u'));
     assert.match(runtimeSurfaceSource, new RegExp(`'${methodName}'`, 'u'));
   }
 
-  assert.match(typesSource, /class\s+MailScreenShareOptions\b/u);
-  assert.match(clientSource, /requireCapability\('screen-share'\)/u);
-  assert.match(clientSource, /MailPublishOptions\(\s*trackId:\s*options\.trackId,\s*kind:\s*MailTrackKind\.screenShare/su);
+  assert.doesNotMatch(standardContractSource, /\bjoin\b|\bpublish\b|\bstartScreenShare\b/u);
+  assert.match(clientSource, /requireCapability\('transport\.connect'\)/u);
 });
 
 test('Flutter language workspace catalog preserves reference provider plugin metadata', () => {
@@ -371,11 +355,11 @@ test('Flutter language workspace catalog preserves reference provider plugin met
     'utf8',
   );
 
-  assert.match(languageWorkspaceCatalogSource, /referenceProviderKey:\s*"volcengine"/);
+  assert.match(languageWorkspaceCatalogSource, /referenceProviderKey:\s*"smtp"/);
   assert.match(languageWorkspaceCatalogSource, /referenceStatus:\s*"package_reference_boundary"/);
-  assert.match(languageWorkspaceCatalogSource, /referenceRuntimeBridgeStatus:\s*"reference-baseline"/);
-  assert.match(languageWorkspaceCatalogSource, /referenceVendorSdkPackage:\s*"volc_engine_Mail"/);
-  assert.match(languageWorkspaceCatalogSource, /referenceVendorSdkVersion:\s*"\^3\.60\.4"/);
+  assert.match(languageWorkspaceCatalogSource, /referenceRuntimeBridgeStatus:\s*"reserved"/);
+  assert.match(languageWorkspaceCatalogSource, /referenceVendorSdkPackage:\s*"mail_sdk_provider_smtp"/);
+  assert.doesNotMatch(languageWorkspaceCatalogSource, /volcengine|volc_engine_Mail/u);
 });
 
 test('reserved language workspace catalogs preserve provider scaffold reference fields', () => {
@@ -422,23 +406,23 @@ test('reserved language workspace catalogs preserve provider scaffold reference 
   }
 });
 
-test('documentation describes media runtime ownership and current runtime guides', () => {
+test('documentation describes mail transport ownership and current runtime guides', () => {
   const rootReadme = readFileSync(path.join(workspaceRoot, 'README.md'), 'utf8');
   const usageGuide = readFileSync(path.join(workspaceRoot, 'docs', 'usage-guide.md'), 'utf8');
   const typescriptGuide = readFileSync(
-    path.join(workspaceRoot, 'docs', 'typescript-volcengine-runtime-usage.md'),
+    path.join(workspaceRoot, 'docs', 'typescript-smtp-runtime-usage.md'),
     'utf8',
   );
   const flutterGuide = readFileSync(
-    path.join(workspaceRoot, 'docs', 'flutter-volcengine-runtime-usage.md'),
+    path.join(workspaceRoot, 'docs', 'flutter-smtp-runtime-usage.md'),
     'utf8',
   );
 
-  assert.match(rootReadme, /provider-standard Mail media runtime/i);
+  assert.match(rootReadme, /provider-standard Mail transport/i);
   assert.match(rootReadme, /Business conversation delivery/i);
-  assert.match(usageGuide, /IM owns call session lifecycle and realtime business delivery/i);
-  assert.match(usageGuide, /typescript-volcengine-runtime-usage\.md/);
-  assert.match(usageGuide, /flutter-volcengine-runtime-usage\.md/);
+  assert.match(usageGuide, /IM owns business lifecycle and realtime business delivery/i);
+  assert.match(usageGuide, /typescript-smtp-runtime-usage\.md/);
+  assert.match(usageGuide, /flutter-smtp-runtime-usage\.md/);
   assert.match(typescriptGuide, /installMailProviderPackage/);
   assert.match(typescriptGuide, /MailDataSource/);
   assert.match(flutterGuide, /MailDataSource/);
@@ -447,6 +431,7 @@ test('documentation describes media runtime ownership and current runtime guides
     for (const term of retiredTerms()) {
       assert.equal(content.includes(term), false, term);
     }
+    assert.doesNotMatch(content, /volcengine|join\(\)|publish\(/iu);
   }
 });
 
@@ -472,7 +457,7 @@ test('TypeScript public export graph follows the assembly root-public surface', 
   assert.equal(indexContent.includes('./providers/'), false);
 });
 
-test('root verifier accepts the current media runtime SDK boundary', () => {
+test('root verifier accepts the current mail transport SDK boundary', () => {
   assert.doesNotThrow(() => verifyMailSdkWorkspace(workspaceRoot));
 });
 

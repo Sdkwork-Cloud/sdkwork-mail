@@ -1,33 +1,25 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
 using System.Linq;
 
-public sealed record RtcProviderCatalogEntry(
+public sealed record MailProviderCatalogEntry(
     string providerKey,
     string pluginId,
     string driverId,
     bool defaultSelected
 );
 
-public static class RtcProviderCatalog
+public static class MailProviderCatalog
 {
-    public const string DEFAULT_RTC_PROVIDER_KEY = "volcengine";
+    public const string DEFAULT_mail_PROVIDER_KEY = "smtp";
 
-    public static readonly IReadOnlyList<RtcProviderCatalogEntry> Entries =
+    public static readonly IReadOnlyList<MailProviderCatalogEntry> Entries =
     [
-        new("volcengine", "rtc-volcengine", "sdkwork-rtc-driver-volcengine", true),
-        new("aliyun", "rtc-aliyun", "sdkwork-rtc-driver-aliyun", false),
-        new("tencent", "rtc-tencent", "sdkwork-rtc-driver-tencent", false),
-        new("agora", "rtc-agora", "sdkwork-rtc-driver-agora", false),
-        new("zego", "rtc-zego", "sdkwork-rtc-driver-zego", false),
-        new("livekit", "rtc-livekit", "sdkwork-rtc-driver-livekit", false),
-        new("twilio", "rtc-twilio", "sdkwork-rtc-driver-twilio", false),
-        new("jitsi", "rtc-jitsi", "sdkwork-rtc-driver-jitsi", false),
-        new("janus", "rtc-janus", "sdkwork-rtc-driver-janus", false),
-        new("mediasoup", "rtc-mediasoup", "sdkwork-rtc-driver-mediasoup", false),
+        new("smtp", "Mail-smtp", "sdkwork-mail-driver-smtp", true),
+        new("imap", "Mail-imap", "sdkwork-mail-driver-imap", false),
     ];
 
-public static RtcProviderCatalogEntry? GetRtcProviderByProviderKey(string providerKey) =>
+public static MailProviderCatalogEntry? GetMailProviderByProviderKey(string providerKey) =>
         Entries.FirstOrDefault(entry => entry.providerKey == providerKey);
 
 }

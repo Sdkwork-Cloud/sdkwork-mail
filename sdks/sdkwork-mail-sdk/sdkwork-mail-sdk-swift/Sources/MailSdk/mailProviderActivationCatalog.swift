@@ -1,4 +1,4 @@
-public struct RtcProviderActivationCatalogEntry {
+public struct MailProviderActivationCatalogEntry {
     public let providerKey: String
     public let pluginId: String
     public let driverId: String
@@ -10,26 +10,18 @@ public struct RtcProviderActivationCatalogEntry {
     public let packageIdentity: String
 }
 
-public enum RtcProviderActivationCatalog {
+public enum MailProviderActivationCatalog {
     public static let recognizedActivationStatuses: [String] = [
         "package-boundary",
         "control-metadata-only",
     ]
 
-    public static let entries: [RtcProviderActivationCatalogEntry] = [
-        .init(providerKey: "volcengine", pluginId: "rtc-volcengine", driverId: "sdkwork-rtc-driver-volcengine", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: true, packageIdentity: "RtcSdkProviderVolcengine"),
-        .init(providerKey: "aliyun", pluginId: "rtc-aliyun", driverId: "sdkwork-rtc-driver-aliyun", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: true, packageIdentity: "RtcSdkProviderAliyun"),
-        .init(providerKey: "tencent", pluginId: "rtc-tencent", driverId: "sdkwork-rtc-driver-tencent", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: true, packageIdentity: "RtcSdkProviderTencent"),
-        .init(providerKey: "agora", pluginId: "rtc-agora", driverId: "sdkwork-rtc-driver-agora", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: true, packageIdentity: "RtcSdkProviderAgora"),
-        .init(providerKey: "zego", pluginId: "rtc-zego", driverId: "sdkwork-rtc-driver-zego", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: false, packageIdentity: "RtcSdkProviderZego"),
-        .init(providerKey: "livekit", pluginId: "rtc-livekit", driverId: "sdkwork-rtc-driver-livekit", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: true, packageIdentity: "RtcSdkProviderLivekit"),
-        .init(providerKey: "twilio", pluginId: "rtc-twilio", driverId: "sdkwork-rtc-driver-twilio", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: false, packageIdentity: "RtcSdkProviderTwilio"),
-        .init(providerKey: "jitsi", pluginId: "rtc-jitsi", driverId: "sdkwork-rtc-driver-jitsi", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: false, packageIdentity: "RtcSdkProviderJitsi"),
-        .init(providerKey: "janus", pluginId: "rtc-janus", driverId: "sdkwork-rtc-driver-janus", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: false, packageIdentity: "RtcSdkProviderJanus"),
-        .init(providerKey: "mediasoup", pluginId: "rtc-mediasoup", driverId: "sdkwork-rtc-driver-mediasoup", activationStatus: "control-metadata-only", runtimeBridge: false, rootPublic: false, packageBoundary: false, builtin: false, packageIdentity: "RtcSdkProviderMediasoup"),
+    public static let entries: [MailProviderActivationCatalogEntry] = [
+        .init(providerKey: "smtp", pluginId: "Mail-smtp", driverId: "sdkwork-mail-driver-smtp", activationStatus: "package-boundary", runtimeBridge: true, rootPublic: false, packageBoundary: true, builtin: true, packageIdentity: "MailSdkProviderSmtp"),
+        .init(providerKey: "imap", pluginId: "Mail-imap", driverId: "sdkwork-mail-driver-imap", activationStatus: "package-boundary", runtimeBridge: true, rootPublic: false, packageBoundary: true, builtin: true, packageIdentity: "MailSdkProviderImap"),
     ]
 
-public static func getRtcProviderActivationByProviderKey(_ providerKey: String) -> RtcProviderActivationCatalogEntry? {
+public static func getMailProviderActivationByProviderKey(_ providerKey: String) -> MailProviderActivationCatalogEntry? {
         entries.first { $0.providerKey == providerKey }
     }
 

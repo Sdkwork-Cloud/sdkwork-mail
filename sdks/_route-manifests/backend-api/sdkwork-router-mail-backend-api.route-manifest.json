@@ -42,6 +42,84 @@
     },
     {
       "method": "POST",
+      "path": "/backend/v3/api/mail/provider_accounts",
+      "operationId": "mail.providerAccounts.create",
+      "tags": ["mailProviderAccounts"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.provider_accounts.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "create_provider_account" },
+      "schemas": {
+        "request": "CreateMailProviderAccountRequest",
+        "response": "CreateMailProviderAccountResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/provider_accounts/{accountId}/ping",
+      "operationId": "mail.providerAccounts.ping",
+      "tags": ["mailProviderAccounts"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.provider_accounts.read",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "ping_provider_account" },
+      "schemas": {
+        "request": null,
+        "response": "MailProviderPingResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/provider_accounts/{accountId}/sync",
+      "operationId": "mail.providerAccounts.sync",
+      "tags": ["mailProviderAccounts"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.provider_accounts.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "sync_provider_account" },
+      "schemas": {
+        "request": "SyncMailProviderAccountRequest",
+        "response": "MailProviderSyncResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
       "path": "/backend/v3/api/mail/provider_webhooks/{provider}/events",
       "operationId": "mail.providerWebhooks.events.receive",
       "tags": ["mailProviderWebhooks"],
@@ -216,6 +294,84 @@
       "schemas": {
         "request": null,
         "response": "MailTransactionalDeliveryListResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/mail/marketing_consents",
+      "operationId": "mail.marketingConsents.list",
+      "tags": ["mailMarketingConsents"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.marketing_consents.read",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "list_marketing_consents" },
+      "schemas": {
+        "request": null,
+        "response": "MailMarketingConsentListResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/marketing_consents",
+      "operationId": "mail.marketingConsents.grant",
+      "tags": ["mailMarketingConsents"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.marketing_consents.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "grant_marketing_consent" },
+      "schemas": {
+        "request": "GrantMailMarketingConsentRequest",
+        "response": "MailMarketingConsentResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/marketing_consents/{consentId}/revoke",
+      "operationId": "mail.marketingConsents.revoke",
+      "tags": ["mailMarketingConsents"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.marketing_consents.write",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "revoke_marketing_consent" },
+      "schemas": {
+        "request": null,
+        "response": "MailMarketingConsentResponse",
         "problem": "ProblemDetail"
       },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },

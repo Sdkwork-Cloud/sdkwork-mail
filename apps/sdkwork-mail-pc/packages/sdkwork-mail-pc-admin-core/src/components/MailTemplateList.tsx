@@ -4,9 +4,17 @@ interface MailTemplateListProps {
   items: MailTemplateRecord[];
   loading?: boolean;
   error?: string | null;
+  onEdit?(item: MailTemplateRecord): void;
+  onDisable?(item: MailTemplateRecord): Promise<void>;
 }
 
-export function MailTemplateList({ items, loading, error }: MailTemplateListProps) {
+export function MailTemplateList({
+  items,
+  loading,
+  error,
+  onEdit,
+  onDisable,
+}: MailTemplateListProps) {
   if (loading) {
     return <p>Loading mail templates...</p>;
   }
@@ -26,6 +34,7 @@ export function MailTemplateList({ items, loading, error }: MailTemplateListProp
           <th>Purpose</th>
           <th>Locale</th>
           <th>Status</th>
+          {onEdit || onDisable ? <th>Actions</th> : null}
         </tr>
       </thead>
       <tbody>
@@ -37,6 +46,20 @@ export function MailTemplateList({ items, loading, error }: MailTemplateListProp
             <td>{item.purpose}</td>
             <td>{item.locale}</td>
             <td>{item.status}</td>
+            {onEdit || onDisable ? (
+              <td>
+                {onEdit ? (
+                  <button type="button" onClick={() => onEdit(item)}>
+                    Edit
+                  </button>
+                ) : null}
+                {onDisable && item.status === "active" ? (
+                  <button type="button" onClick={() => void onDisable(item)}>
+                    Disable
+                  </button>
+                ) : null}
+              </td>
+            ) : null}
           </tr>
         ))}
       </tbody>

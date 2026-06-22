@@ -15,8 +15,8 @@ export const mail_ROOT_REQUIRED_CONTRACT_FILES = Object.freeze([
   'docs/README.md',
   'docs/multilanguage-capability-matrix.md',
   'docs/usage-guide.md',
-  'docs/typescript-volcengine-runtime-usage.md',
-  'docs/flutter-volcengine-runtime-usage.md',
+  'docs/typescript-smtp-runtime-usage.md',
+  'docs/flutter-smtp-runtime-usage.md',
   ...mail_TEMPLATE_MATERIALIZED_FILES,
   ...mail_TEMPLATE_SOURCE_FILES,
 ]);
@@ -67,7 +67,6 @@ export const mail_TYPESCRIPT_REQUIRED_TEST_FILES = Object.freeze([
   'sdkwork-mail-sdk-typescript/test/provider-support-standard.test.mjs',
   'sdkwork-mail-sdk-typescript/test/public-api-boundary.test.mjs',
   'sdkwork-mail-sdk-typescript/test/runtime-immutability.test.mjs',
-  'sdkwork-mail-sdk-typescript/test/volcengine-official-web-bridge.test.mjs',
 ]);
 
 export const mail_FLUTTER_REQUIRED_STANDARD_FILES = Object.freeze([

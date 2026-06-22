@@ -1,42 +1,42 @@
-package com.sdkwork.rtc.metadata;
+package com.sdkwork.Mail.metadata;
 
 import java.util.List;
 
-public final class RtcDriverManager {
+public final class MailDriverManager {
 
-  public RtcProviderSelection resolveSelection(
-      RtcProviderSelection.RtcProviderSelectionRequest request
+  public MailProviderSelection resolveSelection(
+      MailProviderSelection.MailProviderSelectionRequest request
   ) {
-    return resolveSelection(request, RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY);
+    return resolveSelection(request, MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY);
   }
 
-  public RtcProviderSelection resolveSelection(
-      RtcProviderSelection.RtcProviderSelectionRequest request,
+  public MailProviderSelection resolveSelection(
+      MailProviderSelection.MailProviderSelectionRequest request,
       String defaultProviderKey
   ) {
-    return RtcProviderSelection.resolveRtcProviderSelection(request, defaultProviderKey);
+    return MailProviderSelection.resolveMailProviderSelection(request, defaultProviderKey);
   }
 
-  public RtcProviderSupport describeProviderSupport(String providerKey) {
-    var official = RtcProviderCatalog.getRtcProviderByProviderKey(providerKey).isPresent();
-    var activation = RtcProviderActivationCatalog.getRtcProviderActivationByProviderKey(providerKey);
+  public MailProviderSupport describeProviderSupport(String providerKey) {
+    var official = MailProviderCatalog.getMailProviderByProviderKey(providerKey).isPresent();
+    var activation = MailProviderActivationCatalog.getMailProviderActivationByProviderKey(providerKey);
 
-    return RtcProviderSupport.createRtcProviderSupportState(
-        new RtcProviderSupport.RtcProviderSupportStateRequest(
+    return MailProviderSupport.createMailProviderSupportState(
+        new MailProviderSupport.MailProviderSupportStateRequest(
             providerKey,
             activation
-                .map(RtcProviderActivationCatalog.RtcProviderActivationCatalogEntry::builtin)
+                .map(MailProviderActivationCatalog.MailProviderActivationCatalogEntry::builtin)
                 .orElse(false),
             official,
             activation
-                .map(RtcProviderActivationCatalog.RtcProviderActivationCatalogEntry::runtimeBridge)
+                .map(MailProviderActivationCatalog.MailProviderActivationCatalogEntry::runtimeBridge)
                 .orElse(false)
         )
     );
   }
 
-  public List<RtcProviderSupport> listProviderSupport() {
-    return RtcProviderCatalog.ENTRIES.stream()
+  public List<MailProviderSupport> listProviderSupport() {
+    return MailProviderCatalog.ENTRIES.stream()
         .map(entry -> describeProviderSupport(entry.providerKey()))
         .toList();
   }

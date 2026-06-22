@@ -1,6 +1,6 @@
-package rtcstandard
+package Mailstandard
 
-type RtcProviderExtensionCatalogEntry struct {
+type MailProviderExtensionCatalogEntry struct {
     ExtensionKey string
     ProviderKey  string
     DisplayName  string
@@ -9,54 +9,46 @@ type RtcProviderExtensionCatalogEntry struct {
     Status       string
 }
 
-type RtcProviderExtensionCatalog struct{}
+type MailProviderExtensionCatalog struct{}
 
-var RTC_PROVIDER_EXTENSION_SURFACES = []string{
+var mail_PROVIDER_EXTENSION_SURFACES = []string{
     "control-plane",
     "runtime-bridge",
     "cross-surface",
 }
 
-var RTC_PROVIDER_EXTENSION_ACCESSES = []string{
+var mail_PROVIDER_EXTENSION_ACCESSES = []string{
     "unwrap-only",
     "extension-object",
 }
 
-var RTC_PROVIDER_EXTENSION_STATUSES = []string{
+var mail_PROVIDER_EXTENSION_STATUSES = []string{
     "reference-baseline",
     "reserved",
 }
 
-var RTC_PROVIDER_EXTENSION_CATALOG = []RtcProviderExtensionCatalogEntry{
-    {ExtensionKey: "volcengine.native-client", ProviderKey: "volcengine", DisplayName: "Volcengine Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reference-baseline"},
-    {ExtensionKey: "aliyun.native-client", ProviderKey: "aliyun", DisplayName: "Aliyun Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
-    {ExtensionKey: "tencent.native-client", ProviderKey: "tencent", DisplayName: "Tencent Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reference-baseline"},
-    {ExtensionKey: "agora.native-client", ProviderKey: "agora", DisplayName: "Agora Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
-    {ExtensionKey: "zego.native-client", ProviderKey: "zego", DisplayName: "ZEGO Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
-    {ExtensionKey: "livekit.native-client", ProviderKey: "livekit", DisplayName: "LiveKit Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
-    {ExtensionKey: "twilio.native-client", ProviderKey: "twilio", DisplayName: "Twilio Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
-    {ExtensionKey: "jitsi.native-client", ProviderKey: "jitsi", DisplayName: "Jitsi Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
-    {ExtensionKey: "janus.native-client", ProviderKey: "janus", DisplayName: "Janus Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
-    {ExtensionKey: "mediasoup.native-client", ProviderKey: "mediasoup", DisplayName: "mediasoup Native Client", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
+var mail_PROVIDER_EXTENSION_CATALOG = []MailProviderExtensionCatalogEntry{
+    {ExtensionKey: "smtp.transport", ProviderKey: "smtp", DisplayName: "SMTP Transport", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
+    {ExtensionKey: "imap.sync", ProviderKey: "imap", DisplayName: "IMAP Sync", Surface: "runtime-bridge", Access: "unwrap-only", Status: "reserved"},
 }
 
-func GetRtcProviderExtensionCatalog() []RtcProviderExtensionCatalogEntry {
-    return append([]RtcProviderExtensionCatalogEntry(nil), RTC_PROVIDER_EXTENSION_CATALOG...)
+func GetMailProviderExtensionCatalog() []MailProviderExtensionCatalogEntry {
+    return append([]MailProviderExtensionCatalogEntry(nil), mail_PROVIDER_EXTENSION_CATALOG...)
 }
 
-func GetRtcProviderExtensionDescriptor(extensionKey string) *RtcProviderExtensionCatalogEntry {
-    for index := range RTC_PROVIDER_EXTENSION_CATALOG {
-        if RTC_PROVIDER_EXTENSION_CATALOG[index].ExtensionKey == extensionKey {
-            return &RTC_PROVIDER_EXTENSION_CATALOG[index]
+func GetMailProviderExtensionDescriptor(extensionKey string) *MailProviderExtensionCatalogEntry {
+    for index := range mail_PROVIDER_EXTENSION_CATALOG {
+        if mail_PROVIDER_EXTENSION_CATALOG[index].ExtensionKey == extensionKey {
+            return &mail_PROVIDER_EXTENSION_CATALOG[index]
         }
     }
 
     return nil
 }
 
-func GetRtcProviderExtensionsForProvider(providerKey string) []RtcProviderExtensionCatalogEntry {
-    entries := make([]RtcProviderExtensionCatalogEntry, 0)
-    for _, entry := range RTC_PROVIDER_EXTENSION_CATALOG {
+func GetMailProviderExtensionsForProvider(providerKey string) []MailProviderExtensionCatalogEntry {
+    entries := make([]MailProviderExtensionCatalogEntry, 0)
+    for _, entry := range mail_PROVIDER_EXTENSION_CATALOG {
         if entry.ProviderKey == providerKey {
             entries = append(entries, entry)
         }
@@ -65,10 +57,10 @@ func GetRtcProviderExtensionsForProvider(providerKey string) []RtcProviderExtens
     return entries
 }
 
-func GetRtcProviderExtensions(extensionKeys []string) []RtcProviderExtensionCatalogEntry {
-    entries := make([]RtcProviderExtensionCatalogEntry, 0)
+func GetMailProviderExtensions(extensionKeys []string) []MailProviderExtensionCatalogEntry {
+    entries := make([]MailProviderExtensionCatalogEntry, 0)
     for _, extensionKey := range extensionKeys {
-        entry := GetRtcProviderExtensionDescriptor(extensionKey)
+        entry := GetMailProviderExtensionDescriptor(extensionKey)
         if entry != nil {
             entries = append(entries, *entry)
         }
@@ -77,8 +69,8 @@ func GetRtcProviderExtensions(extensionKeys []string) []RtcProviderExtensionCata
     return entries
 }
 
-func HasRtcProviderExtension(extensionKeys []string, extensionKey string) bool {
-    if GetRtcProviderExtensionDescriptor(extensionKey) == nil {
+func HasMailProviderExtension(extensionKeys []string, extensionKey string) bool {
+    if GetMailProviderExtensionDescriptor(extensionKey) == nil {
         return false
     }
 

@@ -6,6 +6,7 @@ import { MailProviderAccountsApi, createMailProviderAccountsApi } from './api/ma
 import { MailProviderWebhooksApi, createMailProviderWebhooksApi } from './api/mail-provider-webhooks';
 import { MailTemplatesApi, createMailTemplatesApi } from './api/mail-templates';
 import { MailTransactionalDeliveriesApi, createMailTransactionalDeliveriesApi } from './api/mail-transactional-deliveries';
+import { MailMarketingConsentsApi, createMailMarketingConsentsApi } from './api/mail-marketing-consents';
 
 export class SdkworkBackendClient {
   private httpClient: HttpClient;
@@ -14,6 +15,7 @@ export class SdkworkBackendClient {
   public readonly mailProviderWebhooks: MailProviderWebhooksApi;
   public readonly mailTemplates: MailTemplatesApi;
   public readonly mailTransactionalDeliveries: MailTransactionalDeliveriesApi;
+  public readonly mailMarketingConsents: MailMarketingConsentsApi;
 
   constructor(config: SdkworkBackendConfig) {
     this.httpClient = createHttpClient(config);
@@ -24,6 +26,8 @@ export class SdkworkBackendClient {
     this.mailTemplates = createMailTemplatesApi(this.httpClient);
 
     this.mailTransactionalDeliveries = createMailTransactionalDeliveriesApi(this.httpClient);
+
+    this.mailMarketingConsents = createMailMarketingConsentsApi(this.httpClient);
   }
   setAuthToken(token: string): this {
     this.httpClient.setAuthToken(token);

@@ -1,4 +1,4 @@
-public struct RtcProviderExtensionCatalogEntry {
+public struct MailProviderExtensionCatalogEntry {
     public let extensionKey: String
     public let providerKey: String
     public let displayName: String
@@ -7,7 +7,7 @@ public struct RtcProviderExtensionCatalogEntry {
     public let status: String
 }
 
-public enum RtcProviderExtensionCatalog {
+public enum MailProviderExtensionCatalog {
     public static let recognizedSurfaces: [String] = [
         "control-plane",
         "runtime-bridge",
@@ -24,35 +24,27 @@ public enum RtcProviderExtensionCatalog {
         "reserved",
     ]
 
-    public static let entries: [RtcProviderExtensionCatalogEntry] = [
-        .init(extensionKey: "volcengine.native-client", providerKey: "volcengine", displayName: "Volcengine Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reference-baseline"),
-        .init(extensionKey: "aliyun.native-client", providerKey: "aliyun", displayName: "Aliyun Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
-        .init(extensionKey: "tencent.native-client", providerKey: "tencent", displayName: "Tencent Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reference-baseline"),
-        .init(extensionKey: "agora.native-client", providerKey: "agora", displayName: "Agora Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
-        .init(extensionKey: "zego.native-client", providerKey: "zego", displayName: "ZEGO Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
-        .init(extensionKey: "livekit.native-client", providerKey: "livekit", displayName: "LiveKit Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
-        .init(extensionKey: "twilio.native-client", providerKey: "twilio", displayName: "Twilio Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
-        .init(extensionKey: "jitsi.native-client", providerKey: "jitsi", displayName: "Jitsi Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
-        .init(extensionKey: "janus.native-client", providerKey: "janus", displayName: "Janus Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
-        .init(extensionKey: "mediasoup.native-client", providerKey: "mediasoup", displayName: "mediasoup Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
+    public static let entries: [MailProviderExtensionCatalogEntry] = [
+        .init(extensionKey: "smtp.transport", providerKey: "smtp", displayName: "SMTP Transport", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
+        .init(extensionKey: "imap.sync", providerKey: "imap", displayName: "IMAP Sync", surface: "runtime-bridge", access: "unwrap-only", status: "reserved"),
     ]
 
-public static func getRtcProviderExtensionCatalog() -> [RtcProviderExtensionCatalogEntry] {
+public static func getMailProviderExtensionCatalog() -> [MailProviderExtensionCatalogEntry] {
         entries
     }
 
-    public static func getRtcProviderExtensionDescriptor(_ extensionKey: String) -> RtcProviderExtensionCatalogEntry? {
+    public static func getMailProviderExtensionDescriptor(_ extensionKey: String) -> MailProviderExtensionCatalogEntry? {
         entries.first { $0.extensionKey == extensionKey }
     }
 
-    public static func getRtcProviderExtensionsForProvider(_ providerKey: String) -> [RtcProviderExtensionCatalogEntry] {
+    public static func getMailProviderExtensionsForProvider(_ providerKey: String) -> [MailProviderExtensionCatalogEntry] {
         entries.filter { $0.providerKey == providerKey }
     }
 
-    public static func getRtcProviderExtensions(_ extensionKeys: [String]) -> [RtcProviderExtensionCatalogEntry] {
-        var resolved: [RtcProviderExtensionCatalogEntry] = []
+    public static func getMailProviderExtensions(_ extensionKeys: [String]) -> [MailProviderExtensionCatalogEntry] {
+        var resolved: [MailProviderExtensionCatalogEntry] = []
         for extensionKey in extensionKeys {
-            if let entry = getRtcProviderExtensionDescriptor(extensionKey) {
+            if let entry = getMailProviderExtensionDescriptor(extensionKey) {
                 resolved.append(entry)
             }
         }
@@ -60,8 +52,8 @@ public static func getRtcProviderExtensionCatalog() -> [RtcProviderExtensionCata
         return resolved
     }
 
-    public static func hasRtcProviderExtension(_ extensionKeys: [String], _ extensionKey: String) -> Bool {
-        extensionKeys.contains(extensionKey) && getRtcProviderExtensionDescriptor(extensionKey) != nil
+    public static func hasMailProviderExtension(_ extensionKeys: [String], _ extensionKey: String) -> Bool {
+        extensionKeys.contains(extensionKey) && getMailProviderExtensionDescriptor(extensionKey) != nil
     }
 
 }

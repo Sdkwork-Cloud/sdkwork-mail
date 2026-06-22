@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass(frozen=True)
-class RtcProviderActivationCatalogEntry:
+class MailProviderActivationCatalogEntry:
     providerKey: str
     pluginId: str
     driverId: str
@@ -15,28 +15,20 @@ class RtcProviderActivationCatalogEntry:
     packageIdentity: str
 
 
-class RtcProviderActivationCatalog:
+class MailProviderActivationCatalog:
     recognizedActivationStatuses = [
         "package-boundary",
         "control-metadata-only",
     ]
 
     entries = [
-        RtcProviderActivationCatalogEntry("volcengine", "rtc-volcengine", "sdkwork-rtc-driver-volcengine", "control-metadata-only", False, False, False, True, "sdkwork-rtc-sdk-provider-volcengine"),
-        RtcProviderActivationCatalogEntry("aliyun", "rtc-aliyun", "sdkwork-rtc-driver-aliyun", "control-metadata-only", False, False, False, True, "sdkwork-rtc-sdk-provider-aliyun"),
-        RtcProviderActivationCatalogEntry("tencent", "rtc-tencent", "sdkwork-rtc-driver-tencent", "control-metadata-only", False, False, False, True, "sdkwork-rtc-sdk-provider-tencent"),
-        RtcProviderActivationCatalogEntry("agora", "rtc-agora", "sdkwork-rtc-driver-agora", "control-metadata-only", False, False, False, True, "sdkwork-rtc-sdk-provider-agora"),
-        RtcProviderActivationCatalogEntry("zego", "rtc-zego", "sdkwork-rtc-driver-zego", "control-metadata-only", False, False, False, False, "sdkwork-rtc-sdk-provider-zego"),
-        RtcProviderActivationCatalogEntry("livekit", "rtc-livekit", "sdkwork-rtc-driver-livekit", "control-metadata-only", False, False, False, True, "sdkwork-rtc-sdk-provider-livekit"),
-        RtcProviderActivationCatalogEntry("twilio", "rtc-twilio", "sdkwork-rtc-driver-twilio", "control-metadata-only", False, False, False, False, "sdkwork-rtc-sdk-provider-twilio"),
-        RtcProviderActivationCatalogEntry("jitsi", "rtc-jitsi", "sdkwork-rtc-driver-jitsi", "control-metadata-only", False, False, False, False, "sdkwork-rtc-sdk-provider-jitsi"),
-        RtcProviderActivationCatalogEntry("janus", "rtc-janus", "sdkwork-rtc-driver-janus", "control-metadata-only", False, False, False, False, "sdkwork-rtc-sdk-provider-janus"),
-        RtcProviderActivationCatalogEntry("mediasoup", "rtc-mediasoup", "sdkwork-rtc-driver-mediasoup", "control-metadata-only", False, False, False, False, "sdkwork-rtc-sdk-provider-mediasoup"),
+        MailProviderActivationCatalogEntry("smtp", "Mail-smtp", "sdkwork-mail-driver-smtp", "package-boundary", True, False, True, True, "sdkwork-mail-sdk-provider-smtp"),
+        MailProviderActivationCatalogEntry("imap", "Mail-imap", "sdkwork-mail-driver-imap", "package-boundary", True, False, True, True, "sdkwork-mail-sdk-provider-imap"),
     ]
 
 
-def get_rtc_provider_activation_by_provider_key(provider_key: str) -> Optional[RtcProviderActivationCatalogEntry]:
-    for entry in RtcProviderActivationCatalog.entries:
+def get_mail_provider_activation_by_provider_key(provider_key: str) -> Optional[MailProviderActivationCatalogEntry]:
+    for entry in MailProviderActivationCatalog.entries:
         if entry.providerKey == provider_key:
             return entry
 

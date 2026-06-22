@@ -1,0 +1,24 @@
+name: mail_sdk_provider_imap
+description: >
+  Reserved Flutter provider package boundary for IMAP Mail Sync.
+  providerKey: imap
+  pluginId: Mail-imap
+  driverId: sdkwork-mail-driver-imap
+  status: future-runtime-bridge-only
+  runtimeBridgeStatus: reserved
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+sdkwork_mail_provider:
+  providerKey: imap
+  pluginId: Mail-imap
+  driverId: sdkwork-mail-driver-imap
+  packageIdentity: mail_sdk_provider_imap
+  sourcePath: lib/src/mail_provider_imap_package_contract.dart
+  sourceSymbol: MailProviderImapPackageContract
+  rootPublic: false
+  status: future-runtime-bridge-only
+  runtimeBridgeStatus: reserved

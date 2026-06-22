@@ -6,67 +6,73 @@ from typing import Protocol, TypeVar
 NativeClientT = TypeVar("NativeClientT")
 
 
-class RtcStandardContract:
-    symbol = "RtcStandardContract"
+class MailStandardContract:
+    symbol = "MailStandardContract"
 
 
-class RtcProviderDriver(Protocol[NativeClientT]):
+class MailProviderDriver(Protocol[NativeClientT]):
     @property
     def provider_key(self) -> str:
         ...
 
-    def create_client(self) -> "RtcClient[NativeClientT]":
+    def create_client(self) -> "MailClient[NativeClientT]":
         ...
 
 
-class RtcDriverManager(Protocol[NativeClientT]):
-    def resolve_driver(self, provider_key: str) -> RtcProviderDriver[NativeClientT]:
+class MailDriverManager(Protocol[NativeClientT]):
+    def resolve_driver(self, provider_key: str) -> MailProviderDriver[NativeClientT]:
         ...
 
 
-class RtcDataSource(Protocol[NativeClientT]):
-    def create_client(self) -> "RtcClient[NativeClientT]":
+class MailDataSource(Protocol[NativeClientT]):
+    def create_client(self) -> "MailClient[NativeClientT]":
         ...
 
 
-class RtcClient(Protocol[NativeClientT]):
-    def join(self) -> None:
+class MailClient(Protocol[NativeClientT]):
+    def connect_transport(self) -> None:
         ...
 
-    def leave(self) -> None:
+    def authenticate_transport(self) -> None:
         ...
 
-    def publish(self, track_id: str) -> None:
+    def disconnect_transport(self) -> None:
         ...
 
-    def unpublish(self, track_id: str) -> None:
+    def send_mail(self) -> None:
         ...
 
-    def mute_audio(self, muted: bool) -> None:
+    def probe_mailbox(self) -> None:
         ...
 
-    def mute_video(self, muted: bool) -> None:
+    def sync_mailbox(self) -> None:
+        ...
+
+    def health_check(self) -> None:
         ...
 
     def unwrap(self) -> NativeClientT | None:
         ...
 
 
-class RtcRuntimeController(Protocol[NativeClientT]):
-    def join(self) -> None:
+class MailRuntimeController(Protocol[NativeClientT]):
+    def connect_transport(self) -> None:
         ...
 
-    def leave(self) -> None:
+    def authenticate_transport(self) -> None:
         ...
 
-    def publish(self, track_id: str) -> None:
+    def disconnect_transport(self) -> None:
         ...
 
-    def unpublish(self, track_id: str) -> None:
+    def send_mail(self) -> None:
         ...
 
-    def mute_audio(self, muted: bool) -> None:
+    def probe_mailbox(self) -> None:
         ...
 
-    def mute_video(self, muted: bool) -> None:
+    def sync_mailbox(self) -> None:
+        ...
+
+    def health_check(self) -> None:
         ...

@@ -1,28 +1,8 @@
 import 'mail_provider_selection.dart';
 
-enum MailTrackKind {
-  audio,
-  video,
-  screenShare,
-  data,
-}
-
-String MailTrackKindWireName(MailTrackKind kind) {
-  switch (kind) {
-    case MailTrackKind.audio:
-      return 'audio';
-    case MailTrackKind.video:
-      return 'video';
-    case MailTrackKind.screenShare:
-      return 'screen-share';
-    case MailTrackKind.data:
-      return 'data';
-  }
-}
-
-enum MailSessionConnectionState {
-  joined,
-  left,
+enum MailTransportConnectionState {
+  connected,
+  disconnected,
 }
 
 class MailProviderMetadata {
@@ -32,6 +12,7 @@ class MailProviderMetadata {
     required this.driverId,
     required this.displayName,
     required this.defaultSelected,
+    this.urlSchemes = const <String>[],
     this.requiredCapabilities = const <String>[],
     this.optionalCapabilities = const <String>[],
     this.extensionKeys = const <String>[],
@@ -42,98 +23,148 @@ class MailProviderMetadata {
   final String driverId;
   final String displayName;
   final bool defaultSelected;
+  final List<String> urlSchemes;
   final List<String> requiredCapabilities;
   final List<String> optionalCapabilities;
   final List<String> extensionKeys;
-
-  Map<String, Object?> toDebugMap() {
-    return <String, Object?>{
-      'providerKey': providerKey,
-      'pluginId': pluginId,
-      'driverId': driverId,
-      'displayName': displayName,
-      'defaultSelected': defaultSelected,
-      'requiredCapabilities': requiredCapabilities,
-      'optionalCapabilities': optionalCapabilities,
-      'extensionKeys': extensionKeys,
-    };
-  }
 }
 
-class MailJoinOptions {
-  const MailJoinOptions({
-    required this.sessionId,
-    required this.roomId,
-    required this.participantId,
-    this.token,
+class MailCapabilitySet {
+  const MailCapabilitySet({
+    required this.required,
+    required this.optional,
+  });
+
+  final List<String> required;
+  final List<String> optional;
+}
+
+class MailTransportConnectOptions {
+  const MailTransportConnectOptions({
+    required this.accountId,
     this.metadata,
   });
 
-  final String sessionId;
-  final String roomId;
-  final String participantId;
-  final String? token;
+  final String accountId;
   final Map<String, Object?>? metadata;
 }
 
-class MailSessionDescriptor {
-  const MailSessionDescriptor({
-    required this.sessionId,
-    required this.roomId,
-    required this.participantId,
+class MailTransportAuthenticateOptions {
+  const MailTransportAuthenticateOptions({
+    required this.username,
+    this.secretRef,
+    this.metadata,
+  });
+
+  final String username;
+  final String? secretRef;
+  final Map<String, Object?>? metadata;
+}
+
+class MailTransportDescriptor {
+  const MailTransportDescriptor({
+    required this.accountId,
     required this.providerKey,
     required this.connectionState,
   });
 
-  final String sessionId;
-  final String roomId;
-  final String participantId;
+  final String accountId;
   final String providerKey;
-  final MailSessionConnectionState connectionState;
+  final MailTransportConnectionState connectionState;
 }
 
-class MailPublishOptions {
-  const MailPublishOptions({
-    required this.trackId,
-    required this.kind,
+class MailSendOptions {
+  const MailSendOptions({
+    this.messageId,
+    required this.from,
+    required this.to,
+    required this.subject,
+    this.bodyText,
+    this.bodyHtml,
     this.metadata,
   });
 
-  final String trackId;
-  final MailTrackKind kind;
+  final String? messageId;
+  final String from;
+  final List<String> to;
+  final String subject;
+  final String? bodyText;
+  final String? bodyHtml;
   final Map<String, Object?>? metadata;
 }
 
-class MailScreenShareOptions {
-  const MailScreenShareOptions({
-    required this.trackId,
+class MailSendResult {
+  const MailSendResult({
+    required this.messageId,
+    required this.accepted,
+  });
+
+  final String messageId;
+  final List<String> accepted;
+}
+
+class MailMailboxProbeOptions {
+  const MailMailboxProbeOptions({
+    this.mailbox,
     this.metadata,
   });
 
-  final String trackId;
+  final String? mailbox;
   final Map<String, Object?>? metadata;
 }
 
-class MailTrackPublication {
-  const MailTrackPublication({
-    required this.trackId,
-    required this.kind,
-    required this.muted,
+class MailMailboxProbeResult {
+  const MailMailboxProbeResult({
+    required this.mailbox,
+    required this.exists,
+    this.uidValidity,
+    this.uidNext,
   });
 
-  final String trackId;
-  final MailTrackKind kind;
-  final bool muted;
+  final String mailbox;
+  final int exists;
+  final int? uidValidity;
+  final int? uidNext;
 }
 
-class MailMuteState {
-  const MailMuteState({
-    required this.kind,
-    required this.muted,
+class MailMailboxSyncOptions {
+  const MailMailboxSyncOptions({
+    this.folderId,
+    this.mailbox,
+    this.sinceUid,
+    this.limit,
+    this.metadata,
   });
 
-  final MailTrackKind kind;
-  final bool muted;
+  final String? folderId;
+  final String? mailbox;
+  final int? sinceUid;
+  final int? limit;
+  final Map<String, Object?>? metadata;
+}
+
+class MailMailboxSyncResult {
+  const MailMailboxSyncResult({
+    required this.folderId,
+    required this.syncedCount,
+    this.highestUid,
+    this.uidValidity,
+  });
+
+  final String folderId;
+  final int syncedCount;
+  final int? highestUid;
+  final int? uidValidity;
+}
+
+class MailTransportHealthResult {
+  const MailTransportHealthResult({
+    required this.healthy,
+    this.detail,
+  });
+
+  final bool healthy;
+  final String? detail;
 }
 
 class MailClientConfig {
@@ -171,11 +202,13 @@ class MailResolvedClientConfig extends MailClientConfig {
 class MailRuntimeControllerContext<TNativeClient> {
   const MailRuntimeControllerContext({
     required this.metadata,
+    required this.capabilities,
     required this.selection,
     required this.nativeClient,
   });
 
   final MailProviderMetadata metadata;
+  final MailCapabilitySet capabilities;
   final MailProviderSelection selection;
   final TNativeClient nativeClient;
 }

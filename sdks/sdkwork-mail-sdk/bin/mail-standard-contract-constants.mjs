@@ -8,15 +8,9 @@ export const mail_PROVIDER_SELECTION_SOURCES = Object.freeze([
 
 export const mail_PROVIDER_SELECTION_PRECEDENCE = mail_PROVIDER_SELECTION_SOURCES;
 
-export const DEFAULT_mail_PROVIDER_KEY = 'volcengine';
+export const DEFAULT_mail_PROVIDER_KEY = 'smtp';
 
-export const BUILTIN_mail_PROVIDER_KEYS = Object.freeze([
-  'volcengine',
-  'aliyun',
-  'tencent',
-  'agora',
-  'livekit',
-]);
+export const BUILTIN_mail_PROVIDER_KEYS = Object.freeze(['smtp', 'imap']);
 
 export const OFFICIAL_mail_LANGUAGE_WORKSPACE_KEYS = Object.freeze([
   'typescript',
@@ -93,29 +87,18 @@ export const mail_PROVIDER_PACKAGE_BOUNDARY_PROFILES = Object.freeze({
 });
 
 export const REQUIRED_mail_CAPABILITIES = Object.freeze([
-  'session',
-  'credential',
-  'provider.webhook',
+  'transport.connect',
+  'transport.authenticate',
   'health',
-  'media.audio',
-  'media.video',
-  'live.broadcast',
-  'live.audience',
-  'provider.event-normalization',
 ]);
 
 export const OPTIONAL_mail_CAPABILITIES = Object.freeze([
-  'screen-share',
-  'recording',
-  'artifact',
-  'cloud-mix',
-  'cdn-relay',
-  'data-channel',
-  'transcription',
-  'beauty',
-  'spatial-audio',
-  'e2ee',
-  'provider.active-query',
+  'smtp.send',
+  'imap.sync',
+  'imap.folder-sync',
+  'imap.message-sync',
+  'transport.retry',
+  'transport.pool',
 ]);
 
 export const mail_CAPABILITY_CATEGORIES = Object.freeze([
@@ -142,14 +125,13 @@ export const mail_CAPABILITY_NEGOTIATION_RULES = Object.freeze({
 });
 
 export const mail_RUNTIME_SURFACE_METHODS = Object.freeze([
-  'join',
-  'leave',
-  'publish',
-  'unpublish',
-  'startScreenShare',
-  'stopScreenShare',
-  'muteAudio',
-  'muteVideo',
+  'connectTransport',
+  'authenticateTransport',
+  'disconnectTransport',
+  'sendMail',
+  'probeMailbox',
+  'syncMailbox',
+  'healthCheck',
 ]);
 
 export const mail_RUNTIME_SURFACE_FAILURE_CODE = 'native_sdk_not_available';

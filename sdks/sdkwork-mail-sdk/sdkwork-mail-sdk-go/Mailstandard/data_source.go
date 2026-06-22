@@ -1,6 +1,6 @@
-package rtcstandard
+package Mailstandard
 
-type RtcDataSourceOptions struct {
+type MailDataSourceOptions struct {
     ProviderUrl                  string
     ProviderKey                  string
     TenantOverrideProviderKey    string
@@ -8,29 +8,29 @@ type RtcDataSourceOptions struct {
     DefaultProviderKey           string
 }
 
-type RtcDataSource struct {
-    options       RtcDataSourceOptions
-    driverManager RtcDriverManager
+type MailDataSource struct {
+    options       MailDataSourceOptions
+    driverManager MailDriverManager
 }
 
-func NewRtcDataSourceOptions() RtcDataSourceOptions {
-    return RtcDataSourceOptions{
-        DefaultProviderKey: DEFAULT_RTC_PROVIDER_KEY,
+func NewMailDataSourceOptions() MailDataSourceOptions {
+    return MailDataSourceOptions{
+        DefaultProviderKey: DEFAULT_mail_PROVIDER_KEY,
     }
 }
 
-func NewRtcDataSource(options RtcDataSourceOptions, driverManager RtcDriverManager) RtcDataSource {
+func NewMailDataSource(options MailDataSourceOptions, driverManager MailDriverManager) MailDataSource {
     if !hasText(options.DefaultProviderKey) {
-        options.DefaultProviderKey = DEFAULT_RTC_PROVIDER_KEY
+        options.DefaultProviderKey = DEFAULT_mail_PROVIDER_KEY
     }
 
-    return RtcDataSource{
+    return MailDataSource{
         options:       options,
         driverManager: driverManager,
     }
 }
 
-func mergeRtcDataSourceOptions(base RtcDataSourceOptions, overrides *RtcDataSourceOptions) RtcDataSourceOptions {
+func mergeMailDataSourceOptions(base MailDataSourceOptions, overrides *MailDataSourceOptions) MailDataSourceOptions {
     if overrides == nil {
         return base
     }
@@ -55,10 +55,10 @@ func mergeRtcDataSourceOptions(base RtcDataSourceOptions, overrides *RtcDataSour
     return merged
 }
 
-func (dataSource RtcDataSource) describeSelection(overrides *RtcDataSourceOptions) RtcProviderSelection {
-    merged := mergeRtcDataSourceOptions(dataSource.options, overrides)
+func (dataSource MailDataSource) describeSelection(overrides *MailDataSourceOptions) MailProviderSelection {
+    merged := mergeMailDataSourceOptions(dataSource.options, overrides)
     return dataSource.driverManager.resolveSelection(
-        RtcProviderSelectionRequest{
+        MailProviderSelectionRequest{
             ProviderUrl:                  merged.ProviderUrl,
             ProviderKey:                  merged.ProviderKey,
             TenantOverrideProviderKey:    merged.TenantOverrideProviderKey,
@@ -68,23 +68,23 @@ func (dataSource RtcDataSource) describeSelection(overrides *RtcDataSourceOption
     )
 }
 
-func (dataSource RtcDataSource) DescribeSelection(overrides *RtcDataSourceOptions) RtcProviderSelection {
+func (dataSource MailDataSource) DescribeSelection(overrides *MailDataSourceOptions) MailProviderSelection {
     return dataSource.describeSelection(overrides)
 }
 
-func (dataSource RtcDataSource) describeProviderSupport(overrides *RtcDataSourceOptions) RtcProviderSupport {
+func (dataSource MailDataSource) describeProviderSupport(overrides *MailDataSourceOptions) MailProviderSupport {
     selection := dataSource.describeSelection(overrides)
     return dataSource.driverManager.describeProviderSupport(selection.ProviderKey)
 }
 
-func (dataSource RtcDataSource) DescribeProviderSupport(overrides *RtcDataSourceOptions) RtcProviderSupport {
+func (dataSource MailDataSource) DescribeProviderSupport(overrides *MailDataSourceOptions) MailProviderSupport {
     return dataSource.describeProviderSupport(overrides)
 }
 
-func (dataSource RtcDataSource) listProviderSupport() []RtcProviderSupport {
+func (dataSource MailDataSource) listProviderSupport() []MailProviderSupport {
     return dataSource.driverManager.listProviderSupport()
 }
 
-func (dataSource RtcDataSource) ListProviderSupport() []RtcProviderSupport {
+func (dataSource MailDataSource) ListProviderSupport() []MailProviderSupport {
     return dataSource.listProviderSupport()
 }

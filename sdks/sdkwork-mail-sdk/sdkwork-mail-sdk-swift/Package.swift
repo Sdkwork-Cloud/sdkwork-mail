@@ -2,21 +2,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "RtcSdk",
+    name: "MailSdk",
     platforms: [
         .iOS(.v15),
         .macOS(.v13),
     ],
     products: [
         .library(
-            name: "RtcSdk",
-            targets: ["RtcSdk"]
+            name: "MailSdk",
+            targets: ["MailSdk"]
         ),
     ],
     targets: [
         .target(
-            name: "RtcSdk",
-            path: "Sources/RtcSdk"
+            name: "MailSdk",
+            path: "Sources/MailSdk"
         ),
     ]
 )

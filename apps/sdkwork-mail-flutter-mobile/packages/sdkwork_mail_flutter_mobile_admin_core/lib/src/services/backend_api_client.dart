@@ -58,6 +58,22 @@ class BackendApiClient {
     return _decodeEnvelope(response);
   }
 
+  Future<Map<String, dynamic>> postJson(
+    String path,
+    Map<String, dynamic> body,
+  ) async {
+    final response = await http.post(
+      _uri(path),
+      headers: _headers(jsonBody: true),
+      body: jsonEncode(body),
+    );
+    final decoded = _decodeEnvelope(response);
+    if (decoded.containsKey('items')) {
+      return decoded;
+    }
+    return decoded;
+  }
+
   Map<String, dynamic> _decodeEnvelope(http.Response response) {
     final decoded = jsonDecode(response.body);
     if (decoded is! Map<String, dynamic>) {

@@ -24,19 +24,19 @@ test('provider support standard resolves statuses and immutable states independe
   const sdk = await loadSdk();
 
   const builtinRegistered = sdk.createMailProviderSupportState({
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
     builtin: true,
     official: true,
     registered: true,
   });
   const officialRegistered = sdk.createMailProviderSupportState({
-    providerKey: 'agora',
+    providerKey: 'imap',
     builtin: false,
     official: true,
     registered: true,
   });
   const officialUnregistered = sdk.createMailProviderSupportState({
-    providerKey: 'livekit',
+    providerKey: 'imap',
     builtin: false,
     official: true,
     registered: false,
@@ -50,7 +50,7 @@ test('provider support standard resolves statuses and immutable states independe
 
   assert.equal(
     sdk.resolveMailProviderSupportStatus({
-      providerKey: 'volcengine',
+      providerKey: 'smtp',
       builtin: true,
       official: true,
       registered: true,
@@ -59,7 +59,7 @@ test('provider support standard resolves statuses and immutable states independe
   );
   assert.equal(
     sdk.resolveMailProviderSupportStatus({
-      providerKey: 'agora',
+      providerKey: 'imap',
       builtin: false,
       official: true,
       registered: true,
@@ -68,7 +68,7 @@ test('provider support standard resolves statuses and immutable states independe
   );
   assert.equal(
     sdk.resolveMailProviderSupportStatus({
-      providerKey: 'livekit',
+      providerKey: 'imap',
       builtin: false,
       official: true,
       registered: false,
@@ -86,21 +86,21 @@ test('provider support standard resolves statuses and immutable states independe
   );
 
   assert.deepEqual(builtinRegistered, {
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
     status: 'builtin_registered',
     builtin: true,
     official: true,
     registered: true,
   });
   assert.deepEqual(officialRegistered, {
-    providerKey: 'agora',
+    providerKey: 'imap',
     status: 'official_registered',
     builtin: false,
     official: true,
     registered: true,
   });
   assert.deepEqual(officialUnregistered, {
-    providerKey: 'livekit',
+    providerKey: 'imap',
     status: 'official_unregistered',
     builtin: false,
     official: true,

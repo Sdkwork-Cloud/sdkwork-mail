@@ -14,17 +14,21 @@ import type {
   MailCapabilityKey,
   MailCapabilitySet,
   MailCapabilitySupportState,
-  MailJoinOptions,
-  MailMuteState,
-  MailPublishOptions,
+  MailMailboxProbeOptions,
+  MailMailboxProbeResult,
+  MailMailboxSyncOptions,
+  MailMailboxSyncResult,
   MailProviderExtensionDescriptor,
   MailProviderMetadata,
   MailProviderSelection,
   MailRuntimeController,
   MailRuntimeControllerContext,
-  MailScreenShareOptions,
-  MailSessionDescriptor,
-  MailTrackPublication,
+  MailSendOptions,
+  MailSendResult,
+  MailTransportAuthenticateOptions,
+  MailTransportConnectOptions,
+  MailTransportDescriptor,
+  MailTransportHealthResult,
 } from './types.js';
 import type { MailRuntimeSurfaceMethodName } from './runtime-surface.js';
 
@@ -32,14 +36,15 @@ export interface MailClient<TNativeClient = unknown> {
   readonly metadata: MailProviderMetadata;
   readonly capabilities: MailCapabilitySet;
   readonly selection: MailProviderSelection;
-  join(options: MailJoinOptions): Promise<MailSessionDescriptor>;
-  leave(): Promise<MailSessionDescriptor>;
-  publish(options: MailPublishOptions): Promise<MailTrackPublication>;
-  unpublish(trackId: string): Promise<void>;
-  startScreenShare(options: MailScreenShareOptions): Promise<MailTrackPublication>;
-  stopScreenShare(trackId: string): Promise<void>;
-  muteAudio(muted?: boolean): Promise<MailMuteState>;
-  muteVideo(muted?: boolean): Promise<MailMuteState>;
+  connectTransport(options: MailTransportConnectOptions): Promise<MailTransportDescriptor>;
+  authenticateTransport(
+    options: MailTransportAuthenticateOptions,
+  ): Promise<MailTransportDescriptor>;
+  disconnectTransport(): Promise<MailTransportDescriptor>;
+  sendMail(options: MailSendOptions): Promise<MailSendResult>;
+  probeMailbox(options?: MailMailboxProbeOptions): Promise<MailMailboxProbeResult>;
+  syncMailbox(options?: MailMailboxSyncOptions): Promise<MailMailboxSyncResult>;
+  healthCheck(): Promise<MailTransportHealthResult>;
   describeCapability(capability: MailCapabilityKey): MailCapabilitySupportState;
   negotiateCapabilities(request: MailCapabilityNegotiationRequest): MailCapabilityNegotiationResult;
   getProviderExtensions(): readonly MailProviderExtensionDescriptor[];
@@ -110,66 +115,80 @@ export class StandardMailClient<TNativeClient = unknown> implements MailClient<T
     return method;
   }
 
-  async join(options: MailJoinOptions): Promise<MailSessionDescriptor> {
-    const join = this.#requireRuntimeMethod('join');
-    return join.call(this.#runtimeController, options, this.#getRuntimeContext());
+  async connectTransport(options: MailTransportConnectOptions): Promise<MailTransportDescriptor> {
+    this.requireCapability('transport.connect');
+    const connectTransport = this.#requireRuntimeMethod('connectTransport');
+    return connectTransport.call(this.#runtimeController, options, this.#getRuntimeContext());
   }
 
-  async leave(): Promise<MailSessionDescriptor> {
-    const leave = this.#requireRuntimeMethod('leave');
-    return leave.call(this.#runtimeController, this.#getRuntimeContext());
+  async authenticateTransport(
+    options: MailTransportAuthenticateOptions,
+  ): Promise<MailTransportDescriptor> {
+    this.requireCapability('transport.authenticate');
+    const authenticateTransport = this.#requireRuntimeMethod('authenticateTransport');
+    return authenticateTransport.call(this.#runtimeController, options, this.#getRuntimeContext());
   }
 
-  async publish(options: MailPublishOptions): Promise<MailTrackPublication> {
-    const publish = this.#requireRuntimeMethod('publish');
-    return publish.call(this.#runtimeController, options, this.#getRuntimeContext());
+  async disconnectTransport(): Promise<MailTransportDescriptor> {
+    const disconnectTransport = this.#requireRuntimeMethod('disconnectTransport');
+    return disconnectTransport.call(this.#runtimeController, this.#getRuntimeContext());
   }
 
-  async unpublish(trackId: string): Promise<void> {
-    const unpublish = this.#requireRuntimeMethod('unpublish');
-    await unpublish.call(this.#runtimeController, trackId, this.#getRuntimeContext());
-  }
-
-  async startScreenShare(options: MailScreenShareOptions): Promise<MailTrackPublication> {
-    this.requireCapability('screen-share');
-    const context = this.#getRuntimeContext();
-    const startScreenShare = this.#runtimeController?.startScreenShare;
-    if (typeof startScreenShare === 'function') {
-      return startScreenShare.call(this.#runtimeController, options, context);
+  async sendMail(options: MailSendOptions): Promise<MailSendResult> {
+    this.requireCapability('smtp.send');
+    const sendMail = this.#runtimeController?.sendMail;
+    if (typeof sendMail !== 'function') {
+      throw new MailSdkException({
+        code: mail_RUNTIME_SURFACE_FAILURE_CODE,
+        message: 'Mail runtime bridge method not available: sendMail',
+        providerKey: this.#metadata.providerKey,
+        pluginId: this.#metadata.pluginId,
+        details: {
+          methodName: 'sendMail',
+        },
+      });
     }
-
-    const publish = this.#requireRuntimeMethod('publish');
-    return publish.call(
-      this.#runtimeController,
-      {
-        ...options,
-        kind: 'screen-share',
-      },
-      context,
-    );
+    return sendMail.call(this.#runtimeController, options, this.#getRuntimeContext());
   }
 
-  async stopScreenShare(trackId: string): Promise<void> {
-    this.requireCapability('screen-share');
-    const context = this.#getRuntimeContext();
-    const stopScreenShare = this.#runtimeController?.stopScreenShare;
-    if (typeof stopScreenShare === 'function') {
-      await stopScreenShare.call(this.#runtimeController, trackId, context);
-      return;
+  async probeMailbox(options: MailMailboxProbeOptions = {}): Promise<MailMailboxProbeResult> {
+    this.requireCapability('imap.sync');
+    const probeMailbox = this.#runtimeController?.probeMailbox;
+    if (typeof probeMailbox !== 'function') {
+      throw new MailSdkException({
+        code: mail_RUNTIME_SURFACE_FAILURE_CODE,
+        message: 'Mail runtime bridge method not available: probeMailbox',
+        providerKey: this.#metadata.providerKey,
+        pluginId: this.#metadata.pluginId,
+        details: {
+          methodName: 'probeMailbox',
+        },
+      });
     }
-
-    const unpublish = this.#requireRuntimeMethod('unpublish');
-    await unpublish.call(this.#runtimeController, trackId, context);
+    return probeMailbox.call(this.#runtimeController, options, this.#getRuntimeContext());
   }
 
-  async muteAudio(muted = true): Promise<MailMuteState> {
-    const muteAudio = this.#requireRuntimeMethod('muteAudio');
-    return muteAudio.call(this.#runtimeController, muted, this.#getRuntimeContext());
+  async syncMailbox(options: MailMailboxSyncOptions = {}): Promise<MailMailboxSyncResult> {
+    this.requireCapability('imap.message-sync');
+    const syncMailbox = this.#runtimeController?.syncMailbox;
+    if (typeof syncMailbox !== 'function') {
+      throw new MailSdkException({
+        code: mail_RUNTIME_SURFACE_FAILURE_CODE,
+        message: 'Mail runtime bridge method not available: syncMailbox',
+        providerKey: this.#metadata.providerKey,
+        pluginId: this.#metadata.pluginId,
+        details: {
+          methodName: 'syncMailbox',
+        },
+      });
+    }
+    return syncMailbox.call(this.#runtimeController, options, this.#getRuntimeContext());
   }
 
-  async muteVideo(muted = true): Promise<MailMuteState> {
-    const muteVideo = this.#requireRuntimeMethod('muteVideo');
-    return muteVideo.call(this.#runtimeController, muted, this.#getRuntimeContext());
+  async healthCheck(): Promise<MailTransportHealthResult> {
+    this.requireCapability('health');
+    const healthCheck = this.#requireRuntimeMethod('healthCheck');
+    return healthCheck.call(this.#runtimeController, this.#getRuntimeContext());
   }
 
   describeCapability(capability: MailCapabilityKey): MailCapabilitySupportState {

@@ -8,15 +8,17 @@ abstract interface class MailProviderDriver<TNativeClient> {
 
 abstract interface class MailClient<TNativeClient> {
   MailProviderMetadata get metadata;
+  MailCapabilitySet get capabilities;
   MailProviderSelection get selection;
-  Future<MailSessionDescriptor> join(MailJoinOptions options);
-  Future<MailSessionDescriptor> leave();
-  Future<MailTrackPublication> publish(MailPublishOptions options);
-  Future<void> unpublish(String trackId);
-  Future<MailTrackPublication> startScreenShare(MailScreenShareOptions options);
-  Future<void> stopScreenShare(String trackId);
-  Future<MailMuteState> muteAudio(bool muted);
-  Future<MailMuteState> muteVideo(bool muted);
+  Future<MailTransportDescriptor> connectTransport(MailTransportConnectOptions options);
+  Future<MailTransportDescriptor> authenticateTransport(
+    MailTransportAuthenticateOptions options,
+  );
+  Future<MailTransportDescriptor> disconnectTransport();
+  Future<MailSendResult> sendMail(MailSendOptions options);
+  Future<MailMailboxProbeResult> probeMailbox([MailMailboxProbeOptions? options]);
+  Future<MailMailboxSyncResult> syncMailbox([MailMailboxSyncOptions? options]);
+  Future<MailTransportHealthResult> healthCheck();
   List<String> getProviderExtensions();
   bool supportsProviderExtension(String extensionKey);
   bool supportsCapability(String capability);
@@ -25,38 +27,30 @@ abstract interface class MailClient<TNativeClient> {
 }
 
 abstract interface class MailRuntimeController<TNativeClient> {
-  Future<MailSessionDescriptor> join(
-    MailJoinOptions options,
+  Future<MailTransportDescriptor> connectTransport(
+    MailTransportConnectOptions options,
     MailRuntimeControllerContext<TNativeClient> context,
   );
-  Future<MailSessionDescriptor> leave(
+  Future<MailTransportDescriptor> authenticateTransport(
+    MailTransportAuthenticateOptions options,
     MailRuntimeControllerContext<TNativeClient> context,
   );
-  Future<MailTrackPublication> publish(
-    MailPublishOptions options,
+  Future<MailTransportDescriptor> disconnectTransport(
     MailRuntimeControllerContext<TNativeClient> context,
   );
-  Future<void> unpublish(
-    String trackId,
+  Future<MailSendResult> sendMail(
+    MailSendOptions options,
     MailRuntimeControllerContext<TNativeClient> context,
   );
-  Future<MailMuteState> muteAudio(
-    bool muted,
+  Future<MailMailboxProbeResult> probeMailbox(
+    MailMailboxProbeOptions? options,
     MailRuntimeControllerContext<TNativeClient> context,
   );
-  Future<MailMuteState> muteVideo(
-    bool muted,
+  Future<MailMailboxSyncResult> syncMailbox(
+    MailMailboxSyncOptions? options,
     MailRuntimeControllerContext<TNativeClient> context,
   );
-}
-
-abstract interface class MailScreenShareRuntimeController<TNativeClient> {
-  Future<MailTrackPublication> startScreenShare(
-    MailScreenShareOptions options,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-  Future<void> stopScreenShare(
-    String trackId,
+  Future<MailTransportHealthResult> healthCheck(
     MailRuntimeControllerContext<TNativeClient> context,
   );
 }
@@ -68,14 +62,13 @@ final class MailStandardContract {
     'MailDataSource',
   ];
   static const List<String> runtimeSurfaceMethods = <String>[
-    'join',
-    'leave',
-    'publish',
-    'unpublish',
-    'startScreenShare',
-    'stopScreenShare',
-    'muteAudio',
-    'muteVideo',
+    'connectTransport',
+    'authenticateTransport',
+    'disconnectTransport',
+    'sendMail',
+    'probeMailbox',
+    'syncMailbox',
+    'healthCheck',
   ];
   static const String runtimeSurfaceFailureCode = 'native_sdk_not_available';
 

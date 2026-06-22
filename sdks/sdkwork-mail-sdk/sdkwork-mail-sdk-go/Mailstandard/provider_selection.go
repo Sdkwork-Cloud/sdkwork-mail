@@ -1,25 +1,25 @@
-package rtcstandard
+package Mailstandard
 
 import "strings"
 
-type ParsedRtcProviderUrl struct {
+type ParsedMailProviderUrl struct {
     ProviderKey string
     RawUrl      string
 }
 
-type RtcProviderSelection struct {
+type MailProviderSelection struct {
     ProviderKey string
     Source      string
 }
 
-type RtcProviderSelectionRequest struct {
+type MailProviderSelectionRequest struct {
     ProviderUrl                  string
     ProviderKey                  string
     TenantOverrideProviderKey    string
     DeploymentProfileProviderKey string
 }
 
-var RtcProviderSelectionSources = []string{
+var MailProviderSelectionSources = []string{
     "provider_url",
     "provider_key",
     "tenant_override",
@@ -27,7 +27,7 @@ var RtcProviderSelectionSources = []string{
     "default_provider",
 }
 
-var RtcProviderSelectionPrecedence = []string{
+var MailProviderSelectionPrecedence = []string{
     "provider_url",
     "provider_key",
     "tenant_override",
@@ -35,63 +35,63 @@ var RtcProviderSelectionPrecedence = []string{
     "default_provider",
 }
 
-func hasRtcProviderSelectionText(value string) bool {
+func hasMailProviderSelectionText(value string) bool {
     return strings.TrimSpace(value) != ""
 }
 
-func ParseRtcProviderUrl(providerUrl string) ParsedRtcProviderUrl {
+func ParseMailProviderUrl(providerUrl string) ParsedMailProviderUrl {
     trimmed := strings.TrimSpace(providerUrl)
-    if !strings.HasPrefix(trimmed, "rtc:") || !strings.Contains(trimmed, "://") {
-        panic("Invalid RTC provider URL: " + providerUrl)
+    if !strings.HasPrefix(trimmed, "Mail:") || !strings.Contains(trimmed, "://") {
+        panic("Invalid Mail provider URL: " + providerUrl)
     }
 
-    withoutPrefix := strings.TrimPrefix(trimmed, "rtc:")
+    withoutPrefix := strings.TrimPrefix(trimmed, "Mail:")
     providerKey, _, _ := strings.Cut(withoutPrefix, "://")
 
-    return ParsedRtcProviderUrl{
+    return ParsedMailProviderUrl{
         ProviderKey: strings.ToLower(providerKey),
         RawUrl:      providerUrl,
     }
 }
 
-func ResolveRtcProviderSelection(
-    request RtcProviderSelectionRequest,
+func ResolveMailProviderSelection(
+    request MailProviderSelectionRequest,
     defaultProviderKey string,
-) RtcProviderSelection {
-    if hasRtcProviderSelectionText(request.ProviderUrl) {
-        return RtcProviderSelection{
-            ProviderKey: ParseRtcProviderUrl(request.ProviderUrl).ProviderKey,
+) MailProviderSelection {
+    if hasMailProviderSelectionText(request.ProviderUrl) {
+        return MailProviderSelection{
+            ProviderKey: ParseMailProviderUrl(request.ProviderUrl).ProviderKey,
             Source:      "provider_url",
         }
     }
 
-    if hasRtcProviderSelectionText(request.ProviderKey) {
-        return RtcProviderSelection{
+    if hasMailProviderSelectionText(request.ProviderKey) {
+        return MailProviderSelection{
             ProviderKey: strings.TrimSpace(request.ProviderKey),
             Source:      "provider_key",
         }
     }
 
-    if hasRtcProviderSelectionText(request.TenantOverrideProviderKey) {
-        return RtcProviderSelection{
+    if hasMailProviderSelectionText(request.TenantOverrideProviderKey) {
+        return MailProviderSelection{
             ProviderKey: strings.TrimSpace(request.TenantOverrideProviderKey),
             Source:      "tenant_override",
         }
     }
 
-    if hasRtcProviderSelectionText(request.DeploymentProfileProviderKey) {
-        return RtcProviderSelection{
+    if hasMailProviderSelectionText(request.DeploymentProfileProviderKey) {
+        return MailProviderSelection{
             ProviderKey: strings.TrimSpace(request.DeploymentProfileProviderKey),
             Source:      "deployment_profile",
         }
     }
 
     resolvedDefaultProviderKey := defaultProviderKey
-    if !hasRtcProviderSelectionText(resolvedDefaultProviderKey) {
-        resolvedDefaultProviderKey = DEFAULT_RTC_PROVIDER_KEY
+    if !hasMailProviderSelectionText(resolvedDefaultProviderKey) {
+        resolvedDefaultProviderKey = DEFAULT_mail_PROVIDER_KEY
     }
 
-    return RtcProviderSelection{
+    return MailProviderSelection{
         ProviderKey: resolvedDefaultProviderKey,
         Source:      "default_provider",
     }

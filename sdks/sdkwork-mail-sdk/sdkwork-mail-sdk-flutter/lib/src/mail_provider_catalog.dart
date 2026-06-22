@@ -13,67 +13,19 @@ final class MailProviderCatalogEntry {
 }
 
 final class MailProviderCatalog {
-  static const String DEFAULT_mail_PROVIDER_KEY = "volcengine";
+  static const String DEFAULT_mail_PROVIDER_KEY = "smtp";
 
   static const List<MailProviderCatalogEntry> entries = <MailProviderCatalogEntry>[
     MailProviderCatalogEntry(
-      providerKey: "volcengine",
-      pluginId: "Mail-volcengine",
-      driverId: "sdkwork-mail-driver-volcengine",
+      providerKey: "smtp",
+      pluginId: "Mail-smtp",
+      driverId: "sdkwork-mail-driver-smtp",
       defaultSelected: true,
     ),
     MailProviderCatalogEntry(
-      providerKey: "aliyun",
-      pluginId: "Mail-aliyun",
-      driverId: "sdkwork-mail-driver-aliyun",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "tencent",
-      pluginId: "Mail-tencent",
-      driverId: "sdkwork-mail-driver-tencent",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "agora",
-      pluginId: "Mail-agora",
-      driverId: "sdkwork-mail-driver-agora",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "zego",
-      pluginId: "Mail-zego",
-      driverId: "sdkwork-mail-driver-zego",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "livekit",
-      pluginId: "Mail-livekit",
-      driverId: "sdkwork-mail-driver-livekit",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "twilio",
-      pluginId: "Mail-twilio",
-      driverId: "sdkwork-mail-driver-twilio",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "jitsi",
-      pluginId: "Mail-jitsi",
-      driverId: "sdkwork-mail-driver-jitsi",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "janus",
-      pluginId: "Mail-janus",
-      driverId: "sdkwork-mail-driver-janus",
-      defaultSelected: false,
-    ),
-    MailProviderCatalogEntry(
-      providerKey: "mediasoup",
-      pluginId: "Mail-mediasoup",
-      driverId: "sdkwork-mail-driver-mediasoup",
+      providerKey: "imap",
+      pluginId: "Mail-imap",
+      driverId: "sdkwork-mail-driver-imap",
       defaultSelected: false,
     )
   ];

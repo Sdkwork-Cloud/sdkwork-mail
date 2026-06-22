@@ -23,27 +23,27 @@ test('capability negotiation standard exports stable statuses, rules, and resolv
 });
 
 test('data source negotiates optional capability degradation with surface-aware missing sets', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['aliyun']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerKey: 'aliyun',
+    providerKey: 'smtp',
   });
 
   assert.deepEqual(
     dataSource.negotiateCapabilities({
-      required: ['session', 'media.audio'],
-      optional: ['recording', 'data-channel'],
+      required: ['transport.connect', 'transport.authenticate'],
+      optional: ['smtp.send', 'imap.sync'],
     }),
     {
       status: 'degraded',
-      supportedRequired: ['session', 'media.audio'],
+      supportedRequired: ['transport.connect', 'transport.authenticate'],
       missingRequired: [],
-      supportedOptional: ['recording'],
-      missingOptional: ['data-channel'],
+      supportedOptional: ['smtp.send'],
+      missingOptional: ['imap.sync'],
       missingBySurface: {
         controlPlane: [],
-        runtimeBridge: ['data-channel'],
+        runtimeBridge: ['imap.sync'],
         crossSurface: [],
       },
     },
@@ -51,22 +51,22 @@ test('data source negotiates optional capability degradation with surface-aware 
 });
 
 test('client describes capability support with category and surface metadata', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['aliyun']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerKey: 'aliyun',
+    providerKey: 'smtp',
   });
   const client = await dataSource.createClient();
 
-  assert.deepEqual(client.describeCapability('session'), {
-    capabilityKey: 'session',
+  assert.deepEqual(client.describeCapability('transport.connect'), {
+    capabilityKey: 'transport.connect',
     category: 'required-baseline',
-    surface: 'cross-surface',
+    surface: 'control-plane',
     supported: true,
   });
-  assert.deepEqual(client.describeCapability('data-channel'), {
-    capabilityKey: 'data-channel',
+  assert.deepEqual(client.describeCapability('imap.sync'), {
+    capabilityKey: 'imap.sync',
     category: 'optional-advanced',
     surface: 'runtime-bridge',
     supported: false,
@@ -74,28 +74,28 @@ test('client describes capability support with category and surface metadata', a
 });
 
 test('client negotiation reports unsupported when required capabilities are missing', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['aliyun']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerKey: 'aliyun',
+    providerKey: 'smtp',
   });
   const client = await dataSource.createClient();
 
   assert.deepEqual(
     client.negotiateCapabilities({
-      required: ['session', 'data-channel'],
-      optional: ['recording'],
+      required: ['transport.connect', 'imap.sync'],
+      optional: ['smtp.send'],
     }),
     {
       status: 'unsupported',
-      supportedRequired: ['session'],
-      missingRequired: ['data-channel'],
-      supportedOptional: ['recording'],
+      supportedRequired: ['transport.connect'],
+      missingRequired: ['imap.sync'],
+      supportedOptional: ['smtp.send'],
       missingOptional: [],
       missingBySurface: {
         controlPlane: [],
-        runtimeBridge: ['data-channel'],
+        runtimeBridge: ['imap.sync'],
         crossSurface: [],
       },
     },

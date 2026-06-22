@@ -57,10 +57,10 @@ test('root sdk re-exports capability catalog helpers and descriptors', async () 
   assert.equal(typeof sdk.getMailCapabilityCatalog, 'function');
   assert.equal(typeof sdk.getMailCapabilityDescriptor, 'function');
   assert.deepEqual(sdk.getMailCapabilityCatalog(), catalog.mail_CAPABILITY_CATALOG);
-  assert.deepEqual(sdk.getMailCapabilityDescriptor('session'), {
-    capabilityKey: 'session',
+  assert.deepEqual(sdk.getMailCapabilityDescriptor('transport.connect'), {
+    capabilityKey: 'transport.connect',
     category: 'required-baseline',
-    surface: 'cross-surface',
+    surface: 'control-plane',
   });
 });
 
@@ -70,8 +70,8 @@ test('materialized Mail capability catalog is runtime-frozen', async () => {
   assert.equal(Object.isFrozen(catalog.REQUIRED_mail_CAPABILITIES), true);
   assert.equal(Object.isFrozen(catalog.OPTIONAL_mail_CAPABILITIES), true);
   assert.equal(Object.isFrozen(catalog.mail_CAPABILITY_CATALOG), true);
-  assert.equal(Object.isFrozen(catalog.SESSION_mail_CAPABILITY_DESCRIPTOR), true);
+  assert.equal(Object.isFrozen(catalog.TRANSPORT_CONNECT_mail_CAPABILITY_DESCRIPTOR), true);
   assert.throws(() => {
-    catalog.SESSION_mail_CAPABILITY_DESCRIPTOR.surface = 'control-plane';
+    catalog.TRANSPORT_CONNECT_mail_CAPABILITY_DESCRIPTOR.surface = 'control-plane';
   }, /TypeError/);
 });

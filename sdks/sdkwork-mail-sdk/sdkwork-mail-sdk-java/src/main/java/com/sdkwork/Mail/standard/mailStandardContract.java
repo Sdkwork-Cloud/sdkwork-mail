@@ -1,51 +1,55 @@
-package com.sdkwork.rtc.standard;
+package com.sdkwork.Mail.standard;
 
-public final class RtcStandardContract {
+public final class MailStandardContract {
 
-  private RtcStandardContract() {
+  private MailStandardContract() {
   }
 
-  public interface RtcProviderDriver<TNativeClient> {
+  public interface MailProviderDriver<TNativeClient> {
     String providerKey();
 
-    RtcClient<TNativeClient> createClient();
+    MailClient<TNativeClient> createClient();
   }
 
-  public interface RtcDriverManager<TNativeClient> {
-    RtcProviderDriver<TNativeClient> resolveDriver(String providerKey);
+  public interface MailDriverManager<TNativeClient> {
+    MailProviderDriver<TNativeClient> resolveDriver(String providerKey);
   }
 
-  public interface RtcDataSource<TNativeClient> {
-    RtcClient<TNativeClient> createClient();
+  public interface MailDataSource<TNativeClient> {
+    MailClient<TNativeClient> createClient();
   }
 
-  public interface RtcClient<TNativeClient> {
-    void join();
+  public interface MailClient<TNativeClient> {
+    void connectTransport();
 
-    void leave();
+    void authenticateTransport();
 
-    void publish(String trackId);
+    void disconnectTransport();
 
-    void unpublish(String trackId);
+    void sendMail();
 
-    void muteAudio(boolean muted);
+    void probeMailbox();
 
-    void muteVideo(boolean muted);
+    void syncMailbox();
+
+    void healthCheck();
 
     TNativeClient unwrap();
   }
 
-  public interface RtcRuntimeController<TNativeClient> {
-    void join();
+  public interface MailRuntimeController<TNativeClient> {
+    void connectTransport();
 
-    void leave();
+    void authenticateTransport();
 
-    void publish(String trackId);
+    void disconnectTransport();
 
-    void unpublish(String trackId);
+    void sendMail();
 
-    void muteAudio(boolean muted);
+    void probeMailbox();
 
-    void muteVideo(boolean muted);
+    void syncMailbox();
+
+    void healthCheck();
   }
 }

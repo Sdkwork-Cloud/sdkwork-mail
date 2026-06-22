@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class RtcProviderSupportStatus(str, Enum):
+class MailProviderSupportStatus(str, Enum):
     builtin_registered = "builtin_registered"
     official_registered = "official_registered"
     official_unregistered = "official_unregistered"
@@ -10,23 +10,23 @@ class RtcProviderSupportStatus(str, Enum):
 
 
 @dataclass(frozen=True)
-class RtcProviderSupport:
+class MailProviderSupport:
     providerKey: str
-    status: RtcProviderSupportStatus
+    status: MailProviderSupportStatus
     builtin: bool
     official: bool
     registered: bool
 
 
 @dataclass(frozen=True)
-class RtcProviderSupportStateRequest:
+class MailProviderSupportStateRequest:
     providerKey: str
     builtin: bool
     official: bool
     registered: bool
 
 
-RTC_PROVIDER_SUPPORT_STATUSES = [
+mail_PROVIDER_SUPPORT_STATUSES = [
     "builtin_registered",
     "official_registered",
     "official_unregistered",
@@ -34,28 +34,28 @@ RTC_PROVIDER_SUPPORT_STATUSES = [
 ]
 
 
-def resolve_rtc_provider_support_status(
-    request: RtcProviderSupportStateRequest,
-) -> RtcProviderSupportStatus:
+def resolve_mail_provider_support_status(
+    request: MailProviderSupportStateRequest,
+) -> MailProviderSupportStatus:
     if request.official and request.registered:
         return (
-            RtcProviderSupportStatus.builtin_registered
+            MailProviderSupportStatus.builtin_registered
             if request.builtin
-            else RtcProviderSupportStatus.official_registered
+            else MailProviderSupportStatus.official_registered
         )
 
     if request.official:
-        return RtcProviderSupportStatus.official_unregistered
+        return MailProviderSupportStatus.official_unregistered
 
-    return RtcProviderSupportStatus.unknown
+    return MailProviderSupportStatus.unknown
 
 
-def create_rtc_provider_support_state(
-    request: RtcProviderSupportStateRequest,
-) -> RtcProviderSupport:
-    return RtcProviderSupport(
+def create_mail_provider_support_state(
+    request: MailProviderSupportStateRequest,
+) -> MailProviderSupport:
+    return MailProviderSupport(
         providerKey=request.providerKey,
-        status=resolve_rtc_provider_support_status(request),
+        status=resolve_mail_provider_support_status(request),
         builtin=request.builtin,
         official=request.official,
         registered=request.registered,

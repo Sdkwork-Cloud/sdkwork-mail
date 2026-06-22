@@ -27,17 +27,9 @@ pub const mail_PROVIDER_EXTENSION_STATUSES: [&str; 2] = [
     "reserved",
 ];
 
-pub const mail_PROVIDER_EXTENSION_CATALOG: [MailProviderExtensionCatalogEntry; 10] = [
-    MailProviderExtensionCatalogEntry { extensionKey: "volcengine.native-client", providerKey: "volcengine", displayName: "Volcengine Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reference-baseline" },
-    MailProviderExtensionCatalogEntry { extensionKey: "aliyun.native-client", providerKey: "aliyun", displayName: "Aliyun Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
-    MailProviderExtensionCatalogEntry { extensionKey: "tencent.native-client", providerKey: "tencent", displayName: "Tencent Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reference-baseline" },
-    MailProviderExtensionCatalogEntry { extensionKey: "agora.native-client", providerKey: "agora", displayName: "Agora Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
-    MailProviderExtensionCatalogEntry { extensionKey: "zego.native-client", providerKey: "zego", displayName: "ZEGO Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
-    MailProviderExtensionCatalogEntry { extensionKey: "livekit.native-client", providerKey: "livekit", displayName: "LiveKit Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
-    MailProviderExtensionCatalogEntry { extensionKey: "twilio.native-client", providerKey: "twilio", displayName: "Twilio Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
-    MailProviderExtensionCatalogEntry { extensionKey: "jitsi.native-client", providerKey: "jitsi", displayName: "Jitsi Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
-    MailProviderExtensionCatalogEntry { extensionKey: "janus.native-client", providerKey: "janus", displayName: "Janus Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
-    MailProviderExtensionCatalogEntry { extensionKey: "mediasoup.native-client", providerKey: "mediasoup", displayName: "mediasoup Native Client", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
+pub const mail_PROVIDER_EXTENSION_CATALOG: [MailProviderExtensionCatalogEntry; 2] = [
+    MailProviderExtensionCatalogEntry { extensionKey: "smtp.transport", providerKey: "smtp", displayName: "SMTP Transport", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
+    MailProviderExtensionCatalogEntry { extensionKey: "imap.sync", providerKey: "imap", displayName: "IMAP Sync", surface: "runtime-bridge", access: "unwrap-only", status: "reserved" },
 ];
 
 pub fn get_mail_provider_extension_catalog() -> &'static [MailProviderExtensionCatalogEntry] {

@@ -52,7 +52,7 @@ test("sdkwork-mail keeps app packages under app surface roots", () => {
     "apps/sdkwork-mail-mini-program/packages/sdkwork-mail-mp-shell/package.json",
     "apps/sdkwork-mail-mini-program/packages/sdkwork-mail-mp-Mail/package.json",
     "apps/sdkwork-mail-mini-program/packages/sdkwork-mail-mp-host/package.json",
-    "apps/sdkwork-mail-flutter-mobile/packages/sdkwork_mail_flutter_mobile_Mail/pubspec.yaml",
+    "apps/sdkwork-mail-flutter-mobile/packages/sdkwork_mail_flutter_mobile_mail/pubspec.yaml",
   ]) {
     assert.ok(exists(packagePath), `${packagePath} must exist`);
   }
@@ -154,6 +154,7 @@ test("sdkwork-mail provider plugins live under plugins", () => {
   const imapLib = read("plugins/mail-imap/src/lib.rs");
   assert.match(imapLib, /MailSyncPort/u);
   assert.match(read("crates/sdkwork-communication-mail-service/src/sync.rs"), /MailSyncPort/u);
+  assert.match(read("crates/sdkwork-communication-mail-service/src/sync.rs"), /sync_mailbox/u);
 });
 
 test("sdkwork-mail authority workspace does not require sdkwork-discovery without RPC services", () => {

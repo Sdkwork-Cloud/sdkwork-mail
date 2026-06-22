@@ -1,6 +1,6 @@
-package com.sdkwork.rtc.metadata
+package com.sdkwork.Mail.metadata
 
-enum class RtcProviderSelectionSource {
+enum class MailProviderSelectionSource {
     provider_url,
     provider_key,
     tenant_override,
@@ -8,24 +8,24 @@ enum class RtcProviderSelectionSource {
     default_provider,
 }
 
-data class ParsedRtcProviderUrl(
+data class ParsedMailProviderUrl(
     val providerKey: String,
     val rawUrl: String,
 )
 
-data class RtcProviderSelection(
+data class MailProviderSelection(
     val providerKey: String,
-    val source: RtcProviderSelectionSource,
+    val source: MailProviderSelectionSource,
 )
 
-data class RtcProviderSelectionRequest(
+data class MailProviderSelectionRequest(
     val providerUrl: String? = null,
     val providerKey: String? = null,
     val tenantOverrideProviderKey: String? = null,
     val deploymentProfileProviderKey: String? = null,
 )
 
-val RTC_PROVIDER_SELECTION_SOURCES: List<String> = listOf(
+val mail_PROVIDER_SELECTION_SOURCES: List<String> = listOf(
     "provider_url",
     "provider_key",
     "tenant_override",
@@ -33,7 +33,7 @@ val RTC_PROVIDER_SELECTION_SOURCES: List<String> = listOf(
     "default_provider",
 )
 
-val RTC_PROVIDER_SELECTION_PRECEDENCE: List<String> = listOf(
+val mail_PROVIDER_SELECTION_PRECEDENCE: List<String> = listOf(
     "provider_url",
     "provider_key",
     "tenant_override",
@@ -41,54 +41,54 @@ val RTC_PROVIDER_SELECTION_PRECEDENCE: List<String> = listOf(
     "default_provider",
 )
 
-private fun hasRtcProviderSelectionText(value: String?): Boolean = value != null && value.isNotBlank()
+private fun hasMailProviderSelectionText(value: String?): Boolean = value != null && value.isNotBlank()
 
-fun parseRtcProviderUrl(providerUrl: String): ParsedRtcProviderUrl {
+fun parseMailProviderUrl(providerUrl: String): ParsedMailProviderUrl {
     val trimmed = providerUrl.trim()
-    require(trimmed.startsWith("rtc:") && trimmed.contains("://")) {
-        "Invalid RTC provider URL: $providerUrl"
+    require(trimmed.startsWith("Mail:") && trimmed.contains("://")) {
+        "Invalid Mail provider URL: $providerUrl"
     }
 
-    return ParsedRtcProviderUrl(
+    return ParsedMailProviderUrl(
         providerKey = trimmed.substring(4, trimmed.indexOf("://")).lowercase(),
         rawUrl = providerUrl,
     )
 }
 
-fun resolveRtcProviderSelection(
-    request: RtcProviderSelectionRequest = RtcProviderSelectionRequest(),
-    defaultProviderKey: String = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY,
-): RtcProviderSelection {
-    if (hasRtcProviderSelectionText(request.providerUrl)) {
-        return RtcProviderSelection(
-            providerKey = parseRtcProviderUrl(request.providerUrl!!).providerKey,
-            source = RtcProviderSelectionSource.provider_url,
+fun resolveMailProviderSelection(
+    request: MailProviderSelectionRequest = MailProviderSelectionRequest(),
+    defaultProviderKey: String = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY,
+): MailProviderSelection {
+    if (hasMailProviderSelectionText(request.providerUrl)) {
+        return MailProviderSelection(
+            providerKey = parseMailProviderUrl(request.providerUrl!!).providerKey,
+            source = MailProviderSelectionSource.provider_url,
         )
     }
 
-    if (hasRtcProviderSelectionText(request.providerKey)) {
-        return RtcProviderSelection(
+    if (hasMailProviderSelectionText(request.providerKey)) {
+        return MailProviderSelection(
             providerKey = request.providerKey!!.trim(),
-            source = RtcProviderSelectionSource.provider_key,
+            source = MailProviderSelectionSource.provider_key,
         )
     }
 
-    if (hasRtcProviderSelectionText(request.tenantOverrideProviderKey)) {
-        return RtcProviderSelection(
+    if (hasMailProviderSelectionText(request.tenantOverrideProviderKey)) {
+        return MailProviderSelection(
             providerKey = request.tenantOverrideProviderKey!!.trim(),
-            source = RtcProviderSelectionSource.tenant_override,
+            source = MailProviderSelectionSource.tenant_override,
         )
     }
 
-    if (hasRtcProviderSelectionText(request.deploymentProfileProviderKey)) {
-        return RtcProviderSelection(
+    if (hasMailProviderSelectionText(request.deploymentProfileProviderKey)) {
+        return MailProviderSelection(
             providerKey = request.deploymentProfileProviderKey!!.trim(),
-            source = RtcProviderSelectionSource.deployment_profile,
+            source = MailProviderSelectionSource.deployment_profile,
         )
     }
 
-    return RtcProviderSelection(
+    return MailProviderSelection(
         providerKey = defaultProviderKey,
-        source = RtcProviderSelectionSource.default_provider,
+        source = MailProviderSelectionSource.default_provider,
     )
 }

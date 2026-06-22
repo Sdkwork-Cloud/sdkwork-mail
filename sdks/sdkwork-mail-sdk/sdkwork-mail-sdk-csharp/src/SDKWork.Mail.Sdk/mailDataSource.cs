@@ -1,32 +1,32 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
-public sealed record RtcDataSourceOptions(
+public sealed record MailDataSourceOptions(
     string? providerUrl = null,
     string? providerKey = null,
     string? tenantOverrideProviderKey = null,
     string? deploymentProfileProviderKey = null,
-    string defaultProviderKey = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY
+    string defaultProviderKey = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY
 );
 
-public sealed class RtcDataSource
+public sealed class MailDataSource
 {
-    private readonly RtcDataSourceOptions _options;
-    private readonly RtcDriverManager _driverManager;
+    private readonly MailDataSourceOptions _options;
+    private readonly MailDriverManager _driverManager;
 
-    public RtcDataSource(
-        RtcDataSourceOptions? options = null,
-        RtcDriverManager? driverManager = null
+    public MailDataSource(
+        MailDataSourceOptions? options = null,
+        MailDriverManager? driverManager = null
     )
     {
-        _options = options ?? new RtcDataSourceOptions();
-        _driverManager = driverManager ?? new RtcDriverManager();
+        _options = options ?? new MailDataSourceOptions();
+        _driverManager = driverManager ?? new MailDriverManager();
     }
 
-    public RtcProviderSelection DescribeSelection(RtcDataSourceOptions? overrides = null)
+    public MailProviderSelection DescribeSelection(MailDataSourceOptions? overrides = null)
     {
         var merged = merge(_options, overrides);
         return _driverManager.ResolveSelection(
-            new RtcProviderSelectionRequest(
+            new MailProviderSelectionRequest(
                 merged.providerUrl,
                 merged.providerKey,
                 merged.tenantOverrideProviderKey,
@@ -36,19 +36,19 @@ public sealed class RtcDataSource
         );
     }
 
-    public RtcProviderSupport DescribeProviderSupport(RtcDataSourceOptions? overrides = null)
+    public MailProviderSupport DescribeProviderSupport(MailDataSourceOptions? overrides = null)
     {
         return _driverManager.DescribeProviderSupport(DescribeSelection(overrides).providerKey);
     }
 
-    public IReadOnlyList<RtcProviderSupport> ListProviderSupport()
+    public IReadOnlyList<MailProviderSupport> ListProviderSupport()
     {
         return _driverManager.ListProviderSupport();
     }
 
-    private static RtcDataSourceOptions merge(
-        RtcDataSourceOptions baseOptions,
-        RtcDataSourceOptions? overrides
+    private static MailDataSourceOptions merge(
+        MailDataSourceOptions baseOptions,
+        MailDataSourceOptions? overrides
     )
     {
         if (overrides is null)
@@ -56,7 +56,7 @@ public sealed class RtcDataSource
             return baseOptions;
         }
 
-        return new RtcDataSourceOptions(
+        return new MailDataSourceOptions(
             overrides.providerUrl ?? baseOptions.providerUrl,
             overrides.providerKey ?? baseOptions.providerKey,
             overrides.tenantOverrideProviderKey ?? baseOptions.tenantOverrideProviderKey,

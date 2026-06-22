@@ -364,3 +364,25 @@ CREATE UNIQUE INDEX uk_mail_transactional_delivery_correlation
 
 CREATE INDEX idx_mail_transactional_delivery_tenant_created
     ON mail_transactional_delivery (tenant_id, organization_id, business_kind, created_at DESC);
+
+CREATE TABLE mail_marketing_consent (
+    id BIGINT NOT NULL,
+    uuid VARCHAR(64) NOT NULL,
+    tenant_id BIGINT NOT NULL,
+    organization_id BIGINT NOT NULL DEFAULT 0,
+    recipient_email VARCHAR(320) NOT NULL,
+    status INTEGER NOT NULL DEFAULT 1,
+    consent_source VARCHAR(64) NOT NULL DEFAULT 'admin',
+    granted_at TIMESTAMP NOT NULL,
+    revoked_at TIMESTAMP,
+    metadata JSONB,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    version BIGINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    CONSTRAINT uk_mail_marketing_consent_uuid UNIQUE (uuid),
+    CONSTRAINT uk_mail_marketing_consent_recipient UNIQUE (tenant_id, organization_id, recipient_email)
+);
+
+CREATE INDEX idx_mail_marketing_consent_lookup
+    ON mail_marketing_consent (tenant_id, organization_id, recipient_email, status);

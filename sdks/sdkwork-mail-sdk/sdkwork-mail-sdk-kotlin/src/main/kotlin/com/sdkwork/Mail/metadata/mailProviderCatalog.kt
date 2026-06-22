@@ -1,29 +1,21 @@
-package com.sdkwork.rtc.metadata
+package com.sdkwork.Mail.metadata
 
-data class RtcProviderCatalogEntry(
+data class MailProviderCatalogEntry(
     val providerKey: String,
     val pluginId: String,
     val driverId: String,
     val defaultSelected: Boolean,
 )
 
-object RtcProviderCatalog {
-    const val DEFAULT_RTC_PROVIDER_KEY: String = "volcengine"
+object MailProviderCatalog {
+    const val DEFAULT_mail_PROVIDER_KEY: String = "smtp"
 
-    val entries: List<RtcProviderCatalogEntry> = listOf(
-        RtcProviderCatalogEntry("volcengine", "rtc-volcengine", "sdkwork-rtc-driver-volcengine", true),
-        RtcProviderCatalogEntry("aliyun", "rtc-aliyun", "sdkwork-rtc-driver-aliyun", false),
-        RtcProviderCatalogEntry("tencent", "rtc-tencent", "sdkwork-rtc-driver-tencent", false),
-        RtcProviderCatalogEntry("agora", "rtc-agora", "sdkwork-rtc-driver-agora", false),
-        RtcProviderCatalogEntry("zego", "rtc-zego", "sdkwork-rtc-driver-zego", false),
-        RtcProviderCatalogEntry("livekit", "rtc-livekit", "sdkwork-rtc-driver-livekit", false),
-        RtcProviderCatalogEntry("twilio", "rtc-twilio", "sdkwork-rtc-driver-twilio", false),
-        RtcProviderCatalogEntry("jitsi", "rtc-jitsi", "sdkwork-rtc-driver-jitsi", false),
-        RtcProviderCatalogEntry("janus", "rtc-janus", "sdkwork-rtc-driver-janus", false),
-        RtcProviderCatalogEntry("mediasoup", "rtc-mediasoup", "sdkwork-rtc-driver-mediasoup", false),
+    val entries: List<MailProviderCatalogEntry> = listOf(
+        MailProviderCatalogEntry("smtp", "Mail-smtp", "sdkwork-mail-driver-smtp", true),
+        MailProviderCatalogEntry("imap", "Mail-imap", "sdkwork-mail-driver-imap", false),
     )
 
-fun getRtcProviderByProviderKey(providerKey: String): RtcProviderCatalogEntry? =
+fun getMailProviderByProviderKey(providerKey: String): MailProviderCatalogEntry? =
         entries.firstOrNull { it.providerKey == providerKey }
 
 }

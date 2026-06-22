@@ -63,4 +63,7 @@ pub const MAIL_TABLES: &[MailTableContract] = &[
     MailTableContract {
         table_name: "mail_transactional_delivery",
     },
+    MailTableContract {
+        table_name: "mail_marketing_consent",
+    },
 ];

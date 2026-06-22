@@ -248,24 +248,24 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.8"
-  sdkwork_rtc_flutter_mobile_admin_core:
+  sdkwork_mail_flutter_mobile_admin_core:
     dependency: "direct main"
     description:
-      path: "packages/sdkwork_rtc_flutter_mobile_admin_core"
+      path: "packages/sdkwork_mail_flutter_mobile_admin_core"
       relative: true
     source: path
     version: "0.1.0"
-  sdkwork_rtc_flutter_mobile_core:
+  sdkwork_mail_flutter_mobile_core:
     dependency: "direct main"
     description:
-      path: "packages/sdkwork_rtc_flutter_mobile_core"
+      path: "packages/sdkwork_mail_flutter_mobile_core"
       relative: true
     source: path
     version: "0.1.0"
-  sdkwork_rtc_flutter_mobile_rtc:
+  sdkwork_mail_flutter_mobile_mail:
     dependency: "direct main"
     description:
-      path: "packages/sdkwork_rtc_flutter_mobile_rtc"
+      path: "packages/sdkwork_mail_flutter_mobile_mail"
       relative: true
     source: path
     version: "0.1.0"

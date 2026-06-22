@@ -58,6 +58,7 @@ const client = new SdkworkBackendClient({
 - `client.mailProviderWebhooks` - mail_provider_webhooks API
 - `client.mailTemplates` - mail_templates API
 - `client.mailTransactionalDeliveries` - mail_transactional_deliveries API
+- `client.mailMarketingConsents` - mail_marketing_consents API
 
 ## Usage Examples
 
@@ -97,6 +98,16 @@ const params = {
   recipientEmail: 'recipientEmail',
 };
 const result = await client.mailTransactionalDeliveries.mail.transactionalDeliveries.list(params);
+```
+
+### mail_marketing_consents
+
+```typescript
+// GET /backend/v3/api/mail/marketing_consents
+const params = {
+  recipientEmail: 'recipientEmail',
+};
+const result = await client.mailMarketingConsents.mail.marketingConsents.list(params);
 ```
 
 ## Error Handling

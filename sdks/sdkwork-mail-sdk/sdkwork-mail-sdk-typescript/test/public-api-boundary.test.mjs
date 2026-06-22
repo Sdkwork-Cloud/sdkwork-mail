@@ -63,27 +63,10 @@ const FORBIDDEN_ROOT_PROVIDER_EXPORTS = [
   'createBuiltinMailDriverManager',
   'getBuiltinMailProviderModules',
   'getOfficialMailProviderModules',
-  'createVolcengineMailDriver',
-  'createOfficialVolcengineWebMailDriver',
-  'createAliyunMailDriver',
-  'createTencentMailDriver',
-  'createAgoraMailDriver',
-  'createZegoMailDriver',
-  'createLivekitMailDriver',
-  'createTwilioMailDriver',
-  'createJitsiMailDriver',
-  'createJanusMailDriver',
-  'createMediasoupMailDriver',
-  'VOLCENGINE_mail_PROVIDER_MODULE',
-  'ALIYUN_mail_PROVIDER_MODULE',
-  'TENCENT_mail_PROVIDER_MODULE',
-  'AGORA_mail_PROVIDER_MODULE',
-  'ZEGO_mail_PROVIDER_MODULE',
-  'LIVEKIT_mail_PROVIDER_MODULE',
-  'TWILIO_mail_PROVIDER_MODULE',
-  'JITSI_mail_PROVIDER_MODULE',
-  'JANUS_mail_PROVIDER_MODULE',
-  'MEDIASOUP_mail_PROVIDER_MODULE',
+  'createSmtpMailDriver',
+  'createImapMailDriver',
+  'SMTP_mail_PROVIDER_MODULE',
+  'IMAP_mail_PROVIDER_MODULE',
 ];
 
 test('root public API exposes provider-neutral Mail contracts and plugin SPI only', async () => {
@@ -143,14 +126,13 @@ test('root public API exposes provider-neutral Mail contracts and plugin SPI onl
     'vendor_error',
   ]);
   assert.deepEqual(sdk.mail_RUNTIME_SURFACE_METHODS, [
-    'join',
-    'leave',
-    'publish',
-    'unpublish',
-    'startScreenShare',
-    'stopScreenShare',
-    'muteAudio',
-    'muteVideo',
+    'connectTransport',
+    'authenticateTransport',
+    'disconnectTransport',
+    'sendMail',
+    'probeMailbox',
+    'syncMailbox',
+    'healthCheck',
   ]);
   assert.deepEqual(sdk.mail_RUNTIME_IMMUTABILITY_STANDARD, {
     frozenTerm: 'runtime-frozen',
@@ -200,9 +182,9 @@ test('root public API exposes provider-neutral Mail contracts and plugin SPI onl
   );
   assert.equal(Object.isFrozen(sdk.mail_ROOT_PUBLIC_SURFACE_STANDARD), true);
   assert.equal(Object.isFrozen(sdk.mail_ROOT_PUBLIC_SURFACE_TYPESCRIPT_INLINE_HELPER_NAMES), true);
-  assert.equal(sdk.DEFAULT_mail_PROVIDER_KEY, 'volcengine');
-  assert.equal(sdk.DEFAULT_mail_PROVIDER_PLUGIN_ID, 'Mail-volcengine');
-  assert.equal(sdk.DEFAULT_mail_PROVIDER_DRIVER_ID, 'sdkwork-mail-driver-volcengine');
+  assert.equal(sdk.DEFAULT_mail_PROVIDER_KEY, 'smtp');
+  assert.equal(sdk.DEFAULT_mail_PROVIDER_PLUGIN_ID, 'Mail-smtp');
+  assert.equal(sdk.DEFAULT_mail_PROVIDER_DRIVER_ID, 'sdkwork-mail-driver-smtp');
 
   for (const retiredExport of retiredRootExports()) {
     assert.equal(retiredExport in sdk, false, `${retiredExport} must be owned by IM, not Mail`);

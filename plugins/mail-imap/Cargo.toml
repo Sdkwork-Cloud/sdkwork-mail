@@ -5,5 +5,10 @@ license.workspace = true
 version.workspace = true
 
 [dependencies]
+async-imap = { version = "0.10.4", default-features = false, features = ["runtime-tokio"] }
+futures-util = "0.3.31"
 sdkwork-communication-mail-service.workspace = true
 sdkwork-utils-rust.workspace = true
+tokio.workspace = true
+tokio-rustls = "0.26.2"
+webpki-roots = "0.26.8"

@@ -1,8 +1,8 @@
-package com.sdkwork.rtc.metadata;
+package com.sdkwork.Mail.metadata;
 
 import java.util.List;
 
-final class RtcDataSourceOptions {
+final class MailDataSourceOptions {
 
   public final String providerUrl;
   public final String providerKey;
@@ -10,11 +10,11 @@ final class RtcDataSourceOptions {
   public final String deploymentProfileProviderKey;
   public final String defaultProviderKey;
 
-  public RtcDataSourceOptions() {
-    this(null, null, null, null, RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY);
+  public MailDataSourceOptions() {
+    this(null, null, null, null, MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY);
   }
 
-  public RtcDataSourceOptions(
+  public MailDataSourceOptions(
       String providerUrl,
       String providerKey,
       String tenantOverrideProviderKey,
@@ -29,31 +29,31 @@ final class RtcDataSourceOptions {
   }
 }
 
-public final class RtcDataSource {
+public final class MailDataSource {
 
-  private final RtcDataSourceOptions options;
-  private final RtcDriverManager driverManager;
+  private final MailDataSourceOptions options;
+  private final MailDriverManager driverManager;
 
-  public RtcDataSource() {
-    this(new RtcDataSourceOptions(), new RtcDriverManager());
+  public MailDataSource() {
+    this(new MailDataSourceOptions(), new MailDriverManager());
   }
 
-  public RtcDataSource(
-      RtcDataSourceOptions options,
-      RtcDriverManager driverManager
+  public MailDataSource(
+      MailDataSourceOptions options,
+      MailDriverManager driverManager
   ) {
-    this.options = options == null ? new RtcDataSourceOptions() : options;
-    this.driverManager = driverManager == null ? new RtcDriverManager() : driverManager;
+    this.options = options == null ? new MailDataSourceOptions() : options;
+    this.driverManager = driverManager == null ? new MailDriverManager() : driverManager;
   }
 
-  public RtcProviderSelection describeSelection() {
+  public MailProviderSelection describeSelection() {
     return describeSelection(null);
   }
 
-  public RtcProviderSelection describeSelection(RtcDataSourceOptions overrides) {
+  public MailProviderSelection describeSelection(MailDataSourceOptions overrides) {
     var merged = merge(options, overrides);
     return driverManager.resolveSelection(
-        new RtcProviderSelection.RtcProviderSelectionRequest(
+        new MailProviderSelection.MailProviderSelectionRequest(
             merged.providerUrl,
             merged.providerKey,
             merged.tenantOverrideProviderKey,
@@ -63,27 +63,27 @@ public final class RtcDataSource {
     );
   }
 
-  public RtcProviderSupport describeProviderSupport() {
+  public MailProviderSupport describeProviderSupport() {
     return describeProviderSupport(null);
   }
 
-  public RtcProviderSupport describeProviderSupport(RtcDataSourceOptions overrides) {
+  public MailProviderSupport describeProviderSupport(MailDataSourceOptions overrides) {
     return driverManager.describeProviderSupport(describeSelection(overrides).providerKey());
   }
 
-  public List<RtcProviderSupport> listProviderSupport() {
+  public List<MailProviderSupport> listProviderSupport() {
     return driverManager.listProviderSupport();
   }
 
-  private static RtcDataSourceOptions merge(
-      RtcDataSourceOptions base,
-      RtcDataSourceOptions overrides
+  private static MailDataSourceOptions merge(
+      MailDataSourceOptions base,
+      MailDataSourceOptions overrides
   ) {
     if (overrides == null) {
       return base;
     }
 
-    return new RtcDataSourceOptions(
+    return new MailDataSourceOptions(
         overrides.providerUrl != null ? overrides.providerUrl : base.providerUrl,
         overrides.providerKey != null ? overrides.providerKey : base.providerKey,
         overrides.tenantOverrideProviderKey != null

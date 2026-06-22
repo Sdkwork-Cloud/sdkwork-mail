@@ -44,7 +44,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "627ab5578debafac7a8718781e0f5555b140d37e6e2d0c193e5f68035ef58e0f"
+      "sha256": "4561424a893b61c8cc5ad139df865f8705755b8c89788a2e8f51866eb38a10b4"
     },
     {
       "path": "sdkwork-sdk.json",
@@ -56,11 +56,15 @@
     },
     {
       "path": "src/api/index.ts",
-      "sha256": "699f3b9e920619138f4f3a731b90dc004249f5c9f1f539fd7527ae6b5c3f2718"
+      "sha256": "4e51ca7f6e3b2716924da9e4a2e1f13e4d9ca59452377aebefcb2594f918d8c3"
+    },
+    {
+      "path": "src/api/mail-marketing-consents.ts",
+      "sha256": "7a47d486b9df0e997d1d1c5104449fcd631c94926b4af860907d375297b7866b"
     },
     {
       "path": "src/api/mail-provider-accounts.ts",
-      "sha256": "b9a372ced316d030c1f97f0b98fbee03ac9575458589a2c78d59df8ee8b54fa6"
+      "sha256": "83ec10ba1d49f510c1d3cda9eee47d58fdb9b7cf17e867908e0d1aac2de9b0b1"
     },
     {
       "path": "src/api/mail-provider-webhooks.ts",
@@ -96,19 +100,51 @@
     },
     {
       "path": "src/sdk.ts",
-      "sha256": "98682bd3bc1f2a54d2fab55ce9e78e46c8be234e67e32115995941169015e19e"
+      "sha256": "463c269b16cd3f12ed74eb0cf39189db2b4afdc7e1d1aa8b2f943fff983da77b"
     },
     {
       "path": "src/types/common.ts",
       "sha256": "351d721c3c6f48f4453f92276856105120d72eb8d2fa9cd28de8e3854bf10f6c"
     },
     {
+      "path": "src/types/create-mail-provider-account-request.ts",
+      "sha256": "3188821881ddc57252fa891e3c38c6532385138c0e6918a5bdcee391b4c4d481"
+    },
+    {
+      "path": "src/types/create-mail-provider-account-response.ts",
+      "sha256": "cebd2ec08e7beeb5c445b16b10dac7fb59ec3f54e1326cd1025f8f7c8a7605a1"
+    },
+    {
+      "path": "src/types/create-mail-provider-account-result.ts",
+      "sha256": "230df0afdb2dca7f258f11aaecfe3c7cf9fb01a778fe8766ee0d71b293283bf3"
+    },
+    {
+      "path": "src/types/create-mail-provider-credential-input.ts",
+      "sha256": "aed44c3865990f54d6de5126baab134b7cbe54cbe8da42d4e1201d9bf8095f7f"
+    },
+    {
       "path": "src/types/create-mail-template-request.ts",
       "sha256": "468e78d186372dbcb2f3b02cdffe35adb7ba8927161f001293384efbb6bc0301"
     },
     {
+      "path": "src/types/grant-mail-marketing-consent-request.ts",
+      "sha256": "958d5938fc18e67843414caaac22a9d88d2e9a83d689f9014e2b5bbd478d6441"
+    },
+    {
       "path": "src/types/index.ts",
-      "sha256": "b6ab667557dcab44ea24e5de82a745b12a9b8178ac32457d35f99c935b253fde"
+      "sha256": "70fd3495e095991e844099f28cc56bb03d12dc25c5e1ff85f1c2b5253fc6cea1"
+    },
+    {
+      "path": "src/types/mail-marketing-consent-list-response.ts",
+      "sha256": "57151d66128461f5368aaef9423fad85f020ec285264b7e8db46ebb3110f204b"
+    },
+    {
+      "path": "src/types/mail-marketing-consent-response.ts",
+      "sha256": "337e916251c4dd808ddd038b4c8583effda11ef7f5d120727cfab721454931eb"
+    },
+    {
+      "path": "src/types/mail-marketing-consent.ts",
+      "sha256": "198d079f813681210a6f3d90da4c24b51f4394d5bcd4386aaf96607e19f55d32"
     },
     {
       "path": "src/types/mail-provider-account-list-response.ts",
@@ -117,6 +153,26 @@
     {
       "path": "src/types/mail-provider-account.ts",
       "sha256": "8d8bd8230c9eb5361b4d885977f88759b43655cc09eaf93198a645ae6738663a"
+    },
+    {
+      "path": "src/types/mail-provider-credential.ts",
+      "sha256": "f0a875d67000c000716866fb6082bfc508f3aea031ebe696314c2b7728f456e9"
+    },
+    {
+      "path": "src/types/mail-provider-ping-response.ts",
+      "sha256": "901cbc0e77083c3a862c6f395d398d8243183cb403a42ed81877d6a98a2f4bed"
+    },
+    {
+      "path": "src/types/mail-provider-ping-result.ts",
+      "sha256": "9509c7673c4c7cc9a8f4f2e99a9da4e0f6c5e896368363b5e1665309ac792a03"
+    },
+    {
+      "path": "src/types/mail-provider-sync-response.ts",
+      "sha256": "b331c67a69d4b5753c2717f3b33f1644640323391e68261f4ac1a0a1c76c19c8"
+    },
+    {
+      "path": "src/types/mail-provider-sync-result.ts",
+      "sha256": "d1513a9c3b29ed7abffe81748daedb358b5fc261c80513953f01f07e413a452c"
     },
     {
       "path": "src/types/mail-provider-webhook-event-request.ts",
@@ -153,6 +209,10 @@
     {
       "path": "src/types/problem-detail.ts",
       "sha256": "bb32b624ed9811bf9bd5c1515a2c0f79a629f66395e9e2370b8209b011669706"
+    },
+    {
+      "path": "src/types/sync-mail-provider-account-request.ts",
+      "sha256": "61055b7a53571c1c1162caa2e143f4ed9232bb15ac6bd0a890938924715afa1d"
     },
     {
       "path": "src/types/update-mail-template-request.ts",

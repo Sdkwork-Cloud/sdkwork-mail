@@ -45,6 +45,7 @@ enum AdminRoute {
   dashboard,
   templates,
   deliveries,
+  marketingConsents,
   providerAccounts,
 }
 
@@ -57,6 +58,8 @@ extension AdminRouteLabel on AdminRoute {
         return 'Templates';
       case AdminRoute.deliveries:
         return 'Delivery Audit';
+      case AdminRoute.marketingConsents:
+        return 'Marketing Consents';
       case AdminRoute.providerAccounts:
         return 'Transport Providers';
     }
@@ -70,6 +73,8 @@ extension AdminRouteLabel on AdminRoute {
         return '#/admin/templates';
       case AdminRoute.deliveries:
         return '#/admin/deliveries';
+      case AdminRoute.marketingConsents:
+        return '#/admin/marketing-consents';
       case AdminRoute.providerAccounts:
         return '#/admin/provider-accounts';
     }
@@ -83,6 +88,8 @@ extension AdminRouteLabel on AdminRoute {
         return Icons.description;
       case AdminRoute.deliveries:
         return Icons.local_shipping;
+      case AdminRoute.marketingConsents:
+        return Icons.mark_email_read;
       case AdminRoute.providerAccounts:
         return Icons.dns;
     }

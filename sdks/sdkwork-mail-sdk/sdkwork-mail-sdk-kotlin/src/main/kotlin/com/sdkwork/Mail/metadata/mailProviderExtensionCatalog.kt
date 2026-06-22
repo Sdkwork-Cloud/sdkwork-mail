@@ -1,6 +1,6 @@
-package com.sdkwork.rtc.metadata
+package com.sdkwork.Mail.metadata
 
-data class RtcProviderExtensionCatalogEntry(
+data class MailProviderExtensionCatalogEntry(
     val extensionKey: String,
     val providerKey: String,
     val displayName: String,
@@ -9,7 +9,7 @@ data class RtcProviderExtensionCatalogEntry(
     val status: String,
 )
 
-object RtcProviderExtensionCatalog {
+object MailProviderExtensionCatalog {
     val recognizedSurfaces: List<String> = listOf(
         "control-plane",
         "runtime-bridge",
@@ -26,31 +26,23 @@ object RtcProviderExtensionCatalog {
         "reserved",
     )
 
-    val entries: List<RtcProviderExtensionCatalogEntry> = listOf(
-        RtcProviderExtensionCatalogEntry("volcengine.native-client", "volcengine", "Volcengine Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-        RtcProviderExtensionCatalogEntry("aliyun.native-client", "aliyun", "Aliyun Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("tencent.native-client", "tencent", "Tencent Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-        RtcProviderExtensionCatalogEntry("agora.native-client", "agora", "Agora Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("zego.native-client", "zego", "ZEGO Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("livekit.native-client", "livekit", "LiveKit Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("twilio.native-client", "twilio", "Twilio Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("jitsi.native-client", "jitsi", "Jitsi Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("janus.native-client", "janus", "Janus Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("mediasoup.native-client", "mediasoup", "mediasoup Native Client", "runtime-bridge", "unwrap-only", "reserved"),
+    val entries: List<MailProviderExtensionCatalogEntry> = listOf(
+        MailProviderExtensionCatalogEntry("smtp.transport", "smtp", "SMTP Transport", "runtime-bridge", "unwrap-only", "reserved"),
+        MailProviderExtensionCatalogEntry("imap.sync", "imap", "IMAP Sync", "runtime-bridge", "unwrap-only", "reserved"),
     )
 
-fun getRtcProviderExtensionCatalog(): List<RtcProviderExtensionCatalogEntry> = entries
+fun getMailProviderExtensionCatalog(): List<MailProviderExtensionCatalogEntry> = entries
 
-    fun getRtcProviderExtensionDescriptor(extensionKey: String): RtcProviderExtensionCatalogEntry? =
+    fun getMailProviderExtensionDescriptor(extensionKey: String): MailProviderExtensionCatalogEntry? =
         entries.firstOrNull { it.extensionKey == extensionKey }
 
-    fun getRtcProviderExtensionsForProvider(providerKey: String): List<RtcProviderExtensionCatalogEntry> =
+    fun getMailProviderExtensionsForProvider(providerKey: String): List<MailProviderExtensionCatalogEntry> =
         entries.filter { it.providerKey == providerKey }
 
-    fun getRtcProviderExtensions(extensionKeys: List<String>): List<RtcProviderExtensionCatalogEntry> =
-        extensionKeys.mapNotNull(::getRtcProviderExtensionDescriptor)
+    fun getMailProviderExtensions(extensionKeys: List<String>): List<MailProviderExtensionCatalogEntry> =
+        extensionKeys.mapNotNull(::getMailProviderExtensionDescriptor)
 
-    fun hasRtcProviderExtension(extensionKeys: List<String>, extensionKey: String): Boolean =
-        extensionKeys.contains(extensionKey) && getRtcProviderExtensionDescriptor(extensionKey) != null
+    fun hasMailProviderExtension(extensionKeys: List<String>, extensionKey: String): Boolean =
+        extensionKeys.contains(extensionKey) && getMailProviderExtensionDescriptor(extensionKey) != null
 
 }

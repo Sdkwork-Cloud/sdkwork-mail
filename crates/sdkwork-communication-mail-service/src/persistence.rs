@@ -4,8 +4,11 @@ use std::future::Future;
 use std::pin::Pin;
 
 use crate::models::{
-    CreateMailMessageRequest, CreateMailTemplateRequest, MailAccount, MailFolder, MailMessage,
-    MailProviderAccount, MailSmtpTransportBinding, MailTemplate, MailTemplateCategory, MailThread,
+    CreateMailMessageRequest, CreateMailProviderAccountRequest, CreateMailProviderAccountResult,
+    CreateMailProviderCredentialInput, CreateMailTemplateRequest, EnsureMailAccountRequest,
+    GrantMailMarketingConsentRequest, IngestInboundMailMessageRequest, MailAccount, MailFolder,
+    MailFolderKind, MailMarketingConsent, MailMessage, MailProviderAccount, MailProviderCredential,
+    MailSmtpTransportBinding, MailSyncState, MailTemplate, MailTemplateCategory, MailThread,
     MailTransactionalDelivery, MailVerificationPurpose, UpdateMailMessageRequest,
     UpdateMailTemplateRequest,
 };
@@ -97,6 +100,35 @@ pub trait MailPersistencePort: Send + Sync {
         tenant_id: &'a str,
         organization_id: &'a str,
     ) -> MailPersistenceFuture<'a, Vec<MailProviderAccount>>;
+
+    fn retrieve_provider_account<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+    ) -> MailPersistenceFuture<'a, MailProviderAccount>;
+
+    fn create_provider_account<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: CreateMailProviderAccountRequest,
+    ) -> MailPersistenceFuture<'a, CreateMailProviderAccountResult>;
+
+    fn create_provider_credential<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        provider_account_id: &'a str,
+        request: CreateMailProviderCredentialInput,
+    ) -> MailPersistenceFuture<'a, MailProviderCredential>;
+
+    fn retrieve_active_provider_credential<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        provider_account_id: &'a str,
+    ) -> MailPersistenceFuture<'a, MailProviderCredential>;
 
     fn resolve_active_smtp_transport_binding<'a>(
         &'a self,
@@ -216,6 +248,85 @@ pub trait MailPersistencePort: Send + Sync {
         business_kind: Option<&'a str>,
         recipient_email: Option<&'a str>,
     ) -> MailPersistenceFuture<'a, Vec<MailTransactionalDelivery>>;
+
+    fn has_active_marketing_consent<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        recipient_email: &'a str,
+    ) -> MailPersistenceFuture<'a, bool>;
+
+    fn list_marketing_consents<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        recipient_email: Option<&'a str>,
+    ) -> MailPersistenceFuture<'a, Vec<MailMarketingConsent>>;
+
+    fn grant_marketing_consent<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: GrantMailMarketingConsentRequest,
+    ) -> MailPersistenceFuture<'a, MailMarketingConsent>;
+
+    fn revoke_marketing_consent<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        consent_id: &'a str,
+    ) -> MailPersistenceFuture<'a, MailMarketingConsent>;
+
+    fn ensure_mail_account<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: EnsureMailAccountRequest,
+    ) -> MailPersistenceFuture<'a, MailAccount>;
+
+    fn ensure_system_folder<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        folder_kind: MailFolderKind,
+        name: &'a str,
+    ) -> MailPersistenceFuture<'a, MailFolder>;
+
+    fn retrieve_sync_state<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        folder_id: &'a str,
+        provider_kind: &'a str,
+    ) -> MailPersistenceFuture<'a, Option<MailSyncState>>;
+
+    fn upsert_sync_state<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        folder_id: &'a str,
+        provider_kind: &'a str,
+        cursor_token: Option<&'a str>,
+        last_error: Option<&'a str>,
+    ) -> MailPersistenceFuture<'a, MailSyncState>;
+
+    fn touch_mail_account_synced_at<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        synced_at: &'a str,
+    ) -> MailPersistenceFuture<'a, ()>;
+
+    fn ingest_inbound_message<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: IngestInboundMailMessageRequest,
+    ) -> MailPersistenceFuture<'a, Option<MailMessage>>;
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -333,6 +444,61 @@ impl MailPersistencePort for NoopMailPersistencePort {
         _: &'a str,
     ) -> MailPersistenceFuture<'a, Vec<MailProviderAccount>> {
         Box::pin(async move { Ok(Vec::new()) })
+    }
+
+    fn retrieve_provider_account<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        account_id: &'a str,
+    ) -> MailPersistenceFuture<'a, MailProviderAccount> {
+        let account_id = account_id.to_owned();
+        Box::pin(async move {
+            Err(MailPersistenceError::NotFound(format!(
+                "provider account not found: {account_id}"
+            )))
+        })
+    }
+
+    fn create_provider_account<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: CreateMailProviderAccountRequest,
+    ) -> MailPersistenceFuture<'a, CreateMailProviderAccountResult> {
+        Box::pin(async move {
+            Err(MailPersistenceError::Unavailable(
+                "persistence not configured".to_owned(),
+            ))
+        })
+    }
+
+    fn create_provider_credential<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: CreateMailProviderCredentialInput,
+    ) -> MailPersistenceFuture<'a, MailProviderCredential> {
+        Box::pin(async move {
+            Err(MailPersistenceError::Unavailable(
+                "persistence not configured".to_owned(),
+            ))
+        })
+    }
+
+    fn retrieve_active_provider_credential<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        provider_account_id: &'a str,
+    ) -> MailPersistenceFuture<'a, MailProviderCredential> {
+        let provider_account_id = provider_account_id.to_owned();
+        Box::pin(async move {
+            Err(MailPersistenceError::NotFound(format!(
+                "provider credential not found: {provider_account_id}"
+            )))
+        })
     }
 
     fn resolve_active_smtp_transport_binding<'a>(
@@ -523,5 +689,129 @@ impl MailPersistencePort for NoopMailPersistencePort {
         _: Option<&'a str>,
     ) -> MailPersistenceFuture<'a, Vec<MailTransactionalDelivery>> {
         Box::pin(async move { Ok(Vec::new()) })
+    }
+
+    fn has_active_marketing_consent<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+    ) -> MailPersistenceFuture<'a, bool> {
+        Box::pin(async move { Ok(false) })
+    }
+
+    fn list_marketing_consents<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: Option<&'a str>,
+    ) -> MailPersistenceFuture<'a, Vec<MailMarketingConsent>> {
+        Box::pin(async move { Ok(Vec::new()) })
+    }
+
+    fn grant_marketing_consent<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: GrantMailMarketingConsentRequest,
+    ) -> MailPersistenceFuture<'a, MailMarketingConsent> {
+        Box::pin(async move {
+            Err(MailPersistenceError::Unavailable(
+                "persistence not configured".to_owned(),
+            ))
+        })
+    }
+
+    fn revoke_marketing_consent<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        consent_id: &'a str,
+    ) -> MailPersistenceFuture<'a, MailMarketingConsent> {
+        let consent_id = consent_id.to_owned();
+        Box::pin(async move {
+            Err(MailPersistenceError::NotFound(format!(
+                "marketing consent not found: {consent_id}"
+            )))
+        })
+    }
+
+    fn ensure_mail_account<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: EnsureMailAccountRequest,
+    ) -> MailPersistenceFuture<'a, MailAccount> {
+        Box::pin(async move {
+            Err(MailPersistenceError::Unavailable(
+                "persistence not configured".to_owned(),
+            ))
+        })
+    }
+
+    fn ensure_system_folder<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: MailFolderKind,
+        _: &'a str,
+    ) -> MailPersistenceFuture<'a, MailFolder> {
+        Box::pin(async move {
+            Err(MailPersistenceError::Unavailable(
+                "persistence not configured".to_owned(),
+            ))
+        })
+    }
+
+    fn retrieve_sync_state<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+    ) -> MailPersistenceFuture<'a, Option<MailSyncState>> {
+        Box::pin(async move { Ok(None) })
+    }
+
+    fn upsert_sync_state<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: Option<&'a str>,
+        _: Option<&'a str>,
+    ) -> MailPersistenceFuture<'a, MailSyncState> {
+        Box::pin(async move {
+            Err(MailPersistenceError::Unavailable(
+                "persistence not configured".to_owned(),
+            ))
+        })
+    }
+
+    fn touch_mail_account_synced_at<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+        _: &'a str,
+    ) -> MailPersistenceFuture<'a, ()> {
+        Box::pin(async move { Ok(()) })
+    }
+
+    fn ingest_inbound_message<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+        _: IngestInboundMailMessageRequest,
+    ) -> MailPersistenceFuture<'a, Option<MailMessage>> {
+        Box::pin(async move {
+            Err(MailPersistenceError::Unavailable(
+                "persistence not configured".to_owned(),
+            ))
+        })
     }
 }

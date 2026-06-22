@@ -26,9 +26,9 @@ This workspace is the reserved Swift standard boundary for provider metadata, dr
 
 Default provider contract:
 
-- default provider key: `volcengine`
-- default plugin id: `Mail-volcengine`
-- default driver id: `sdkwork-mail-driver-volcengine`
+- default provider key: `smtp`
+- default plugin id: `Mail-smtp`
+- default driver id: `sdkwork-mail-driver-smtp`
 - language metadata and selection scaffolds must preserve that assembly-driven default
   provider identity for future runtime bridge landings
 

@@ -13,6 +13,7 @@ pub struct SmtpTransportConfig {
     pub username: Option<String>,
     pub password: Option<String>,
     pub from_email: String,
+    pub max_send_retries: u32,
 }
 
 pub fn resolve_secret_ref(secret_ref: &str) -> Option<String> {
@@ -48,6 +49,13 @@ fn read_env_bool(key: &str, default: bool) -> bool {
 }
 
 fn read_env_u16(key: &str, default: u16) -> u16 {
+    std::env::var(key)
+        .ok()
+        .and_then(|value| value.trim().parse().ok())
+        .unwrap_or(default)
+}
+
+fn read_env_u32(key: &str, default: u32) -> u32 {
     std::env::var(key)
         .ok()
         .and_then(|value| value.trim().parse().ok())
@@ -92,6 +100,7 @@ pub fn build_mail_transport_from_env() -> Result<Arc<dyn MailTransportPort>, Str
             .map(|value| value.trim().to_owned())
             .filter(|value| !value.is_empty()),
         from_email,
+        max_send_retries: read_env_u32("SDKWORK_MAIL_SMTP_MAX_RETRIES", 3),
     };
 
     Ok(Arc::new(SmtpMailTransport::new(config)))
@@ -109,6 +118,7 @@ pub fn smtp_config_from_binding(
         username: Some(binding.username.clone()),
         password: Some(password),
         from_email: binding.from_email.clone(),
+        max_send_retries: 3,
     })
 }
 

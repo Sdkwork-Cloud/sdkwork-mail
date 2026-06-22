@@ -6,11 +6,13 @@ import 'environment.dart';
 class MailAdminServices {
   final MailTemplateAdminService templates;
   final MailTransactionalDeliveryAdminService deliveries;
+  final MailMarketingConsentAdminService marketingConsents;
   final MailProviderAccountService providerAccounts;
 
   const MailAdminServices({
     required this.templates,
     required this.deliveries,
+    required this.marketingConsents,
     required this.providerAccounts,
   });
 }
@@ -30,6 +32,7 @@ MailAdminServices createAdminServices({required MailAdminSession session}) {
   return MailAdminServices(
     templates: MailTemplateAdminService(client),
     deliveries: MailTransactionalDeliveryAdminService(client),
+    marketingConsents: MailMarketingConsentAdminService(client),
     providerAccounts: MailProviderAccountService(client),
   );
 }

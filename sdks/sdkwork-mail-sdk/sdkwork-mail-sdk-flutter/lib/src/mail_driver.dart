@@ -46,6 +46,7 @@ final class _StandardMailProviderDriver<TNativeClient>
 
     return StandardMailClient<TNativeClient>(
       metadata: metadata,
+      capabilities: buildMailCapabilitySet(metadata),
       selection: MailProviderSelection(
         providerKey: config.providerKey!,
         source: config.selectionSource,

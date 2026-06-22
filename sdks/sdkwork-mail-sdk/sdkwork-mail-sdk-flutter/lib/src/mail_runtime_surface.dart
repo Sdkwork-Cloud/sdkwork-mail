@@ -1,12 +1,11 @@
 const List<String> MailRuntimeSurfaceMethods = <String>[
-  'join',
-  'leave',
-  'publish',
-  'unpublish',
-  'startScreenShare',
-  'stopScreenShare',
-  'muteAudio',
-  'muteVideo',
+  'connectTransport',
+  'authenticateTransport',
+  'disconnectTransport',
+  'sendMail',
+  'probeMailbox',
+  'syncMailbox',
+  'healthCheck',
 ];
 
 const String MailRuntimeSurfaceFailureCode = 'native_sdk_not_available';

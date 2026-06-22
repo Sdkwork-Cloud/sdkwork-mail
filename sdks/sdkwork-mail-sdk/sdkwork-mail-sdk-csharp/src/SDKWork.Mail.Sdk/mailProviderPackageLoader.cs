@@ -1,12 +1,12 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public sealed class RtcProviderPackageLoaderException : Exception
+public sealed class MailProviderPackageLoaderException : Exception
 {
-    public RtcProviderPackageLoaderException(string code, string message)
+    public MailProviderPackageLoaderException(string code, string message)
         : base(message)
     {
         this.code = code;
@@ -15,47 +15,47 @@ public sealed class RtcProviderPackageLoaderException : Exception
     public string code { get; }
 }
 
-public sealed record RtcProviderPackageLoadRequest(
+public sealed record MailProviderPackageLoadRequest(
     string? providerKey = null,
     string? packageIdentity = null
 );
 
-public sealed record RtcResolvedProviderPackageLoadTarget(
-    RtcProviderPackageCatalogEntry packageEntry
+public sealed record MailResolvedProviderPackageLoadTarget(
+    MailProviderPackageCatalogEntry packageEntry
 );
 
-public delegate object? RtcProviderPackageImportFn(RtcResolvedProviderPackageLoadTarget target);
-public delegate object? RtcProviderPackageLoaderFn(RtcProviderPackageLoadRequest request);
+public delegate object? MailProviderPackageImportFn(MailResolvedProviderPackageLoadTarget target);
+public delegate object? MailProviderPackageLoaderFn(MailProviderPackageLoadRequest request);
 
-public sealed record RtcProviderPackageInstallRequest(
+public sealed record MailProviderPackageInstallRequest(
     object driverManager,
-    RtcProviderPackageLoadRequest loadRequest
+    MailProviderPackageLoadRequest loadRequest
 );
 
-public static class RtcProviderPackageLoader
+public static class MailProviderPackageLoader
 {
     public const string ProviderPackageNotFound = "provider_package_not_found";
     public const string ProviderPackageIdentityMismatch = "provider_package_identity_mismatch";
     public const string ProviderPackageLoadFailed = "provider_package_load_failed";
     public const string ProviderModuleExportMissing = "provider_module_export_missing";
 
-    public static RtcResolvedProviderPackageLoadTarget ResolveRtcProviderPackageLoadTarget(
-        RtcProviderPackageLoadRequest? request
+    public static MailResolvedProviderPackageLoadTarget ResolveMailProviderPackageLoadTarget(
+        MailProviderPackageLoadRequest? request
     )
     {
-        request ??= new RtcProviderPackageLoadRequest();
+        request ??= new MailProviderPackageLoadRequest();
         var packageByProviderKey = string.IsNullOrWhiteSpace(request.providerKey)
             ? null
-            : RtcProviderPackageCatalog.GetRtcProviderPackageByProviderKey(request.providerKey!);
+            : MailProviderPackageCatalog.GetMailProviderPackageByProviderKey(request.providerKey!);
         var packageByIdentity = string.IsNullOrWhiteSpace(request.packageIdentity)
             ? null
-            : RtcProviderPackageCatalog.GetRtcProviderPackageByPackageIdentity(request.packageIdentity!);
+            : MailProviderPackageCatalog.GetMailProviderPackageByPackageIdentity(request.packageIdentity!);
 
         if (packageByProviderKey is not null
             && packageByIdentity is not null
             && !string.Equals(packageByProviderKey.packageIdentity, packageByIdentity.packageIdentity, StringComparison.Ordinal))
         {
-            throw new RtcProviderPackageLoaderException(
+            throw new MailProviderPackageLoaderException(
                 ProviderPackageIdentityMismatch,
                 "providerKey and packageIdentity must resolve to the same provider package boundary."
             );
@@ -64,32 +64,32 @@ public static class RtcProviderPackageLoader
         var resolvedPackage = packageByProviderKey ?? packageByIdentity;
         if (resolvedPackage is null)
         {
-            throw new RtcProviderPackageLoaderException(
+            throw new MailProviderPackageLoaderException(
                 ProviderPackageNotFound,
                 "No official provider package matches the requested provider boundary."
             );
         }
 
-        return new RtcResolvedProviderPackageLoadTarget(resolvedPackage);
+        return new MailResolvedProviderPackageLoadTarget(resolvedPackage);
     }
 
-    public static RtcProviderPackageLoaderFn CreateRtcProviderPackageLoader(
-        RtcProviderPackageImportFn importPackage
-    ) => request => LoadRtcProviderModule(request, importPackage);
+    public static MailProviderPackageLoaderFn CreateMailProviderPackageLoader(
+        MailProviderPackageImportFn importPackage
+    ) => request => LoadMailProviderModule(request, importPackage);
 
-    public static object? LoadRtcProviderModule(
-        RtcProviderPackageLoadRequest request,
-        RtcProviderPackageImportFn importPackage
+    public static object? LoadMailProviderModule(
+        MailProviderPackageLoadRequest request,
+        MailProviderPackageImportFn importPackage
     )
     {
-        var target = ResolveRtcProviderPackageLoadTarget(request);
+        var target = ResolveMailProviderPackageLoadTarget(request);
 
         try
         {
             var providerModule = importPackage(target);
             if (providerModule is null)
             {
-                throw new RtcProviderPackageLoaderException(
+                throw new MailProviderPackageLoaderException(
                     ProviderModuleExportMissing,
                     "Reserved provider package loader scaffold requires an executable provider module namespace."
                 );
@@ -97,45 +97,45 @@ public static class RtcProviderPackageLoader
 
             return providerModule;
         }
-        catch (RtcProviderPackageLoaderException)
+        catch (MailProviderPackageLoaderException)
         {
             throw;
         }
         catch (Exception error)
         {
-            throw new RtcProviderPackageLoaderException(
+            throw new MailProviderPackageLoaderException(
                 ProviderPackageLoadFailed,
                 $"Reserved provider package loader scaffold could not load {target.packageEntry.packageIdentity}: {error.Message}"
             );
         }
     }
 
-    public static void InstallRtcProviderPackage(
-        RtcProviderPackageInstallRequest request,
-        RtcProviderPackageImportFn importPackage
+    public static void InstallMailProviderPackage(
+        MailProviderPackageInstallRequest request,
+        MailProviderPackageImportFn importPackage
     )
     {
-        _ = LoadRtcProviderModule(request.loadRequest, importPackage);
+        _ = LoadMailProviderModule(request.loadRequest, importPackage);
 
-        throw new RtcProviderPackageLoaderException(
+        throw new MailProviderPackageLoaderException(
             ProviderPackageLoadFailed,
             "Reserved provider package installer scaffold cannot register provider modules until a verified runtime bridge lands."
         );
     }
 
-    public static void InstallRtcProviderPackages(
-        IReadOnlyList<RtcProviderPackageInstallRequest> requests,
-        RtcProviderPackageImportFn importPackage
+    public static void InstallMailProviderPackages(
+        IReadOnlyList<MailProviderPackageInstallRequest> requests,
+        MailProviderPackageImportFn importPackage
     )
     {
         foreach (var request in requests)
         {
-            _ = LoadRtcProviderModule(request.loadRequest, importPackage);
+            _ = LoadMailProviderModule(request.loadRequest, importPackage);
         }
 
         if (requests.Count > 0)
         {
-            throw new RtcProviderPackageLoaderException(
+            throw new MailProviderPackageLoaderException(
                 ProviderPackageLoadFailed,
                 "Reserved provider package installer scaffold cannot register provider modules until a verified runtime bridge lands."
             );

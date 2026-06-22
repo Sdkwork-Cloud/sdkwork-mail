@@ -1,0 +1,13 @@
+group = "com.sdkwork"
+version = "0.1.0"
+description = "Reserved Kotlin provider package boundary for IMAP Mail Sync"
+
+extra["sdkworkMailProviderKey"] = "imap"
+extra["sdkworkMailPluginId"] = "Mail-imap"
+extra["sdkworkMailDriverId"] = "sdkwork-mail-driver-imap"
+extra["sdkworkMailPackageIdentity"] = "com.sdkwork:Mail-sdk-provider-imap"
+extra["sdkworkMailSourcePath"] = "src/main/kotlin/com/sdkwork/Mail/provider/imap/MailProviderImapPackageContract.kt"
+extra["sdkworkMailSourceSymbol"] = "MailProviderImapPackageContract"
+extra["sdkworkMailRootPublic"] = "false"
+extra["sdkworkMailStatus"] = "future-runtime-bridge-only"
+extra["sdkworkMailRuntimeBridgeStatus"] = "reserved"

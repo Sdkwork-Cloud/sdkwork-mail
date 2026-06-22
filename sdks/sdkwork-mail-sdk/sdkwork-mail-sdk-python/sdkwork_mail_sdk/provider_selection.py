@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from .provider_catalog import DEFAULT_RTC_PROVIDER_KEY
+from .provider_catalog import DEFAULT_mail_PROVIDER_KEY
 
 
-class RtcProviderSelectionSource(str, Enum):
+class MailProviderSelectionSource(str, Enum):
     provider_url = "provider_url"
     provider_key = "provider_key"
     tenant_override = "tenant_override"
@@ -13,26 +13,26 @@ class RtcProviderSelectionSource(str, Enum):
 
 
 @dataclass(frozen=True)
-class ParsedRtcProviderUrl:
+class ParsedMailProviderUrl:
     providerKey: str
     rawUrl: str
 
 
 @dataclass(frozen=True)
-class RtcProviderSelection:
+class MailProviderSelection:
     providerKey: str
-    source: RtcProviderSelectionSource
+    source: MailProviderSelectionSource
 
 
 @dataclass(frozen=True)
-class RtcProviderSelectionRequest:
+class MailProviderSelectionRequest:
     providerUrl: str | None = None
     providerKey: str | None = None
     tenantOverrideProviderKey: str | None = None
     deploymentProfileProviderKey: str | None = None
 
 
-RTC_PROVIDER_SELECTION_SOURCES = [
+mail_PROVIDER_SELECTION_SOURCES = [
     "provider_url",
     "provider_key",
     "tenant_override",
@@ -40,7 +40,7 @@ RTC_PROVIDER_SELECTION_SOURCES = [
     "default_provider",
 ]
 
-RTC_PROVIDER_SELECTION_PRECEDENCE = [
+mail_PROVIDER_SELECTION_PRECEDENCE = [
     "provider_url",
     "provider_key",
     "tenant_override",
@@ -49,53 +49,53 @@ RTC_PROVIDER_SELECTION_PRECEDENCE = [
 ]
 
 
-def _has_rtc_provider_selection_text(value: str | None) -> bool:
+def _has_mail_provider_selection_text(value: str | None) -> bool:
     return value is not None and value.strip() != ""
 
 
-def parse_rtc_provider_url(provider_url: str) -> ParsedRtcProviderUrl:
+def parse_mail_provider_url(provider_url: str) -> ParsedMailProviderUrl:
     trimmed = provider_url.strip()
-    if not trimmed.startswith("rtc:") or "://" not in trimmed:
-        raise ValueError(f"Invalid RTC provider URL: {provider_url}")
+    if not trimmed.startswith("Mail:") or "://" not in trimmed:
+        raise ValueError(f"Invalid Mail provider URL: {provider_url}")
 
-    return ParsedRtcProviderUrl(
+    return ParsedMailProviderUrl(
         providerKey=trimmed[4:].split("://", 1)[0].lower(),
         rawUrl=provider_url,
     )
 
 
-def resolve_rtc_provider_selection(
-    request: RtcProviderSelectionRequest | None = None,
+def resolve_mail_provider_selection(
+    request: MailProviderSelectionRequest | None = None,
     *,
-    default_provider_key: str = DEFAULT_RTC_PROVIDER_KEY,
-) -> RtcProviderSelection:
-    request = request or RtcProviderSelectionRequest()
+    default_provider_key: str = DEFAULT_mail_PROVIDER_KEY,
+) -> MailProviderSelection:
+    request = request or MailProviderSelectionRequest()
 
-    if _has_rtc_provider_selection_text(request.providerUrl):
-        return RtcProviderSelection(
-            providerKey=parse_rtc_provider_url(request.providerUrl).providerKey,
-            source=RtcProviderSelectionSource.provider_url,
+    if _has_mail_provider_selection_text(request.providerUrl):
+        return MailProviderSelection(
+            providerKey=parse_mail_provider_url(request.providerUrl).providerKey,
+            source=MailProviderSelectionSource.provider_url,
         )
 
-    if _has_rtc_provider_selection_text(request.providerKey):
-        return RtcProviderSelection(
+    if _has_mail_provider_selection_text(request.providerKey):
+        return MailProviderSelection(
             providerKey=request.providerKey.strip(),
-            source=RtcProviderSelectionSource.provider_key,
+            source=MailProviderSelectionSource.provider_key,
         )
 
-    if _has_rtc_provider_selection_text(request.tenantOverrideProviderKey):
-        return RtcProviderSelection(
+    if _has_mail_provider_selection_text(request.tenantOverrideProviderKey):
+        return MailProviderSelection(
             providerKey=request.tenantOverrideProviderKey.strip(),
-            source=RtcProviderSelectionSource.tenant_override,
+            source=MailProviderSelectionSource.tenant_override,
         )
 
-    if _has_rtc_provider_selection_text(request.deploymentProfileProviderKey):
-        return RtcProviderSelection(
+    if _has_mail_provider_selection_text(request.deploymentProfileProviderKey):
+        return MailProviderSelection(
             providerKey=request.deploymentProfileProviderKey.strip(),
-            source=RtcProviderSelectionSource.deployment_profile,
+            source=MailProviderSelectionSource.deployment_profile,
         )
 
-    return RtcProviderSelection(
+    return MailProviderSelection(
         providerKey=default_provider_key,
-        source=RtcProviderSelectionSource.default_provider,
+        source=MailProviderSelectionSource.default_provider,
     )

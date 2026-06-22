@@ -37,6 +37,16 @@ export interface CreateMailTemplateCommand {
   bodyTextTemplate?: string;
 }
 
+export interface UpdateMailTemplateCommand {
+  name?: string;
+  category?: "transactional" | "marketing";
+  purpose?: string;
+  subjectTemplate?: string;
+  bodyHtmlTemplate?: string;
+  bodyTextTemplate?: string;
+  status?: "active" | "disabled";
+}
+
 function unwrapEnvelope<T>(response: T | { data?: T }): T {
   if (response && typeof response === "object" && "data" in response) {
     const envelope = response as { data?: T };
@@ -72,6 +82,23 @@ export class MailTemplateAdminService {
       throw new Error("Invalid response: missing template data");
     }
     return response as MailTemplateRecord;
+  }
+
+  async update(
+    templateId: string,
+    command: UpdateMailTemplateCommand,
+  ): Promise<MailTemplateRecord> {
+    const response = unwrapEnvelope(
+      await this.client.mailTemplates.mail.templates.update({ templateId }, command),
+    );
+    if (!response) {
+      throw new Error("Invalid response: missing template data");
+    }
+    return response as MailTemplateRecord;
+  }
+
+  async disable(templateId: string): Promise<MailTemplateRecord> {
+    return this.update(templateId, { status: "disabled" });
   }
 }
 

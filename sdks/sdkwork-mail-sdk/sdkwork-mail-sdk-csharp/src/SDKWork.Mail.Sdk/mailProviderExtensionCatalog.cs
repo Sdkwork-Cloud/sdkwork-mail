@@ -1,9 +1,9 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
 using System.Collections.Generic;
 using System.Linq;
 
-public sealed record RtcProviderExtensionCatalogEntry(
+public sealed record MailProviderExtensionCatalogEntry(
     string extensionKey,
     string providerKey,
     string displayName,
@@ -12,7 +12,7 @@ public sealed record RtcProviderExtensionCatalogEntry(
     string status
 );
 
-public static class RtcProviderExtensionCatalog
+public static class MailProviderExtensionCatalog
 {
     public static readonly IReadOnlyList<string> RecognizedSurfaces =
     [
@@ -33,35 +33,27 @@ public static class RtcProviderExtensionCatalog
         "reserved",
     ];
 
-    public static readonly IReadOnlyList<RtcProviderExtensionCatalogEntry> Entries =
+    public static readonly IReadOnlyList<MailProviderExtensionCatalogEntry> Entries =
     [
-        new("volcengine.native-client", "volcengine", "Volcengine Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-        new("aliyun.native-client", "aliyun", "Aliyun Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        new("tencent.native-client", "tencent", "Tencent Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-        new("agora.native-client", "agora", "Agora Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        new("zego.native-client", "zego", "ZEGO Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        new("livekit.native-client", "livekit", "LiveKit Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        new("twilio.native-client", "twilio", "Twilio Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        new("jitsi.native-client", "jitsi", "Jitsi Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        new("janus.native-client", "janus", "Janus Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        new("mediasoup.native-client", "mediasoup", "mediasoup Native Client", "runtime-bridge", "unwrap-only", "reserved"),
+        new("smtp.transport", "smtp", "SMTP Transport", "runtime-bridge", "unwrap-only", "reserved"),
+        new("imap.sync", "imap", "IMAP Sync", "runtime-bridge", "unwrap-only", "reserved"),
     ];
 
-public static IReadOnlyList<RtcProviderExtensionCatalogEntry> GetRtcProviderExtensionCatalog() =>
+public static IReadOnlyList<MailProviderExtensionCatalogEntry> GetMailProviderExtensionCatalog() =>
         Entries;
 
-    public static RtcProviderExtensionCatalogEntry? GetRtcProviderExtensionDescriptor(string extensionKey) =>
+    public static MailProviderExtensionCatalogEntry? GetMailProviderExtensionDescriptor(string extensionKey) =>
         Entries.FirstOrDefault(entry => entry.extensionKey == extensionKey);
 
-    public static IReadOnlyList<RtcProviderExtensionCatalogEntry> GetRtcProviderExtensionsForProvider(string providerKey) =>
+    public static IReadOnlyList<MailProviderExtensionCatalogEntry> GetMailProviderExtensionsForProvider(string providerKey) =>
         Entries.Where(entry => entry.providerKey == providerKey).ToArray();
 
-    public static IReadOnlyList<RtcProviderExtensionCatalogEntry> GetRtcProviderExtensions(IReadOnlyList<string> extensionKeys)
+    public static IReadOnlyList<MailProviderExtensionCatalogEntry> GetMailProviderExtensions(IReadOnlyList<string> extensionKeys)
     {
-        var entries = new List<RtcProviderExtensionCatalogEntry>();
+        var entries = new List<MailProviderExtensionCatalogEntry>();
         foreach (var extensionKey in extensionKeys)
         {
-            var entry = GetRtcProviderExtensionDescriptor(extensionKey);
+            var entry = GetMailProviderExtensionDescriptor(extensionKey);
             if (entry is not null)
             {
                 entries.Add(entry);
@@ -71,7 +63,7 @@ public static IReadOnlyList<RtcProviderExtensionCatalogEntry> GetRtcProviderExte
         return entries.ToArray();
     }
 
-    public static bool HasRtcProviderExtension(IReadOnlyList<string> extensionKeys, string extensionKey) =>
-        extensionKeys.Contains(extensionKey) && GetRtcProviderExtensionDescriptor(extensionKey) is not null;
+    public static bool HasMailProviderExtension(IReadOnlyList<string> extensionKeys, string extensionKey) =>
+        extensionKeys.Contains(extensionKey) && GetMailProviderExtensionDescriptor(extensionKey) is not null;
 
 }

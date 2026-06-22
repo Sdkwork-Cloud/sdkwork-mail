@@ -17,24 +17,24 @@ Current role:
 - Executable mobile runtime baseline
 - provider-neutral Mail contracts
 - JDBC-style driver manager and data source model for Flutter/mobile
-- official Volcengine Flutter runtime binding through the mail_sdk_provider_volcengine plugin package
+- official SMTP Flutter runtime binding through the mail_sdk_provider_SMTP plugin package
 - assembly-driven provider catalog, capability catalog, provider extension catalog, and provider selection helpers
-- default mobile provider remains volcengine unless the caller explicitly overrides selection
-- mobile runtime bridge remains media/provider focused and leaves call signaling to IM
+- default mobile provider remains SMTP unless the caller explicitly overrides selection
+- mobile runtime bridge remains mail transport focused and leaves realtime signaling to IM
 
-This workspace is the executable Flutter/mobile runtime baseline for provider-neutral Mail contracts, Volcengine default runtime binding, and JDBC-style driver selection in sdkwork-mail-sdk.
+This workspace is the executable Flutter/mobile runtime baseline for provider-neutral Mail contracts, SMTP default transport binding, and JDBC-style driver selection in sdkwork-mail-sdk.
 
 Default provider contract:
 
-- Flutter/mobile default provider key: `volcengine`
-- Flutter/mobile default plugin id: `Mail-volcengine`
-- Flutter/mobile default driver id: `sdkwork-mail-driver-volcengine`
+- Flutter/mobile default provider key: `smtp`
+- Flutter/mobile default plugin id: `Mail-smtp`
+- Flutter/mobile default driver id: `sdkwork-mail-driver-smtp`
 - `MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY` must stay aligned to that assembly default
 - `resolveMailProviderSelection()` in `lib/src/mail_provider_selection.dart`
   falls back to `MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY` when Flutter callers do not
   provide providerUrl, providerKey, tenant override, or deployment profile values
 - `MailDataSourceOptions.defaultProviderKey` and `MailDataSource.describeSelection()`
-  therefore keep the Flutter/mobile default provider on `volcengine`
+  therefore keep the Flutter/mobile default provider on `smtp`
   until a caller explicitly overrides it
 
 
@@ -55,8 +55,8 @@ Language workspace catalog:
 
 Runtime baseline contract:
 
-- vendor SDK package: `mail_sdk_provider_volcengine`
-- vendor SDK import path: `package:mail_sdk_provider_volcengine/mail_sdk_provider_volcengine.dart`
+- vendor SDK package: `mail_sdk_provider_smtp`
+- vendor SDK import path: `package:mail_sdk_provider_smtp/mail_sdk_provider_smtp.dart`
 - recommended entrypoint: `MailDataSource`
 - smoke command: `flutter analyze`
 - smoke mode: `analysis-backed`

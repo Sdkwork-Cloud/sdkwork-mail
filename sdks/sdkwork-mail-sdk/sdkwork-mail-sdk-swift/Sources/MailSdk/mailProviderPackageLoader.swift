@@ -1,4 +1,4 @@
-public struct RtcProviderPackageLoaderException: Error {
+public struct MailProviderPackageLoaderException: Error {
     public let code: String
     public let message: String
 
@@ -8,7 +8,7 @@ public struct RtcProviderPackageLoaderException: Error {
     }
 }
 
-public struct RtcProviderPackageLoadRequest {
+public struct MailProviderPackageLoadRequest {
     public let providerKey: String?
     public let packageIdentity: String?
 
@@ -18,109 +18,109 @@ public struct RtcProviderPackageLoadRequest {
     }
 }
 
-public struct RtcResolvedProviderPackageLoadTarget {
-    public let packageEntry: RtcProviderPackageCatalogEntry
+public struct MailResolvedProviderPackageLoadTarget {
+    public let packageEntry: MailProviderPackageCatalogEntry
 
-    public init(packageEntry: RtcProviderPackageCatalogEntry) {
+    public init(packageEntry: MailProviderPackageCatalogEntry) {
         self.packageEntry = packageEntry
     }
 }
 
-public typealias RtcProviderModuleNamespace = [String: String]
-public typealias RtcProviderPackageImportFn = (RtcResolvedProviderPackageLoadTarget) throws -> RtcProviderModuleNamespace
-public typealias RtcProviderPackageLoader = (RtcProviderPackageLoadRequest) throws -> RtcProviderModuleNamespace
+public typealias MailProviderModuleNamespace = [String: String]
+public typealias MailProviderPackageImportFn = (MailResolvedProviderPackageLoadTarget) throws -> MailProviderModuleNamespace
+public typealias MailProviderPackageLoader = (MailProviderPackageLoadRequest) throws -> MailProviderModuleNamespace
 
-public struct RtcProviderPackageInstallRequest {
+public struct MailProviderPackageInstallRequest {
     public let driverManager: Any
-    public let loadRequest: RtcProviderPackageLoadRequest
+    public let loadRequest: MailProviderPackageLoadRequest
 
-    public init(driverManager: Any, loadRequest: RtcProviderPackageLoadRequest) {
+    public init(driverManager: Any, loadRequest: MailProviderPackageLoadRequest) {
         self.driverManager = driverManager
         self.loadRequest = loadRequest
     }
 }
 
-public func resolveRtcProviderPackageLoadTarget(
-    _ request: RtcProviderPackageLoadRequest
-) throws -> RtcResolvedProviderPackageLoadTarget {
-    let packageByProviderKey = request.providerKey.flatMap(RtcProviderPackageCatalog.getRtcProviderPackageByProviderKey)
-    let packageByIdentity = request.packageIdentity.flatMap(RtcProviderPackageCatalog.getRtcProviderPackageByPackageIdentity)
+public func resolveMailProviderPackageLoadTarget(
+    _ request: MailProviderPackageLoadRequest
+) throws -> MailResolvedProviderPackageLoadTarget {
+    let packageByProviderKey = request.providerKey.flatMap(MailProviderPackageCatalog.getMailProviderPackageByProviderKey)
+    let packageByIdentity = request.packageIdentity.flatMap(MailProviderPackageCatalog.getMailProviderPackageByPackageIdentity)
 
     if let providerKeyEntry = packageByProviderKey,
        let packageIdentityEntry = packageByIdentity,
        providerKeyEntry.packageIdentity != packageIdentityEntry.packageIdentity {
-        throw RtcProviderPackageLoaderException(
+        throw MailProviderPackageLoaderException(
             code: "provider_package_identity_mismatch",
             message: "providerKey and packageIdentity must resolve to the same provider package boundary."
         )
     }
 
     guard let resolvedPackage = packageByProviderKey ?? packageByIdentity else {
-        throw RtcProviderPackageLoaderException(
+        throw MailProviderPackageLoaderException(
             code: "provider_package_not_found",
             message: "No official provider package matches the requested provider boundary."
         )
     }
 
-    return RtcResolvedProviderPackageLoadTarget(packageEntry: resolvedPackage)
+    return MailResolvedProviderPackageLoadTarget(packageEntry: resolvedPackage)
 }
 
-public func createRtcProviderPackageLoader(
-    importPackage: @escaping RtcProviderPackageImportFn
-) -> RtcProviderPackageLoader {
+public func createMailProviderPackageLoader(
+    importPackage: @escaping MailProviderPackageImportFn
+) -> MailProviderPackageLoader {
     return { request in
-        try loadRtcProviderModule(request, importPackage: importPackage)
+        try loadMailProviderModule(request, importPackage: importPackage)
     }
 }
 
-public func loadRtcProviderModule(
-    _ request: RtcProviderPackageLoadRequest,
-    importPackage: RtcProviderPackageImportFn
-) throws -> RtcProviderModuleNamespace {
-    let target = try resolveRtcProviderPackageLoadTarget(request)
+public func loadMailProviderModule(
+    _ request: MailProviderPackageLoadRequest,
+    importPackage: MailProviderPackageImportFn
+) throws -> MailProviderModuleNamespace {
+    let target = try resolveMailProviderPackageLoadTarget(request)
 
     do {
         let namespace = try importPackage(target)
         if namespace.isEmpty {
-            throw RtcProviderPackageLoaderException(
+            throw MailProviderPackageLoaderException(
                 code: "provider_module_export_missing",
                 message: "Reserved provider package loader scaffold requires an executable provider module namespace."
             )
         }
 
         return namespace
-    } catch let error as RtcProviderPackageLoaderException {
+    } catch let error as MailProviderPackageLoaderException {
         throw error
     } catch {
-        throw RtcProviderPackageLoaderException(
+        throw MailProviderPackageLoaderException(
             code: "provider_package_load_failed",
             message: "Reserved provider package loader scaffold could not load \(target.packageEntry.packageIdentity): \(error)"
         )
     }
 }
 
-public func installRtcProviderPackage(
-    _ request: RtcProviderPackageInstallRequest,
-    importPackage: RtcProviderPackageImportFn
+public func installMailProviderPackage(
+    _ request: MailProviderPackageInstallRequest,
+    importPackage: MailProviderPackageImportFn
 ) throws {
-    _ = try loadRtcProviderModule(request.loadRequest, importPackage: importPackage)
+    _ = try loadMailProviderModule(request.loadRequest, importPackage: importPackage)
 
-    throw RtcProviderPackageLoaderException(
+    throw MailProviderPackageLoaderException(
         code: "provider_package_load_failed",
         message: "Reserved provider package installer scaffold cannot register provider modules until a verified runtime bridge lands."
     )
 }
 
-public func installRtcProviderPackages(
-    _ requests: [RtcProviderPackageInstallRequest],
-    importPackage: RtcProviderPackageImportFn
+public func installMailProviderPackages(
+    _ requests: [MailProviderPackageInstallRequest],
+    importPackage: MailProviderPackageImportFn
 ) throws {
     for request in requests {
-        _ = try loadRtcProviderModule(request.loadRequest, importPackage: importPackage)
+        _ = try loadMailProviderModule(request.loadRequest, importPackage: importPackage)
     }
 
     if !requests.isEmpty {
-        throw RtcProviderPackageLoaderException(
+        throw MailProviderPackageLoaderException(
             code: "provider_package_load_failed",
             message: "Reserved provider package installer scaffold cannot register provider modules until a verified runtime bridge lands."
         )

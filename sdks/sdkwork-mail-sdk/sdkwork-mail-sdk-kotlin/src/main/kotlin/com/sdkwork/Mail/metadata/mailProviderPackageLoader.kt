@@ -1,108 +1,108 @@
-package com.sdkwork.rtc.metadata
+package com.sdkwork.Mail.metadata
 
-class RtcProviderPackageLoaderException(
+class MailProviderPackageLoaderException(
     val code: String,
     override val message: String,
 ) : RuntimeException(message)
 
-data class RtcProviderPackageLoadRequest(
+data class MailProviderPackageLoadRequest(
     val providerKey: String? = null,
     val packageIdentity: String? = null,
 )
 
-data class RtcResolvedProviderPackageLoadTarget(
-    val packageEntry: RtcProviderPackageCatalogEntry,
+data class MailResolvedProviderPackageLoadTarget(
+    val packageEntry: MailProviderPackageCatalogEntry,
 )
 
-typealias RtcProviderModuleNamespace = Map<String, String>
-typealias RtcProviderPackageImportFn = (RtcResolvedProviderPackageLoadTarget) -> RtcProviderModuleNamespace
-typealias RtcProviderPackageLoader = (RtcProviderPackageLoadRequest) -> RtcProviderModuleNamespace
+typealias MailProviderModuleNamespace = Map<String, String>
+typealias MailProviderPackageImportFn = (MailResolvedProviderPackageLoadTarget) -> MailProviderModuleNamespace
+typealias MailProviderPackageLoader = (MailProviderPackageLoadRequest) -> MailProviderModuleNamespace
 
-data class RtcProviderPackageInstallRequest(
+data class MailProviderPackageInstallRequest(
     val driverManager: Any,
-    val loadRequest: RtcProviderPackageLoadRequest,
+    val loadRequest: MailProviderPackageLoadRequest,
 )
 
-fun resolveRtcProviderPackageLoadTarget(
-    request: RtcProviderPackageLoadRequest,
-): RtcResolvedProviderPackageLoadTarget {
-    val packageByProviderKey = request.providerKey?.let { RtcProviderPackageCatalog.getRtcProviderPackageByProviderKey(it) }
-    val packageByIdentity = request.packageIdentity?.let { RtcProviderPackageCatalog.getRtcProviderPackageByPackageIdentity(it) }
+fun resolveMailProviderPackageLoadTarget(
+    request: MailProviderPackageLoadRequest,
+): MailResolvedProviderPackageLoadTarget {
+    val packageByProviderKey = request.providerKey?.let { MailProviderPackageCatalog.getMailProviderPackageByProviderKey(it) }
+    val packageByIdentity = request.packageIdentity?.let { MailProviderPackageCatalog.getMailProviderPackageByPackageIdentity(it) }
 
     if (packageByProviderKey != null
         && packageByIdentity != null
         && packageByProviderKey.packageIdentity != packageByIdentity.packageIdentity
     ) {
-        throw RtcProviderPackageLoaderException(
+        throw MailProviderPackageLoaderException(
             code = "provider_package_identity_mismatch",
             message = "providerKey and packageIdentity must resolve to the same provider package boundary.",
         )
     }
 
     val resolvedPackage = packageByProviderKey ?: packageByIdentity
-        ?: throw RtcProviderPackageLoaderException(
+        ?: throw MailProviderPackageLoaderException(
             code = "provider_package_not_found",
             message = "No official provider package matches the requested provider boundary.",
         )
 
-    return RtcResolvedProviderPackageLoadTarget(packageEntry = resolvedPackage)
+    return MailResolvedProviderPackageLoadTarget(packageEntry = resolvedPackage)
 }
 
-fun createRtcProviderPackageLoader(
-    importPackage: RtcProviderPackageImportFn,
-): RtcProviderPackageLoader = { request ->
-    loadRtcProviderModule(request, importPackage)
+fun createMailProviderPackageLoader(
+    importPackage: MailProviderPackageImportFn,
+): MailProviderPackageLoader = { request ->
+    loadMailProviderModule(request, importPackage)
 }
 
-fun loadRtcProviderModule(
-    request: RtcProviderPackageLoadRequest,
-    importPackage: RtcProviderPackageImportFn,
-): RtcProviderModuleNamespace {
-    val target = resolveRtcProviderPackageLoadTarget(request)
+fun loadMailProviderModule(
+    request: MailProviderPackageLoadRequest,
+    importPackage: MailProviderPackageImportFn,
+): MailProviderModuleNamespace {
+    val target = resolveMailProviderPackageLoadTarget(request)
 
     return try {
         val namespace = importPackage(target)
         if (namespace.isEmpty()) {
-            throw RtcProviderPackageLoaderException(
+            throw MailProviderPackageLoaderException(
                 code = "provider_module_export_missing",
                 message = "Reserved provider package loader scaffold requires an executable provider module namespace.",
             )
         }
 
         namespace
-    } catch (error: RtcProviderPackageLoaderException) {
+    } catch (error: MailProviderPackageLoaderException) {
         throw error
     } catch (error: RuntimeException) {
-        throw RtcProviderPackageLoaderException(
+        throw MailProviderPackageLoaderException(
             code = "provider_package_load_failed",
             message = "Reserved provider package loader scaffold could not load ${target.packageEntry.packageIdentity}: ${error.message}",
         )
     }
 }
 
-fun installRtcProviderPackage(
-    request: RtcProviderPackageInstallRequest,
-    importPackage: RtcProviderPackageImportFn,
+fun installMailProviderPackage(
+    request: MailProviderPackageInstallRequest,
+    importPackage: MailProviderPackageImportFn,
 ) {
-    loadRtcProviderModule(request.loadRequest, importPackage)
+    loadMailProviderModule(request.loadRequest, importPackage)
 
-    throw RtcProviderPackageLoaderException(
+    throw MailProviderPackageLoaderException(
         code = "provider_package_load_failed",
         message = "Reserved provider package installer scaffold cannot register provider modules until a verified runtime bridge lands.",
     )
 }
 
-fun installRtcProviderPackages(
-    requests: Iterable<RtcProviderPackageInstallRequest>,
-    importPackage: RtcProviderPackageImportFn,
+fun installMailProviderPackages(
+    requests: Iterable<MailProviderPackageInstallRequest>,
+    importPackage: MailProviderPackageImportFn,
 ) {
     val materializedRequests = requests.toList()
     materializedRequests.forEach { request ->
-        loadRtcProviderModule(request.loadRequest, importPackage)
+        loadMailProviderModule(request.loadRequest, importPackage)
     }
 
     if (materializedRequests.isNotEmpty()) {
-        throw RtcProviderPackageLoaderException(
+        throw MailProviderPackageLoaderException(
             code = "provider_package_load_failed",
             message = "Reserved provider package installer scaffold cannot register provider modules until a verified runtime bridge lands.",
         )

@@ -1,24 +1,24 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
 using System.Linq;
 
-public sealed class RtcDriverManager
+public sealed class MailDriverManager
 {
-    public RtcProviderSelection ResolveSelection(
-        RtcProviderSelectionRequest? request = null,
-        string defaultProviderKey = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY
+    public MailProviderSelection ResolveSelection(
+        MailProviderSelectionRequest? request = null,
+        string defaultProviderKey = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY
     )
     {
-        return RtcProviderSelection.ResolveRtcProviderSelection(request, defaultProviderKey);
+        return MailProviderSelection.ResolveMailProviderSelection(request, defaultProviderKey);
     }
 
-    public RtcProviderSupport DescribeProviderSupport(string providerKey)
+    public MailProviderSupport DescribeProviderSupport(string providerKey)
     {
-        var official = RtcProviderCatalog.GetRtcProviderByProviderKey(providerKey) is not null;
-        var activation = RtcProviderActivationCatalog.GetRtcProviderActivationByProviderKey(providerKey);
+        var official = MailProviderCatalog.GetMailProviderByProviderKey(providerKey) is not null;
+        var activation = MailProviderActivationCatalog.GetMailProviderActivationByProviderKey(providerKey);
 
-        return RtcProviderSupport.CreateRtcProviderSupportState(
-            new RtcProviderSupportStateRequest(
+        return MailProviderSupport.CreateMailProviderSupportState(
+            new MailProviderSupportStateRequest(
                 providerKey,
                 activation?.builtin ?? false,
                 official,
@@ -27,9 +27,9 @@ public sealed class RtcDriverManager
         );
     }
 
-    public IReadOnlyList<RtcProviderSupport> ListProviderSupport()
+    public IReadOnlyList<MailProviderSupport> ListProviderSupport()
     {
-        return RtcProviderCatalog.Entries
+        return MailProviderCatalog.Entries
             .Select(entry => DescribeProviderSupport(entry.providerKey))
             .ToArray();
     }

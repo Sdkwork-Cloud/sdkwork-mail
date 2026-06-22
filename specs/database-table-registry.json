@@ -149,6 +149,15 @@
       "systemOfRecord": true,
       "writeOwner": "sdkwork-communication-mail-repository-sqlx",
       "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_marketing_consent",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
     }
   ]
 }

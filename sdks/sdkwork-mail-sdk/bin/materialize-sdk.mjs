@@ -32,6 +32,8 @@ import {
 import { REQUIRED_TYPESCRIPT_PROVIDER_PACKAGE_BOUNDARY_STATUS_TERMS } from './verify-sdk-standard-constants.mjs';
 
 export const mail_SDK_STALE_MATERIALIZED_FILES = [
+  'docs/typescript-volcengine-runtime-usage.md',
+  'docs/flutter-volcengine-runtime-usage.md',
   'sdkwork-mail-sdk-typescript/src/builtin-driver-manager.ts',
   'sdkwork-mail-sdk-typescript/src/volcengine-official-web.ts',
   'sdkwork-mail-sdk-typescript/src/providers/agora.ts',
@@ -423,28 +425,28 @@ function renderUsageGuide(assembly) {
 
 This document is the entrypoint for adopting \`sdkwork-mail-sdk\`.
 
-It focuses on provider-neutral Mail media runtime contracts, current runnable baselines, default
-\`${defaultProviderKey}\` selection, and runtime-specific guides. IM owns user call lifecycle,
-invite delivery, conversation discovery, and business session orchestration.
+It focuses on provider-neutral Mail transport runtime contracts, current runnable baselines, default
+\`${defaultProviderKey}\` selection, and runtime-specific guides. IM owns user lifecycle,
+invite delivery, conversation discovery, and business orchestration.
 
 ## 1. Positioning
 
-\`sdkwork-mail-sdk\` is not a reimplementation of vendor media engines.
+\`sdkwork-mail-sdk\` is not a reimplementation of vendor mail transport engines.
 
-Its responsibility is to provide one provider-neutral Mail media runtime standard:
+Its responsibility is to provide one provider-neutral Mail transport runtime standard:
 
 - JDBC-style \`DriverManager\` / \`DataSource\` / \`Client\` contracts
 - standardized provider selection and default-provider resolution
 - standardized capability negotiation, error semantics, and extension metadata
 - pluggable provider integration through official catalogs and package boundaries
-- one consistent media runtime surface across web, mobile, and future language workspaces
+- one consistent mail transport runtime surface across web, mobile, and future language workspaces
 
 The standard intentionally keeps vendor SDK ownership on the application side:
 
 - official vendor SDKs remain consumer-supplied
 - \`sdkwork-mail-sdk\` provides the standard contracts and adapter boundaries
 - runtime bridges map vendor behavior into the standard surface instead of hiding vendor engines
-- application and IM layers provide room/session credentials before the Mail client joins media
+- application and service layers provide SMTP/IMAP credentials before transport operations
 
 ## 2. Official Providers
 
@@ -499,10 +501,10 @@ ${executableLanguageSections}
 The correct vendor integration boundary is still the same:
 
 - \`sdkwork-mail-sdk\` owns the standard contracts and provider-neutral runtime surface
-- the vendor SDK owns real media behavior
-- the application wires vendor SDK instances into the standard driver/runtime-controller boundary
-- IM creates or resolves business call sessions and provider credentials before media join
-- Mail runtime code accepts room, participant, and provider token inputs; it does not discover invites
+- the vendor SDK or native transport plugin owns real mail transport behavior
+- the application wires transport credentials into the standard driver/runtime-controller boundary
+- IM or backend services resolve provider credentials before send, probe, or sync operations
+- Mail runtime code accepts transport credentials and message payloads; it does not discover invites
   or manage conversation delivery
 
 For the current runnable baselines, this boundary is already materialized:
@@ -571,8 +573,8 @@ Current reality is straightforward:
 
 - \`${defaultProviderKey}\` is the default provider
 - executable language baselines are ${executableLanguageLabels}
-- IM owns call session lifecycle and realtime business delivery
-- Mail owns media runtime provider selection, joining, publishing, muting, and leaving
+- IM owns business lifecycle and realtime business delivery
+- Mail owns transport provider selection, connect, send, probe, sync, and health-check operations
 - the remaining language workspaces stay standardized and extensible without pretending they are
   already executable runtimes
 `);
@@ -591,17 +593,16 @@ function renderTypeScriptRuntimeUsageDoc(assembly) {
   return lines(`
 # SDKWork Mail SDK TypeScript Runtime Usage
 
-This guide describes the executable TypeScript/web media runtime baseline of \`sdkwork-mail-sdk\`.
-IM-owned SDKs and services create business call sessions, deliver invitations, and issue provider
-credentials. The Mail SDK consumes media-room inputs and drives provider media behavior.
+This guide describes the executable TypeScript/web mail transport runtime baseline of \`sdkwork-mail-sdk\`.
+Backend services and application layers resolve SMTP/IMAP provider credentials. The Mail SDK consumes
+those credentials and drives provider transport behavior through the standard runtime surface.
 
 ## Current Runnable Baseline
 
-- Default media provider: \`${defaultProviderKey}\`
+- Default transport provider: \`${defaultProviderKey}\`
 - Default web provider plugin package: \`${runtimeBaseline.vendorSdkPackage}\`
 - Default web provider plugin import path: \`${runtimeBaseline.vendorSdkImportPath}\`
-- Default web vendor SDK package: \`@volcengine/Mail\`
-- Standard media entrypoint: \`MailDataSource\`
+- Standard transport entrypoint: \`MailDataSource\`
 - Recommended runtime entrypoint: \`${runtimeBaseline.recommendedEntrypoint}\`
 - Smoke command: \`${runtimeBaseline.smokeCommand}\`
 - Smoke mode: \`${runtimeBaseline.smokeMode}\`
@@ -610,7 +611,7 @@ credentials. The Mail SDK consumes media-room inputs and drives provider media b
 ## Install
 
 \`\`\`bash
-npm install ${languageEntry.publicPackage} ${runtimeBaseline.vendorSdkPackage} @volcengine/Mail
+npm install ${languageEntry.publicPackage} ${runtimeBaseline.vendorSdkPackage}
 \`\`\`
 
 ## Fast Runtime Verification
@@ -623,9 +624,9 @@ ${runtimeBaseline.smokeCommand}
 \`\`\`
 
 The smoke command builds the TypeScript package and verifies the root public API boundary. It guards
-against retired call-lifecycle exports reappearing in the Mail SDK surface.
+against retired RTC exports reappearing in the Mail SDK surface.
 
-## Media Runtime Flow
+## Mail Transport Runtime Flow
 
 \`\`\`ts
 import {
@@ -634,85 +635,73 @@ import {
   MailDriverManager,
   MailDataSource,
 } from '${languageEntry.publicPackage}';
-import * as volcengineProvider from '${runtimeBaseline.vendorSdkImportPath}';
+import * as smtpProvider from '${runtimeBaseline.vendorSdkImportPath}';
 
 const driverManager = await installMailProviderPackage(
   new MailDriverManager(),
   {
     providerKey: '${defaultProviderKey}',
   },
-  createMailProviderPackageLoader(async () => volcengineProvider),
+  createMailProviderPackageLoader(async () => smtpProvider),
 );
 
 const dataSource = new MailDataSource({
   driverManager,
   nativeConfig: {
-    appId: 'volc-app-id',
-    engineConfig: {
-      env: 'production',
-    },
-    roomConfig: {
-      profile: 'communication',
-    },
-    userExtraInfo: {
-      displayName: 'Alice',
-    },
-    capture: {
-      audioDeviceId: 'default-mic',
-      videoDeviceId: 'default-camera',
-    },
+    host: 'smtp.example.com',
+    port: 587,
+    useTls: true,
+    username: 'noreply@example.com',
+    password: 'secret',
+    fromEmail: 'noreply@example.com',
   },
 });
 
-const MailClient = await dataSource.createClient();
+const mailClient = await dataSource.createClient();
 
-await MailClient.join({
-  sessionId: 'mail-inbox-1',
-  roomId: 'provider-room-1',
-  participantId: 'user-1',
-  token: 'provider-issued-token',
+await mailClient.connectTransport({
+  host: 'smtp.example.com',
+  port: 587,
+  useTls: true,
 });
 
-await MailClient.publish({
-  trackId: 'mail-inbox-1-audio',
-  kind: 'audio',
+await mailClient.sendMail({
+  toEmail: 'user@example.com',
+  subject: 'Verification code',
+  bodyText: 'Your code is 123456',
 });
 
-await MailClient.publish({
-  trackId: 'mail-inbox-1-video',
-  kind: 'video',
-});
+await mailClient.healthCheck();
 \`\`\`
 
 ## Required Native Config
 
-For the default Volcengine Web runtime, \`nativeConfig.appId\` is mandatory before \`join()\`.
+For the default SMTP transport runtime, \`nativeConfig.host\`, \`nativeConfig.port\`, and
+\`nativeConfig.fromEmail\` are mandatory before \`connectTransport()\`.
 
-Supported Volcengine Web native config shape:
+Supported SMTP native config shape:
 
 \`\`\`ts
-type MailVolcengineWebNativeConfig = {
-  appId?: string;
-  engineConfig?: Record<string, unknown>;
-  roomConfig?: Record<string, unknown>;
-  userExtraInfo?: Record<string, unknown>;
-  capture?: {
-    audioDeviceId?: string;
-    videoDeviceId?: string;
-  };
+type MailSmtpNativeConfig = {
+  host?: string;
+  port?: number;
+  useTls?: boolean;
+  username?: string;
+  password?: string;
+  fromEmail?: string;
 };
 \`\`\`
 
 ## Runtime Guarantees
 
-- \`MailDataSource\` is the standard provider-neutral media client factory
+- \`MailDataSource\` is the standard provider-neutral mail transport client factory
 - \`installMailProviderPackage(...)\` registers provider drivers through explicit plugin packages
 - \`MailDriverManager\` and \`MailDataSource\` default to \`${defaultProviderKey}\` only after the
   matching provider package is installed into the manager
 - official provider plugin packages and vendor SDKs are not bundled into the Mail standard root package
 - provider plugin packages own any vendor SDK peer dependencies
-- provider credentials are supplied by the application or IM layer before \`join()\`
-- Mail runtime code does not own user invitation, conversation delivery, or business call lifecycle
+- provider credentials are supplied by the application or backend service before \`connectTransport()\`
+- Mail runtime code does not own user invitation, conversation delivery, or business lifecycle
 `);
 }
 function renderFlutterRuntimeUsageInstallDependencies(languageEntry) {
@@ -741,16 +730,16 @@ function renderFlutterRuntimeUsageDoc(assembly) {
   return lines(`
 # SDKWork Mail SDK Flutter Runtime Usage
 
-This guide describes the executable Flutter/mobile media runtime baseline of \`sdkwork-mail-sdk\`.
-IM-owned SDKs and services create business call sessions, deliver invitations, and issue provider
-credentials. The Mail SDK consumes media-room inputs and drives provider media behavior.
+This guide describes the executable Flutter/mobile mail transport runtime baseline of \`sdkwork-mail-sdk\`.
+Backend services and application layers resolve SMTP/IMAP provider credentials. The Mail SDK consumes
+those credentials and drives provider transport behavior through the standard runtime surface.
 
 ## Current Runnable Baseline
 
-- Default media provider: \`${defaultProviderKey}\`
+- Default transport provider: \`${defaultProviderKey}\`
 - Default mobile provider plugin package: \`${runtimeBaseline.vendorSdkPackage}\`
 - Default mobile provider plugin import path: \`${runtimeBaseline.vendorSdkImportPath}\`
-- Standard media entrypoint: \`MailDataSource\`
+- Standard transport entrypoint: \`MailDataSource\`
 - Recommended runtime entrypoint: \`${runtimeBaseline.recommendedEntrypoint}\`
 - Smoke command: \`${runtimeBaseline.smokeCommand}\`
 - Smoke mode: \`${runtimeBaseline.smokeMode}\`
@@ -770,13 +759,13 @@ ${renderFlutterRuntimeUsageInstallDependencies(languageEntry)}
 ## Fast Runtime Verification
 
 Run the public Flutter analysis command inside \`${languageEntry.workspace}\` when you need to verify
-the provider-neutral media runtime contracts:
+the provider-neutral mail transport runtime contracts:
 
 \`\`\`powershell
 ${runtimeBaseline.smokeCommand}
 \`\`\`
 
-## Media Runtime Flow
+## Mail Transport Runtime Flow
 
 \`\`\`dart
 import 'package:mail_sdk/mail_sdk.dart';
@@ -799,14 +788,15 @@ selected provider plugin package and are imported only by applications that inst
 
 ## Runtime Guarantees
 
-- \`MailDataSource\` is the standard provider-neutral media client factory
+- \`MailDataSource\` is the standard provider-neutral mail transport client factory
 - \`MailDriverManager\` accepts provider drivers registered by explicit provider plugin packages
 - \`MailDataSource\` defaults to \`${defaultProviderKey}\` only after the matching provider driver is
   registered
 - provider plugin packages own concrete native bridge implementations and vendor dependencies
-- provider credentials are supplied by the application or IM layer before \`join()\`
-- Mail runtime code does not own user invitation, conversation delivery, or business call lifecycle
-- audio and video publish operations stay standardized through \`MailPublishOptions\`
+- provider credentials are supplied by the application or backend service before \`connectTransport()\`
+- Mail runtime code does not own user invitation, conversation delivery, or business lifecycle
+- send, probe, and sync operations stay standardized through \`sendMail\`, \`probeMailbox\`, and
+  \`syncMailbox\`
 `);
 }
 function renderTypeScriptAdapterContract(contract) {
@@ -1690,7 +1680,7 @@ function renderTypeScriptWorkspaceReadme(languageEntry, assembly) {
     'standard provider selection helpers at src/provider-selection.ts',
     'standard capability negotiation helpers at src/capability-negotiation.ts',
     'standard provider support helpers at src/provider-support.ts',
-    'standard media runtime helpers for provider-neutral join, publish, mute, and leave flows',
+    'standard mail transport runtime helpers for provider-neutral connectTransport, sendMail, probeMailbox, and syncMailbox flows',
     'assembly-driven provider package catalog at src/provider-package-catalog.ts',
     'standard provider package loader and installer SPI at src/provider-package-loader.ts',
     'assembly-driven provider activation catalog at src/provider-activation-catalog.ts',
@@ -4177,11 +4167,11 @@ export function buildMailSdkMaterializationPlan(workspaceRoot) {
       content: renderUsageGuide(assembly),
     },
     {
-      relativePath: 'docs/typescript-volcengine-runtime-usage.md',
+      relativePath: 'docs/typescript-smtp-runtime-usage.md',
       content: renderTypeScriptRuntimeUsageDoc(assembly),
     },
     {
-      relativePath: 'docs/flutter-volcengine-runtime-usage.md',
+      relativePath: 'docs/flutter-smtp-runtime-usage.md',
       content: renderFlutterRuntimeUsageDoc(assembly),
     },
     {

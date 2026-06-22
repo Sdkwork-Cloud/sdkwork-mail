@@ -1,6 +1,9 @@
 import { useMemo, useState, useEffect } from "react";
 import { AdminLayout } from "@sdkwork/Mail-pc-admin-shell";
 import {
+  MailMarketingConsentForm,
+  MailMarketingConsentList,
+  MailProviderAccountForm,
   MailProviderAccountList,
   MailTemplateForm,
   MailTemplateList,
@@ -32,6 +35,9 @@ export function AdminApp({ route }: AdminAppProps) {
   const [templateItems, setTemplateItems] = useState<
     Awaited<ReturnType<typeof services.templates.list>>
   >([]);
+  const [editingTemplate, setEditingTemplate] = useState<
+    Awaited<ReturnType<typeof services.templates.list>>[number] | null
+  >(null);
   const [templateLoading, setTemplateLoading] = useState(false);
   const [templateError, setTemplateError] = useState<string | null>(null);
 
@@ -46,6 +52,14 @@ export function AdminApp({ route }: AdminAppProps) {
   >([]);
   const [providerLoading, setProviderLoading] = useState(false);
   const [providerError, setProviderError] = useState<string | null>(null);
+  const [providerPingMessage, setProviderPingMessage] = useState<string | null>(null);
+  const [providerSyncMessage, setProviderSyncMessage] = useState<string | null>(null);
+
+  const [consentItems, setConsentItems] = useState<
+    Awaited<ReturnType<typeof services.marketingConsents.list>>
+  >([]);
+  const [consentLoading, setConsentLoading] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
 
   useEffect(() => {
     if (route !== "/admin/templates" && route !== "/admin/dashboard") {
@@ -94,6 +108,23 @@ export function AdminApp({ route }: AdminAppProps) {
       .finally(() => setProviderLoading(false));
   }, [route, services]);
 
+  useEffect(() => {
+    if (route !== "/admin/marketing-consents") {
+      return;
+    }
+    setConsentLoading(true);
+    setConsentError(null);
+    void services.marketingConsents
+      .list()
+      .then(setConsentItems)
+      .catch((error: unknown) => {
+        setConsentError(
+          error instanceof Error ? error.message : "Failed to load marketing consents",
+        );
+      })
+      .finally(() => setConsentLoading(false));
+  }, [route, services]);
+
   const renderRoute = () => {
     switch (route) {
       case "/admin/dashboard":
@@ -126,16 +157,30 @@ export function AdminApp({ route }: AdminAppProps) {
             <h2>Mail Templates</h2>
             <p>Login verification, password reset, OTP, and marketing templates.</p>
             <MailTemplateForm
-              onSubmit={async (command) => {
+              editingTemplate={editingTemplate}
+              onCancelEdit={() => setEditingTemplate(null)}
+              onCreate={async (command) => {
                 await services.templates.create(command);
                 const items = await services.templates.list();
                 setTemplateItems(items);
+              }}
+              onUpdate={async (templateId, command) => {
+                await services.templates.update(templateId, command);
+                const items = await services.templates.list();
+                setTemplateItems(items);
+                setEditingTemplate(null);
               }}
             />
             <MailTemplateList
               items={templateItems}
               loading={templateLoading}
               error={templateError}
+              onEdit={setEditingTemplate}
+              onDisable={async (item) => {
+                await services.templates.disable(item.id);
+                const items = await services.templates.list();
+                setTemplateItems(items);
+              }}
             />
           </>
         );
@@ -158,10 +203,56 @@ export function AdminApp({ route }: AdminAppProps) {
           <>
             <h2>Transport Provider Accounts</h2>
             <p>SMTP/IMAP provider configuration for outbound and sync delivery.</p>
+            <MailProviderAccountForm
+              onSubmit={async (command) => {
+                await services.providerAccounts.create(command);
+                const accounts = await services.providerAccounts.list();
+                setProviderAccounts(accounts);
+              }}
+            />
             <MailProviderAccountList
               accounts={providerAccounts}
               loading={providerLoading}
               error={providerError}
+              pingMessage={providerPingMessage}
+              syncMessage={providerSyncMessage}
+              onPing={async (account) => {
+                setProviderPingMessage(null);
+                const result = await services.providerAccounts.ping(account.id);
+                setProviderPingMessage(
+                  result.ok ? `Ping OK: ${result.message}` : `Ping failed: ${result.message}`,
+                );
+              }}
+              onSync={async (account) => {
+                setProviderSyncMessage(null);
+                const result = await services.providerAccounts.sync(account.id);
+                setProviderSyncMessage(result.message);
+              }}
+            />
+          </>
+        );
+
+      case "/admin/marketing-consents":
+        return (
+          <>
+            <h2>Marketing Consents</h2>
+            <p>Grant or revoke recipient consent required for marketing mail sends.</p>
+            <MailMarketingConsentForm
+              onSubmit={async (command) => {
+                await services.marketingConsents.grant(command);
+                const items = await services.marketingConsents.list();
+                setConsentItems(items);
+              }}
+            />
+            <MailMarketingConsentList
+              items={consentItems}
+              loading={consentLoading}
+              error={consentError}
+              onRevoke={async (item) => {
+                await services.marketingConsents.revoke(item.id);
+                const items = await services.marketingConsents.list();
+                setConsentItems(items);
+              }}
             />
           </>
         );

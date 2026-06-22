@@ -1,10 +1,10 @@
-package com.sdkwork.rtc.metadata;
+package com.sdkwork.Mail.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public final class RtcProviderExtensionCatalog {
+public final class MailProviderExtensionCatalog {
 
   public static final List<String> RECOGNIZED_SURFACES = List.of(
       "control-plane",
@@ -23,23 +23,15 @@ public final class RtcProviderExtensionCatalog {
   );
 
   public static final List<Entry> ENTRIES = List.of(
-      new Entry("volcengine.native-client", "volcengine", "Volcengine Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-      new Entry("aliyun.native-client", "aliyun", "Aliyun Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-      new Entry("tencent.native-client", "tencent", "Tencent Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-      new Entry("agora.native-client", "agora", "Agora Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-      new Entry("zego.native-client", "zego", "ZEGO Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-      new Entry("livekit.native-client", "livekit", "LiveKit Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-      new Entry("twilio.native-client", "twilio", "Twilio Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-      new Entry("jitsi.native-client", "jitsi", "Jitsi Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-      new Entry("janus.native-client", "janus", "Janus Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-      new Entry("mediasoup.native-client", "mediasoup", "mediasoup Native Client", "runtime-bridge", "unwrap-only", "reserved")
+      new Entry("smtp.transport", "smtp", "SMTP Transport", "runtime-bridge", "unwrap-only", "reserved"),
+      new Entry("imap.sync", "imap", "IMAP Sync", "runtime-bridge", "unwrap-only", "reserved")
   );
 
-public static List<Entry> getRtcProviderExtensionCatalog() {
+public static List<Entry> getMailProviderExtensionCatalog() {
     return ENTRIES;
   }
 
-  public static Optional<Entry> getRtcProviderExtensionDescriptor(String extensionKey) {
+  public static Optional<Entry> getMailProviderExtensionDescriptor(String extensionKey) {
     for (var entry : ENTRIES) {
       if (entry.extensionKey().equals(extensionKey)) {
         return Optional.of(entry);
@@ -49,7 +41,7 @@ public static List<Entry> getRtcProviderExtensionCatalog() {
     return Optional.empty();
   }
 
-  public static List<Entry> getRtcProviderExtensionsForProvider(String providerKey) {
+  public static List<Entry> getMailProviderExtensionsForProvider(String providerKey) {
     var resolved = new ArrayList<Entry>();
     for (var entry : ENTRIES) {
       if (entry.providerKey().equals(providerKey)) {
@@ -60,22 +52,22 @@ public static List<Entry> getRtcProviderExtensionCatalog() {
     return List.copyOf(resolved);
   }
 
-  public static List<Entry> getRtcProviderExtensions(List<String> extensionKeys) {
+  public static List<Entry> getMailProviderExtensions(List<String> extensionKeys) {
     var resolved = new ArrayList<Entry>();
     for (var extensionKey : extensionKeys) {
-      getRtcProviderExtensionDescriptor(extensionKey).ifPresent(resolved::add);
+      getMailProviderExtensionDescriptor(extensionKey).ifPresent(resolved::add);
     }
 
     return List.copyOf(resolved);
   }
 
-  public static boolean hasRtcProviderExtension(List<String> extensionKeys, String extensionKey) {
+  public static boolean hasMailProviderExtension(List<String> extensionKeys, String extensionKey) {
     return extensionKeys.contains(extensionKey)
-        && getRtcProviderExtensionDescriptor(extensionKey).isPresent();
+        && getMailProviderExtensionDescriptor(extensionKey).isPresent();
   }
 
 
-  private RtcProviderExtensionCatalog() {
+  private MailProviderExtensionCatalog() {
   }
 
   public record Entry(

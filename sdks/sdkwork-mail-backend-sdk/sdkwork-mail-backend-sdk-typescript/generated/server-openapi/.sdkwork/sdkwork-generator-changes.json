@@ -9,10 +9,15 @@
     "protocol": "http",
     "packageName": "sdkwork-mail-backend-sdk-generated-typescript"
   },
-  "changeFingerprint": "fbf77371b00482aa488fadccce9df3048cf64e629f14cb3a05b5bba55429244b",
+  "changeFingerprint": "2fd0473d4e2d53121e7e061706bd91ab070475eb660a82f0e8552a20a2351ee8",
   "changes": {
-    "createdGeneratedFiles": [],
+    "createdGeneratedFiles": [
+      "src/types/mail-provider-sync-response.ts",
+      "src/types/mail-provider-sync-result.ts",
+      "src/types/sync-mail-provider-account-request.ts"
+    ],
     "updatedGeneratedFiles": [
+      "src/api/mail-provider-accounts.ts",
       "src/types/index.ts"
     ],
     "unchangedGeneratedFiles": [
@@ -28,7 +33,7 @@
       "sdkwork-sdk.json",
       "src/api/base.ts",
       "src/api/index.ts",
-      "src/api/mail-provider-accounts.ts",
+      "src/api/mail-marketing-consents.ts",
       "src/api/mail-provider-webhooks.ts",
       "src/api/mail-templates.ts",
       "src/api/mail-transactional-deliveries.ts",
@@ -39,9 +44,20 @@
       "src/index.ts",
       "src/sdk.ts",
       "src/types/common.ts",
+      "src/types/create-mail-provider-account-request.ts",
+      "src/types/create-mail-provider-account-response.ts",
+      "src/types/create-mail-provider-account-result.ts",
+      "src/types/create-mail-provider-credential-input.ts",
       "src/types/create-mail-template-request.ts",
+      "src/types/grant-mail-marketing-consent-request.ts",
+      "src/types/mail-marketing-consent-list-response.ts",
+      "src/types/mail-marketing-consent-response.ts",
+      "src/types/mail-marketing-consent.ts",
       "src/types/mail-provider-account-list-response.ts",
       "src/types/mail-provider-account.ts",
+      "src/types/mail-provider-credential.ts",
+      "src/types/mail-provider-ping-response.ts",
+      "src/types/mail-provider-ping-result.ts",
       "src/types/mail-provider-webhook-event-request.ts",
       "src/types/mail-provider-webhook-event-response.ts",
       "src/types/mail-provider-webhook-event.ts",
@@ -54,10 +70,7 @@
       "src/types/update-mail-template-request.ts",
       "tsconfig.json"
     ],
-    "deletedGeneratedFiles": [
-      "src/types/mail-provider-query-job.ts",
-      "src/types/mail-provider-query-snapshot.ts"
-    ],
+    "deletedGeneratedFiles": [],
     "scaffoldedFiles": [],
     "preservedScaffoldFiles": [
       "custom/build-runtime.mjs",
@@ -68,31 +81,39 @@
   "impact": {
     "schemaVersion": 1,
     "areas": [
+      "api-surface",
       "models"
     ],
     "details": [
       {
+        "area": "api-surface",
+        "paths": [
+          "src/api/mail-provider-accounts.ts"
+        ]
+      },
+      {
         "area": "models",
         "paths": [
           "src/types/index.ts",
-          "src/types/mail-provider-query-job.ts",
-          "src/types/mail-provider-query-snapshot.ts"
+          "src/types/mail-provider-sync-response.ts",
+          "src/types/mail-provider-sync-result.ts",
+          "src/types/sync-mail-provider-account-request.ts"
         ]
       }
     ],
     "requiresVerification": true,
-    "summary": "Detected impact areas: models. Verification is required."
+    "summary": "Detected impact areas: api-surface, models. Verification is required."
   },
   "verificationPlan": {
     "shouldRun": true,
     "runPhase": "now",
-    "summary": "Detected impact areas: models. Verification is required. Run the required verification commands now against the generated SDK output.",
+    "summary": "Detected impact areas: api-surface, models. Verification is required. Run the required verification commands now against the generated SDK output.",
     "steps": [
       {
         "id": "check",
         "title": "Unified package check",
         "required": true,
-        "rationale": "Validate the generated package with the unified publish helper. Triggered by: models.",
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -110,7 +131,7 @@
         "id": "build",
         "title": "Unified package build",
         "required": true,
-        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: models.",
+        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: api-surface, models.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -128,14 +149,12 @@
   },
   "executionDecision": {
     "schemaVersion": 1,
-    "riskLevel": "high",
+    "riskLevel": "medium",
     "nextAction": "verify",
     "requiresManualReview": false,
     "applyRequiresExpectedFingerprint": false,
     "summary": "Changes have been applied. Run the required verification plan now.",
     "reasons": [
-      "deleted-generated-files",
-      "manual-review-required",
       "verification-required"
     ]
   },

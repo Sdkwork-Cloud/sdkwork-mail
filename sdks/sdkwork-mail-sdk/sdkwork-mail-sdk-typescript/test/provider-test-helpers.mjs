@@ -1,8 +1,23 @@
+import { register } from 'node:module';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-export const packageRoot = path.resolve('.');
+const testDir = path.dirname(fileURLToPath(import.meta.url));
+export const packageRoot = path.resolve(testDir, '..');
+
+let resolverRegistered = false;
+
+function ensureTestMailSdkResolver() {
+  if (resolverRegistered) {
+    return;
+  }
+
+  register(pathToFileURL(path.join(testDir, 'test-mail-sdk-resolver.mjs')).href, import.meta.url);
+  resolverRegistered = true;
+}
+
+ensureTestMailSdkResolver();
 
 export function readJson(filePath) {
   return JSON.parse(readFileSync(filePath, 'utf8'));

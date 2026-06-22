@@ -1,4 +1,4 @@
-import 'package:sdkwork_mail_flutter_mobile_Mail/sdkwork_mail_flutter_mobile_Mail.dart';
+import 'package:sdkwork_mail_flutter_mobile_mail/sdkwork_mail_flutter_mobile_mail.dart';
 
 import 'app_auth.dart';
 import 'sdk_clients.dart';

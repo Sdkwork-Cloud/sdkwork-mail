@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass(frozen=True)
-class RtcProviderExtensionCatalogEntry:
+class MailProviderExtensionCatalogEntry:
     extensionKey: str
     providerKey: str
     displayName: str
@@ -12,7 +12,7 @@ class RtcProviderExtensionCatalogEntry:
     status: str
 
 
-class RtcProviderExtensionCatalog:
+class MailProviderExtensionCatalog:
     recognizedSurfaces = [
         "control-plane",
         "runtime-bridge",
@@ -30,52 +30,44 @@ class RtcProviderExtensionCatalog:
     ]
 
     entries = [
-        RtcProviderExtensionCatalogEntry("volcengine.native-client", "volcengine", "Volcengine Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-        RtcProviderExtensionCatalogEntry("aliyun.native-client", "aliyun", "Aliyun Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("tencent.native-client", "tencent", "Tencent Native Client", "runtime-bridge", "unwrap-only", "reference-baseline"),
-        RtcProviderExtensionCatalogEntry("agora.native-client", "agora", "Agora Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("zego.native-client", "zego", "ZEGO Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("livekit.native-client", "livekit", "LiveKit Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("twilio.native-client", "twilio", "Twilio Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("jitsi.native-client", "jitsi", "Jitsi Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("janus.native-client", "janus", "Janus Native Client", "runtime-bridge", "unwrap-only", "reserved"),
-        RtcProviderExtensionCatalogEntry("mediasoup.native-client", "mediasoup", "mediasoup Native Client", "runtime-bridge", "unwrap-only", "reserved"),
+        MailProviderExtensionCatalogEntry("smtp.transport", "smtp", "SMTP Transport", "runtime-bridge", "unwrap-only", "reserved"),
+        MailProviderExtensionCatalogEntry("imap.sync", "imap", "IMAP Sync", "runtime-bridge", "unwrap-only", "reserved"),
     ]
 
 
-def get_rtc_provider_extension_catalog() -> list[RtcProviderExtensionCatalogEntry]:
-    return RtcProviderExtensionCatalog.entries
+def get_mail_provider_extension_catalog() -> list[MailProviderExtensionCatalogEntry]:
+    return MailProviderExtensionCatalog.entries
 
 
-def get_rtc_provider_extension_descriptor(
+def get_mail_provider_extension_descriptor(
     extension_key: str,
-) -> Optional[RtcProviderExtensionCatalogEntry]:
-    for entry in RtcProviderExtensionCatalog.entries:
+) -> Optional[MailProviderExtensionCatalogEntry]:
+    for entry in MailProviderExtensionCatalog.entries:
         if entry.extensionKey == extension_key:
             return entry
 
     return None
 
 
-def get_rtc_provider_extensions_for_provider(
+def get_mail_provider_extensions_for_provider(
     provider_key: str,
-) -> list[RtcProviderExtensionCatalogEntry]:
+) -> list[MailProviderExtensionCatalogEntry]:
     return [
-        entry for entry in RtcProviderExtensionCatalog.entries if entry.providerKey == provider_key
+        entry for entry in MailProviderExtensionCatalog.entries if entry.providerKey == provider_key
     ]
 
 
-def get_rtc_provider_extensions(
+def get_mail_provider_extensions(
     extension_keys: list[str],
-) -> list[RtcProviderExtensionCatalogEntry]:
-    entries: list[RtcProviderExtensionCatalogEntry] = []
+) -> list[MailProviderExtensionCatalogEntry]:
+    entries: list[MailProviderExtensionCatalogEntry] = []
     for extension_key in extension_keys:
-        entry = get_rtc_provider_extension_descriptor(extension_key)
+        entry = get_mail_provider_extension_descriptor(extension_key)
         if entry is not None:
             entries.append(entry)
 
     return entries
 
 
-def has_rtc_provider_extension(extension_keys: list[str], extension_key: str) -> bool:
-    return extension_key in extension_keys and get_rtc_provider_extension_descriptor(extension_key) is not None
+def has_mail_provider_extension(extension_keys: list[str], extension_key: str) -> bool:
+    return extension_key in extension_keys and get_mail_provider_extension_descriptor(extension_key) is not None

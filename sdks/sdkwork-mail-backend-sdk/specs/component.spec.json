@@ -34,7 +34,13 @@
     "events": [],
     "configKeys": [],
     "ownedOperations": [
+      "mail.marketingConsents.list",
+      "mail.marketingConsents.grant",
+      "mail.marketingConsents.revoke",
       "mail.providerAccounts.list",
+      "mail.providerAccounts.create",
+      "mail.providerAccounts.ping",
+      "mail.providerAccounts.sync",
       "mail.providerWebhooks.events.receive",
       "mail.templates.list",
       "mail.templates.create",

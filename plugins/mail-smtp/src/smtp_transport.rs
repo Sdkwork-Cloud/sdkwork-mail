@@ -1,6 +1,7 @@
 use lettre::message::{MultiPart, SinglePart};
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor};
+use tokio::time::{Duration, sleep};
 
 use sdkwork_communication_mail_service::{
     MailOutboundMessage, MailTransportError, MailTransportFuture, MailTransportPort,
@@ -77,8 +78,45 @@ impl SmtpMailTransport {
 
         let mailer = mailer_builder.build();
 
+        let max_attempts = self.config.max_send_retries.max(1);
+        let mut last_error = None;
+        for attempt in 0..max_attempts {
+            match mailer.send(email.clone()).await {
+                Ok(_) => return Ok(()),
+                Err(error) => {
+                    let message = error.to_string();
+                    last_error = Some(message.clone());
+                    let retryable = is_retryable_smtp_error(&message);
+                    if !retryable || attempt + 1 >= max_attempts {
+                        return Err(MailTransportError::Delivery(message));
+                    }
+                    sleep(Duration::from_millis(250 * (attempt as u64 + 1))).await;
+                }
+            }
+        }
+
+        Err(MailTransportError::Delivery(
+            last_error.unwrap_or_else(|| "smtp send failed".to_owned()),
+        ))
+    }
+
+    pub async fn verify_connection(&self) -> Result<(), MailTransportError> {
+        let mut mailer_builder = if self.config.use_tls {
+            AsyncSmtpTransport::<Tokio1Executor>::starttls_relay(&self.config.host)
+                .map_err(|error| MailTransportError::Configuration(error.to_string()))?
+        } else {
+            AsyncSmtpTransport::<Tokio1Executor>::builder_dangerous(&self.config.host)
+        }
+        .port(self.config.port);
+
+        if let (Some(username), Some(password)) = (&self.config.username, &self.config.password) {
+            mailer_builder =
+                mailer_builder.credentials(Credentials::new(username.clone(), password.clone()));
+        }
+
+        let mailer: AsyncSmtpTransport<Tokio1Executor> = mailer_builder.build();
         mailer
-            .send(email)
+            .test_connection()
             .await
             .map_err(|error| MailTransportError::Delivery(error.to_string()))?;
         Ok(())
@@ -99,6 +137,24 @@ impl Clone for SmtpMailTransport {
             config: self.config.clone(),
         }
     }
+}
+
+fn is_retryable_smtp_error(message: &str) -> bool {
+    let normalized = message.to_ascii_lowercase();
+    [
+        "temporary",
+        "timeout",
+        "timed out",
+        "connection reset",
+        "connection refused",
+        "try again",
+        "421",
+        "450",
+        "451",
+        "452",
+    ]
+    .iter()
+    .any(|needle| normalized.contains(needle))
 }
 
 fn strip_html_tags(value: &str) -> String {

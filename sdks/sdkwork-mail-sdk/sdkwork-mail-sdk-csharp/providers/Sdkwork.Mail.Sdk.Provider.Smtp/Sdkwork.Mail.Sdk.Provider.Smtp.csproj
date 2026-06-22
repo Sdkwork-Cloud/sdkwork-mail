@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Sdkwork.Mail.Sdk.Provider.Smtp</AssemblyName>
+    <RootNamespace>Sdkwork.Mail.Sdk.Provider.Smtp</RootNamespace>
+    <PackageId>Sdkwork.Mail.Sdk.Provider.Smtp</PackageId>
+    <Version>0.1.0</Version>
+    <Description>Reserved C# provider package boundary for SMTP Mail Transport</Description>
+    <IsPackable>true</IsPackable>
+    <SdkworkMailProviderKey>smtp</SdkworkMailProviderKey>
+    <SdkworkMailPluginId>Mail-smtp</SdkworkMailPluginId>
+    <SdkworkMailDriverId>sdkwork-mail-driver-smtp</SdkworkMailDriverId>
+    <SdkworkMailSourcePath>src/MailProviderSmtpPackageContract.cs</SdkworkMailSourcePath>
+    <SdkworkMailSourceSymbol>MailProviderSmtpPackageContract</SdkworkMailSourceSymbol>
+    <SdkworkMailRootPublic>false</SdkworkMailRootPublic>
+    <SdkworkMailStatus>future-runtime-bridge-only</SdkworkMailStatus>
+    <SdkworkMailRuntimeBridgeStatus>reserved</SdkworkMailRuntimeBridgeStatus>
+  </PropertyGroup>
+</Project>

@@ -111,22 +111,22 @@ test('root sdk metadata accessors align with the materialized provider catalog',
     );
   }
   assert.deepEqual(
-    getOfficialMailProviderMetadataByKey('agora'),
-    catalog.AGORA_mail_PROVIDER_CATALOG_ENTRY,
+    getOfficialMailProviderMetadataByKey('imap'),
+    catalog.IMAP_mail_PROVIDER_CATALOG_ENTRY,
   );
   assert.deepEqual(
-    getMailProviderByProviderKey('agora'),
-    catalog.AGORA_mail_PROVIDER_CATALOG_ENTRY,
+    getMailProviderByProviderKey('imap'),
+    catalog.IMAP_mail_PROVIDER_CATALOG_ENTRY,
   );
   assert.equal(getMailProviderByProviderKey('vendor-x'), undefined);
   assert.equal(getOfficialMailProviderMetadataByKey('vendor-x'), undefined);
   assert.deepEqual(
-    catalog.getOfficialMailProviderMetadataByKey('agora'),
-    catalog.AGORA_mail_PROVIDER_CATALOG_ENTRY,
+    catalog.getOfficialMailProviderMetadataByKey('imap'),
+    catalog.IMAP_mail_PROVIDER_CATALOG_ENTRY,
   );
   assert.deepEqual(
-    catalog.getMailProviderByProviderKey('agora'),
-    catalog.AGORA_mail_PROVIDER_CATALOG_ENTRY,
+    catalog.getMailProviderByProviderKey('imap'),
+    catalog.IMAP_mail_PROVIDER_CATALOG_ENTRY,
   );
 });
 
@@ -165,7 +165,7 @@ test('materialized Mail provider catalog exposes typescript runtime bridge prere
         (provider) => provider.typescriptAdapter.runtimeBridgeStatus === 'reference-baseline',
       )
       .map((provider) => provider.providerKey),
-    ['volcengine', 'tencent'],
+    [],
   );
 });
 
@@ -205,13 +205,13 @@ test('materialized Mail provider activation catalog matches the assembly languag
   );
   assert.equal(typeof rootSdk.getMailProviderActivationByProviderKey, 'function');
   assert.deepEqual(
-    rootSdk.getMailProviderActivationByProviderKey('volcengine'),
-    activationCatalog.VOLCENGINE_mail_PROVIDER_ACTIVATION_ENTRY,
+    rootSdk.getMailProviderActivationByProviderKey('smtp'),
+    activationCatalog.SMTP_mail_PROVIDER_ACTIVATION_ENTRY,
   );
   assert.equal(rootSdk.getMailProviderActivationByProviderKey('vendor-x'), undefined);
   assert.deepEqual(
-    activationCatalog.getMailProviderActivationByProviderKey('agora'),
-    activationCatalog.AGORA_mail_PROVIDER_ACTIVATION_ENTRY,
+    activationCatalog.getMailProviderActivationByProviderKey('imap'),
+    activationCatalog.IMAP_mail_PROVIDER_ACTIVATION_ENTRY,
   );
   assert.equal(activationCatalog.getMailProviderActivationByProviderKey('vendor-x'), undefined);
 });
@@ -280,16 +280,16 @@ test('materialized Mail language workspace catalog matches the assembly language
     languageWorkspaceCatalog.FLUTTER_mail_LANGUAGE_WORKSPACE_ENTRY,
   );
   assert.deepEqual(languageWorkspaceCatalog.TYPESCRIPT_mail_LANGUAGE_WORKSPACE_ENTRY.runtimeBaseline, {
-    vendorSdkPackage: '@sdkwork/Mail-sdk-provider-volcengine',
-    vendorSdkImportPath: '@sdkwork/Mail-sdk-provider-volcengine',
+    vendorSdkPackage: '@sdkwork/Mail-sdk-provider-smtp',
+    vendorSdkImportPath: '@sdkwork/Mail-sdk-provider-smtp',
     recommendedEntrypoint: 'installMailProviderPackage',
     smokeCommand: 'npm run smoke',
     smokeMode: 'runtime-backed',
     smokeVariants: ['default'],
   });
   assert.deepEqual(languageWorkspaceCatalog.FLUTTER_mail_LANGUAGE_WORKSPACE_ENTRY.runtimeBaseline, {
-    vendorSdkPackage: 'mail_sdk_provider_volcengine',
-    vendorSdkImportPath: 'package:mail_sdk_provider_volcengine/mail_sdk_provider_volcengine.dart',
+    vendorSdkPackage: 'mail_sdk_provider_smtp',
+    vendorSdkImportPath: 'package:mail_sdk_provider_smtp/mail_sdk_provider_smtp.dart',
     recommendedEntrypoint: 'MailDataSource',
     smokeCommand: 'flutter analyze',
     smokeMode: 'analysis-backed',

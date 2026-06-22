@@ -46,45 +46,70 @@ export interface MailCloseable {
   close(): Promise<void> | void;
 }
 
-export type MailTrackKind = 'audio' | 'video' | 'screen-share' | 'data';
-export type MailSessionConnectionState = 'joined' | 'left';
+export type MailTransportConnectionState = 'connected' | 'disconnected';
 
-export interface MailJoinOptions {
-  sessionId: string;
-  roomId: string;
-  participantId: string;
-  token?: string;
+export interface MailTransportConnectOptions {
+  accountId: string;
   metadata?: Record<string, unknown>;
 }
 
-export interface MailSessionDescriptor {
-  sessionId: string;
-  roomId: string;
-  participantId: string;
+export interface MailTransportAuthenticateOptions {
+  username: string;
+  secretRef?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface MailTransportDescriptor {
+  accountId: string;
   providerKey: string;
-  connectionState: MailSessionConnectionState;
+  connectionState: MailTransportConnectionState;
 }
 
-export interface MailPublishOptions {
-  trackId: string;
-  kind: MailTrackKind;
+export interface MailSendOptions {
+  messageId?: string;
+  from: string;
+  to: readonly string[];
+  subject: string;
+  bodyText?: string;
+  bodyHtml?: string;
   metadata?: Record<string, unknown>;
 }
 
-export interface MailScreenShareOptions {
-  trackId: string;
+export interface MailSendResult {
+  messageId: string;
+  accepted: readonly string[];
+}
+
+export interface MailMailboxProbeOptions {
+  mailbox?: string;
   metadata?: Record<string, unknown>;
 }
 
-export interface MailTrackPublication {
-  trackId: string;
-  kind: MailTrackKind;
-  muted: boolean;
+export interface MailMailboxProbeResult {
+  mailbox: string;
+  exists: number;
+  uidValidity?: number;
+  uidNext?: number;
 }
 
-export interface MailMuteState {
-  kind: 'audio' | 'video';
-  muted: boolean;
+export interface MailMailboxSyncOptions {
+  folderId?: string;
+  mailbox?: string;
+  sinceUid?: number;
+  limit?: number;
+  metadata?: Record<string, unknown>;
+}
+
+export interface MailMailboxSyncResult {
+  folderId: string;
+  syncedCount: number;
+  highestUid?: number;
+  uidValidity?: number;
+}
+
+export interface MailTransportHealthResult {
+  healthy: boolean;
+  detail?: string;
 }
 
 export interface MailCapabilityNegotiationRequest {
@@ -379,35 +404,30 @@ export interface MailRuntimeControllerContext<TNativeClient = unknown> {
 }
 
 export interface MailRuntimeController<TNativeClient = unknown> {
-  join(
-    options: MailJoinOptions,
+  connectTransport(
+    options: MailTransportConnectOptions,
     context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<MailSessionDescriptor> | MailSessionDescriptor;
-  leave(
+  ): Promise<MailTransportDescriptor> | MailTransportDescriptor;
+  authenticateTransport(
+    options: MailTransportAuthenticateOptions,
     context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<MailSessionDescriptor> | MailSessionDescriptor;
-  publish(
-    options: MailPublishOptions,
+  ): Promise<MailTransportDescriptor> | MailTransportDescriptor;
+  disconnectTransport(
     context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<MailTrackPublication> | MailTrackPublication;
-  unpublish(
-    trackId: string,
+  ): Promise<MailTransportDescriptor> | MailTransportDescriptor;
+  sendMail?(
+    options: MailSendOptions,
     context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<void> | void;
-  startScreenShare?(
-    options: MailScreenShareOptions,
+  ): Promise<MailSendResult> | MailSendResult;
+  probeMailbox?(
+    options: MailMailboxProbeOptions,
     context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<MailTrackPublication> | MailTrackPublication;
-  stopScreenShare?(
-    trackId: string,
+  ): Promise<MailMailboxProbeResult> | MailMailboxProbeResult;
+  syncMailbox?(
+    options: MailMailboxSyncOptions,
     context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<void> | void;
-  muteAudio(
-    muted: boolean,
+  ): Promise<MailMailboxSyncResult> | MailMailboxSyncResult;
+  healthCheck(
     context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<MailMuteState> | MailMuteState;
-  muteVideo(
-    muted: boolean,
-    context: MailRuntimeControllerContext<TNativeClient>,
-  ): Promise<MailMuteState> | MailMuteState;
+  ): Promise<MailTransportHealthResult> | MailTransportHealthResult;
 }

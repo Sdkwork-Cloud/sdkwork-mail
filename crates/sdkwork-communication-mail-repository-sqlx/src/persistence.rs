@@ -1,12 +1,16 @@
 use chrono::NaiveDateTime;
 use sdkwork_communication_mail_service::{
-    ActiveVerificationChallenge, CreateMailMessageRequest, CreateMailTemplateRequest, MailAccount,
-    MailAccountStatus, MailAttachment, MailFolder, MailFolderKind, MailMessage,
-    MailMessageRecipient, MailPersistenceError, MailPersistenceFuture, MailPersistencePort,
-    MailPersistenceResult, MailProviderAccount, MailProviderAccountStatus, MailRecipientKind,
-    MailSmtpTransportBinding, MailTemplate, MailTemplateCategory, MailTemplateStatus, MailThread,
-    MailTransactionalDelivery, MailTransactionalDeliveryStatus, MailVerificationPurpose,
-    UpdateMailMessageRequest, UpdateMailTemplateRequest, utc_now_rfc3339_millis,
+    ActiveVerificationChallenge, CreateMailMessageRequest, CreateMailProviderAccountRequest,
+    CreateMailProviderAccountResult, CreateMailProviderCredentialInput, CreateMailTemplateRequest,
+    EnsureMailAccountRequest, GrantMailMarketingConsentRequest, IngestInboundMailMessageRequest,
+    MailAccount, MailAccountStatus, MailAttachment, MailFolder, MailFolderKind,
+    MailMarketingConsent, MailMarketingConsentStatus, MailMessage, MailMessageRecipient,
+    MailPersistenceError, MailPersistenceFuture, MailPersistencePort, MailPersistenceResult,
+    MailProviderAccount, MailProviderAccountStatus, MailProviderCredential,
+    MailProviderCredentialStatus, MailRecipientKind, MailSmtpTransportBinding, MailSyncState,
+    MailTemplate, MailTemplateCategory, MailTemplateStatus, MailThread, MailTransactionalDelivery,
+    MailTransactionalDeliveryStatus, MailVerificationPurpose, UpdateMailMessageRequest,
+    UpdateMailTemplateRequest, utc_now_rfc3339_millis,
 };
 use sdkwork_utils_rust::{is_blank, sha256_hash};
 use serde_json::json;
@@ -218,17 +222,23 @@ impl MailPersistencePort for MailPostgresPersistencePort {
                 .map(|value| value.len() as u64)
                 .unwrap_or(0);
 
+            let from_email = request
+                .from_email
+                .clone()
+                .unwrap_or_else(|| owner_user_id.to_owned());
+            let from_name = request.from_name.clone();
+
             sqlx::query(
                 r#"
                 INSERT INTO mail_message (
                     id, uuid, tenant_id, organization_id, account_id, folder_id, thread_id,
-                    from_email, subject, snippet, body_text, body_html, is_read, is_starred,
+                    from_name, from_email, subject, snippet, body_text, body_html, is_read, is_starred,
                     is_draft, has_attachments, sent_at, received_at, size_bytes, metadata,
                     created_at, updated_at, version
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7,
-                    $8, $9, $10, $11, $12, FALSE, FALSE,
-                    $13, FALSE, $14, $15, $16, $17,
+                    $8, $9, $10, $11, $12, $13, FALSE, FALSE,
+                    $14, FALSE, $15, $16, $17, $18,
                     NOW(), NOW(), 0
                 )
                 "#,
@@ -240,7 +250,8 @@ impl MailPersistencePort for MailPostgresPersistencePort {
             .bind(&request.account_id)
             .bind(&folder_id)
             .bind(&thread_id)
-            .bind(owner_user_id)
+            .bind(&from_name)
+            .bind(&from_email)
             .bind(&request.subject)
             .bind(&snippet)
             .bind(&request.body_text)
@@ -371,6 +382,177 @@ impl MailPersistencePort for MailPostgresPersistencePort {
                 .into_iter()
                 .map(ProviderAccountRow::into_provider_account)
                 .collect())
+        })
+    }
+
+    fn retrieve_provider_account<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailProviderAccount> {
+        Box::pin(async move {
+            load_provider_account(&self.pool, tenant_id, organization_id, account_id).await
+        })
+    }
+
+    fn create_provider_account<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: CreateMailProviderAccountRequest,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<
+        'a,
+        CreateMailProviderAccountResult,
+    > {
+        Box::pin(async move {
+            let provider_kind =
+                normalize_provider_kind(&request.provider_kind).ok_or_else(|| {
+                    MailPersistenceError::Conflict("providerKind must be smtp or imap".to_owned())
+                })?;
+            if request.name.trim().is_empty() || request.host.trim().is_empty() {
+                return Err(MailPersistenceError::Conflict(
+                    "name and host are required".to_owned(),
+                ));
+            }
+            if request.port == 0 {
+                return Err(MailPersistenceError::Conflict(
+                    "port must be greater than zero".to_owned(),
+                ));
+            }
+
+            let now = timestamp_now();
+            let account_uuid = Uuid::new_v4().to_string();
+            sqlx::query(
+                r#"
+                INSERT INTO mail_provider_account (
+                    id, uuid, tenant_id, organization_id, provider_kind, name, host, port, use_tls,
+                    status, created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7, $8, $9,
+                    1, $10, $10, 0
+                )
+                "#,
+            )
+            .bind(next_id())
+            .bind(&account_uuid)
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(provider_kind)
+            .bind(request.name.trim())
+            .bind(request.host.trim())
+            .bind(i32::from(request.port))
+            .bind(request.use_tls)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            let account =
+                load_provider_account(&self.pool, tenant_id, organization_id, &account_uuid)
+                    .await?;
+            let credential = if let Some(input) = request.credential {
+                Some(
+                    self.create_provider_credential(
+                        tenant_id,
+                        organization_id,
+                        &account_uuid,
+                        input,
+                    )
+                    .await?,
+                )
+            } else {
+                None
+            };
+
+            Ok(CreateMailProviderAccountResult {
+                account,
+                credential,
+            })
+        })
+    }
+
+    fn create_provider_credential<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        provider_account_id: &'a str,
+        request: CreateMailProviderCredentialInput,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailProviderCredential> {
+        Box::pin(async move {
+            validate_secret_ref(&request.secret_ref)?;
+            if request.username.trim().is_empty() {
+                return Err(MailPersistenceError::Conflict(
+                    "username is required".to_owned(),
+                ));
+            }
+
+            let _account =
+                load_provider_account(&self.pool, tenant_id, organization_id, provider_account_id)
+                    .await?;
+
+            let now = timestamp_now();
+            let credential_uuid = Uuid::new_v4().to_string();
+            sqlx::query(
+                r#"
+                INSERT INTO mail_provider_credential (
+                    id, uuid, tenant_id, organization_id, provider_account_id, username, secret_ref,
+                    status, created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7,
+                    1, $8, $8, 0
+                )
+                "#,
+            )
+            .bind(next_id())
+            .bind(&credential_uuid)
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(provider_account_id)
+            .bind(request.username.trim())
+            .bind(request.secret_ref.trim())
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            load_provider_credential(&self.pool, tenant_id, organization_id, &credential_uuid).await
+        })
+    }
+
+    fn retrieve_active_provider_credential<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        provider_account_id: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailProviderCredential> {
+        Box::pin(async move {
+            let row = sqlx::query_as::<_, ProviderCredentialRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, provider_account_id, username, secret_ref, status
+                FROM mail_provider_credential
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND provider_account_id = $3
+                  AND status = 1
+                  AND deleted_at IS NULL
+                ORDER BY updated_at DESC
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(provider_account_id)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?
+            .ok_or_else(|| {
+                MailPersistenceError::NotFound(format!(
+                    "provider credential not found: {provider_account_id}"
+                ))
+            })?;
+
+            Ok(row.into_credential())
         })
     }
 
@@ -1063,6 +1245,623 @@ impl MailPersistencePort for MailPostgresPersistencePort {
             Ok(rows.into_iter().map(DeliveryRow::into_delivery).collect())
         })
     }
+
+    fn has_active_marketing_consent<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        recipient_email: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, bool> {
+        Box::pin(async move {
+            let row = sqlx::query_scalar::<_, i64>(
+                r#"
+                SELECT COUNT(*)::bigint
+                FROM mail_marketing_consent
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND recipient_email = $3
+                  AND status = 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(recipient_email)
+            .fetch_one(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(row > 0)
+        })
+    }
+
+    fn list_marketing_consents<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        recipient_email: Option<&'a str>,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, Vec<MailMarketingConsent>>
+    {
+        Box::pin(async move {
+            let rows = sqlx::query_as::<_, MarketingConsentRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, recipient_email, status, consent_source,
+                       granted_at, revoked_at, metadata
+                FROM mail_marketing_consent
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND ($3::varchar IS NULL OR recipient_email = $3)
+                ORDER BY updated_at DESC
+                LIMIT 200
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(recipient_email)
+            .fetch_all(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(rows
+                .into_iter()
+                .map(MarketingConsentRow::into_consent)
+                .collect())
+        })
+    }
+
+    fn grant_marketing_consent<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: GrantMailMarketingConsentRequest,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailMarketingConsent> {
+        Box::pin(async move {
+            let recipient_email = request.recipient_email.trim().to_ascii_lowercase();
+            if recipient_email.is_empty() || !recipient_email.contains('@') {
+                return Err(MailPersistenceError::Conflict(
+                    "recipientEmail is invalid".to_owned(),
+                ));
+            }
+
+            let now = timestamp_now();
+            let consent_uuid = Uuid::new_v4().to_string();
+            let consent_source = request
+                .consent_source
+                .clone()
+                .unwrap_or_else(|| "admin".to_owned());
+            let metadata = request.metadata.clone().unwrap_or_else(|| json!({}));
+
+            sqlx::query(
+                r#"
+                INSERT INTO mail_marketing_consent (
+                    id, uuid, tenant_id, organization_id, recipient_email, status, consent_source,
+                    granted_at, metadata, created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, 1, $6,
+                    $7, $8, $7, $7, 0
+                )
+                ON CONFLICT (tenant_id, organization_id, recipient_email)
+                DO UPDATE SET
+                    status = 1,
+                    consent_source = EXCLUDED.consent_source,
+                    granted_at = EXCLUDED.granted_at,
+                    revoked_at = NULL,
+                    metadata = EXCLUDED.metadata,
+                    updated_at = EXCLUDED.updated_at,
+                    version = mail_marketing_consent.version + 1
+                "#,
+            )
+            .bind(next_id())
+            .bind(&consent_uuid)
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(&recipient_email)
+            .bind(&consent_source)
+            .bind(now)
+            .bind(&metadata)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            load_marketing_consent_by_email(
+                &self.pool,
+                tenant_id,
+                organization_id,
+                &recipient_email,
+            )
+            .await
+        })
+    }
+
+    fn revoke_marketing_consent<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        consent_id: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailMarketingConsent> {
+        Box::pin(async move {
+            let now = timestamp_now();
+            let updated = sqlx::query(
+                r#"
+                UPDATE mail_marketing_consent
+                SET status = 0,
+                    revoked_at = $4,
+                    updated_at = $4,
+                    version = version + 1
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND uuid = $3
+                  AND status = 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(consent_id)
+            .bind(now)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            if updated.rows_affected() == 0 {
+                return Err(MailPersistenceError::NotFound(format!(
+                    "marketing consent not found: {consent_id}"
+                )));
+            }
+
+            load_marketing_consent(&self.pool, tenant_id, organization_id, consent_id).await
+        })
+    }
+
+    fn ensure_mail_account<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: EnsureMailAccountRequest,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailAccount> {
+        Box::pin(async move {
+            let account_id = Uuid::new_v4().to_string();
+            let metadata = json!({
+                "providerAccountId": request.provider_account_id,
+            });
+            let row = sqlx::query_as::<_, AccountRow>(
+                r#"
+                INSERT INTO mail_account (
+                    id, uuid, tenant_id, organization_id, owner_user_id, email_address,
+                    display_name, provider_kind, status, sync_enabled, metadata,
+                    created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5::bigint, $6,
+                    $7, $8, 1, TRUE, $9,
+                    NOW(), NOW(), 0
+                )
+                ON CONFLICT (tenant_id, organization_id, email_address)
+                DO UPDATE SET
+                    provider_kind = EXCLUDED.provider_kind,
+                    metadata = mail_account.metadata || EXCLUDED.metadata,
+                    updated_at = NOW(),
+                    version = mail_account.version + 1
+                RETURNING uuid, tenant_id, organization_id, owner_user_id, email_address, display_name,
+                          provider_kind, status, sync_enabled, last_synced_at
+                "#,
+            )
+            .bind(next_id())
+            .bind(&account_id)
+            .bind(tenant_id)
+            .bind(organization_id)
+            .bind(&request.owner_user_id)
+            .bind(&request.email_address)
+            .bind(&request.display_name)
+            .bind(&request.provider_kind)
+            .bind(&metadata)
+            .fetch_one(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(row.into_account())
+        })
+    }
+
+    fn ensure_system_folder<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        folder_kind: MailFolderKind,
+        name: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailFolder> {
+        Box::pin(async move {
+            let folder_id = Uuid::new_v4().to_string();
+            let kind_code = folder_kind_code(folder_kind);
+            let row = sqlx::query_as::<_, FolderRow>(
+                r#"
+                INSERT INTO mail_folder (
+                    id, uuid, tenant_id, organization_id, account_id, folder_kind, name,
+                    unread_count, total_count, sort_order, created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7,
+                    0, 0, $8, NOW(), NOW(), 0
+                )
+                ON CONFLICT (account_id, folder_kind, name)
+                DO UPDATE SET updated_at = NOW(), version = mail_folder.version + 1
+                RETURNING uuid, account_id, folder_kind, name, parent_folder_id, unread_count, total_count, sort_order
+                "#,
+            )
+            .bind(next_id())
+            .bind(&folder_id)
+            .bind(tenant_id)
+            .bind(organization_id)
+            .bind(account_id)
+            .bind(kind_code)
+            .bind(name)
+            .bind(folder_sort_order(folder_kind))
+            .fetch_one(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(row.into_folder())
+        })
+    }
+
+    fn retrieve_sync_state<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        folder_id: &'a str,
+        provider_kind: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, Option<MailSyncState>> {
+        Box::pin(async move {
+            let row = sqlx::query_as::<_, SyncStateRow>(
+                r#"
+                SELECT uuid, account_id, folder_id, provider_kind, cursor_token, last_synced_at, last_error
+                FROM mail_sync_state
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND account_id = $3
+                  AND folder_id = $4
+                  AND provider_kind = $5
+                  AND status = 1
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(account_id)
+            .bind(folder_id)
+            .bind(provider_kind)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(row.map(SyncStateRow::into_sync_state))
+        })
+    }
+
+    fn upsert_sync_state<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        folder_id: &'a str,
+        provider_kind: &'a str,
+        cursor_token: Option<&'a str>,
+        last_error: Option<&'a str>,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, MailSyncState> {
+        Box::pin(async move {
+            let now = timestamp_now();
+            let existing = sqlx::query_scalar::<_, String>(
+                r#"
+                SELECT uuid
+                FROM mail_sync_state
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND account_id = $3
+                  AND folder_id = $4
+                  AND provider_kind = $5
+                  AND status = 1
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(account_id)
+            .bind(folder_id)
+            .bind(provider_kind)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            if let Some(sync_state_id) = existing {
+                let updated = sqlx::query_as::<_, SyncStateRow>(
+                    r#"
+                    UPDATE mail_sync_state
+                    SET cursor_token = COALESCE($2, cursor_token),
+                        last_synced_at = $3,
+                        last_error = $4,
+                        updated_at = $3,
+                        version = version + 1
+                    WHERE uuid = $1
+                    RETURNING uuid, account_id, folder_id, provider_kind, cursor_token, last_synced_at, last_error
+                    "#,
+                )
+                .bind(&sync_state_id)
+                .bind(cursor_token)
+                .bind(now)
+                .bind(last_error)
+                .fetch_one(&self.pool)
+                .await
+                .map_err(map_sqlx_error)?;
+                return Ok(updated.into_sync_state());
+            }
+
+            let sync_state_id = Uuid::new_v4().to_string();
+            let inserted = sqlx::query_as::<_, SyncStateRow>(
+                r#"
+                INSERT INTO mail_sync_state (
+                    id, uuid, tenant_id, organization_id, account_id, folder_id, provider_kind,
+                    cursor_token, last_synced_at, last_error, status, created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7,
+                    $8, $9, $10, 1, $9, $9, 0
+                )
+                RETURNING uuid, account_id, folder_id, provider_kind, cursor_token, last_synced_at, last_error
+                "#,
+            )
+            .bind(next_id())
+            .bind(&sync_state_id)
+            .bind(tenant_id)
+            .bind(organization_id)
+            .bind(account_id)
+            .bind(folder_id)
+            .bind(provider_kind)
+            .bind(cursor_token)
+            .bind(now)
+            .bind(last_error)
+            .fetch_one(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            Ok(inserted.into_sync_state())
+        })
+    }
+
+    fn touch_mail_account_synced_at<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        account_id: &'a str,
+        synced_at: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, ()> {
+        Box::pin(async move {
+            sqlx::query(
+                r#"
+                UPDATE mail_account
+                SET last_synced_at = $4::timestamp,
+                    updated_at = NOW(),
+                    version = version + 1
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND uuid = $3
+                  AND deleted_at IS NULL
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(account_id)
+            .bind(synced_at)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+            Ok(())
+        })
+    }
+
+    fn ingest_inbound_message<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+        request: IngestInboundMailMessageRequest,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<'a, Option<MailMessage>> {
+        Box::pin(async move {
+            let uid_validity = request.imap_uid_validity.map(|value| value.to_string());
+            let duplicate = sqlx::query_scalar::<_, i64>(
+                r#"
+                SELECT 1
+                FROM mail_message
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND account_id = $3
+                  AND deleted_at IS NULL
+                  AND metadata->'imap'->>'uid' = $4
+                  AND (
+                    $5::text IS NULL
+                    OR metadata->'imap'->>'uidValidity' = $5
+                  )
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(&request.account_id)
+            .bind(request.imap_uid.to_string())
+            .bind(uid_validity)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            if duplicate.is_some() {
+                return Ok(None);
+            }
+
+            let thread_id = sqlx::query_scalar::<_, String>(
+                r#"
+                SELECT uuid
+                FROM mail_thread
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND folder_id = $3
+                  AND subject = $4
+                  AND deleted_at IS NULL
+                ORDER BY last_message_at DESC NULLS LAST
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(&request.folder_id)
+            .bind(&request.subject)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?
+            .unwrap_or_else(|| Uuid::new_v4().to_string());
+
+            let received_at = request
+                .received_at
+                .clone()
+                .unwrap_or_else(utc_now_rfc3339_millis);
+            let snippet = request.snippet.clone().or_else(|| {
+                request
+                    .body_text
+                    .as_ref()
+                    .map(|body| body.chars().take(200).collect())
+            });
+            let size_bytes = request
+                .body_text
+                .as_ref()
+                .map(|value| value.len() as i64)
+                .unwrap_or(0);
+            let message_id = Uuid::new_v4().to_string();
+            let participant_summary = Some(request.from_email.clone());
+
+            let thread_exists = sqlx::query_scalar::<_, i64>(
+                r#"
+                SELECT 1 FROM mail_thread
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND uuid = $3
+                  AND deleted_at IS NULL
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(&thread_id)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            if thread_exists.is_none() {
+                sqlx::query(
+                    r#"
+                    INSERT INTO mail_thread (
+                        id, uuid, tenant_id, organization_id, account_id, folder_id, subject,
+                        snippet, participant_summary, message_count, unread_count, is_starred,
+                        last_message_at, created_at, updated_at, version
+                    ) VALUES (
+                        $1, $2, $3::bigint, $4::bigint, $5, $6, $7,
+                        $8, $9, 1, 1, FALSE,
+                        $10::timestamp, NOW(), NOW(), 0
+                    )
+                    "#,
+                )
+                .bind(next_id())
+                .bind(&thread_id)
+                .bind(tenant_id)
+                .bind(organization_id)
+                .bind(&request.account_id)
+                .bind(&request.folder_id)
+                .bind(&request.subject)
+                .bind(&snippet)
+                .bind(&participant_summary)
+                .bind(&received_at)
+                .execute(&self.pool)
+                .await
+                .map_err(map_sqlx_error)?;
+            } else {
+                sqlx::query(
+                    r#"
+                    UPDATE mail_thread
+                    SET message_count = message_count + 1,
+                        unread_count = unread_count + 1,
+                        snippet = COALESCE($4, snippet),
+                        participant_summary = COALESCE($5, participant_summary),
+                        last_message_at = $6::timestamp,
+                        updated_at = NOW(),
+                        version = version + 1
+                    WHERE tenant_id = $1::bigint
+                      AND organization_id = $2::bigint
+                      AND uuid = $3
+                    "#,
+                )
+                .bind(parse_id(tenant_id))
+                .bind(parse_id(organization_id))
+                .bind(&thread_id)
+                .bind(&snippet)
+                .bind(&participant_summary)
+                .bind(&received_at)
+                .execute(&self.pool)
+                .await
+                .map_err(map_sqlx_error)?;
+            }
+
+            sqlx::query(
+                r#"
+                INSERT INTO mail_message (
+                    id, uuid, tenant_id, organization_id, account_id, folder_id, thread_id,
+                    from_name, from_email, subject, snippet, body_text, body_html, is_read, is_starred,
+                    is_draft, has_attachments, sent_at, received_at, size_bytes, metadata,
+                    created_at, updated_at, version
+                ) VALUES (
+                    $1, $2, $3::bigint, $4::bigint, $5, $6, $7,
+                    $8, $9, $10, $11, $12, NULL, FALSE, FALSE,
+                    FALSE, FALSE, NULL, $13::timestamp, $14, $15,
+                    NOW(), NOW(), 0
+                )
+                "#,
+            )
+            .bind(next_id())
+            .bind(&message_id)
+            .bind(tenant_id)
+            .bind(organization_id)
+            .bind(&request.account_id)
+            .bind(&request.folder_id)
+            .bind(&thread_id)
+            .bind(&request.from_name)
+            .bind(&request.from_email)
+            .bind(&request.subject)
+            .bind(&snippet)
+            .bind(&request.body_text)
+            .bind(&received_at)
+            .bind(size_bytes)
+            .bind(&request.metadata)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            sqlx::query(
+                r#"
+                UPDATE mail_folder
+                SET total_count = total_count + 1,
+                    unread_count = unread_count + 1,
+                    updated_at = NOW(),
+                    version = version + 1
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND uuid = $3
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(&request.folder_id)
+            .execute(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            let message = MailPostgresPersistencePort::new(self.pool.clone())
+                .retrieve_message(tenant_id, organization_id, &message_id)
+                .await?;
+            Ok(Some(message))
+        })
+    }
 }
 
 fn map_sqlx_error(error: sqlx::Error) -> MailPersistenceError {
@@ -1234,6 +2033,55 @@ fn parse_folder_kind(value: &str) -> MailFolderKind {
         "spam" => MailFolderKind::Spam,
         "custom" => MailFolderKind::Custom,
         _ => MailFolderKind::Inbox,
+    }
+}
+
+fn folder_kind_code(kind: MailFolderKind) -> &'static str {
+    match kind {
+        MailFolderKind::Inbox => "inbox",
+        MailFolderKind::Sent => "sent",
+        MailFolderKind::Drafts => "drafts",
+        MailFolderKind::Trash => "trash",
+        MailFolderKind::Archive => "archive",
+        MailFolderKind::Spam => "spam",
+        MailFolderKind::Custom => "custom",
+    }
+}
+
+fn folder_sort_order(kind: MailFolderKind) -> i32 {
+    match kind {
+        MailFolderKind::Inbox => 0,
+        MailFolderKind::Sent => 10,
+        MailFolderKind::Drafts => 20,
+        MailFolderKind::Archive => 30,
+        MailFolderKind::Spam => 40,
+        MailFolderKind::Trash => 50,
+        MailFolderKind::Custom => 100,
+    }
+}
+
+#[derive(sqlx::FromRow)]
+struct SyncStateRow {
+    uuid: String,
+    account_id: String,
+    folder_id: Option<String>,
+    provider_kind: String,
+    cursor_token: Option<String>,
+    last_synced_at: Option<chrono::NaiveDateTime>,
+    last_error: Option<String>,
+}
+
+impl SyncStateRow {
+    fn into_sync_state(self) -> MailSyncState {
+        MailSyncState {
+            id: self.uuid,
+            account_id: self.account_id,
+            folder_id: self.folder_id,
+            provider_kind: self.provider_kind,
+            cursor_token: self.cursor_token,
+            last_synced_at: self.last_synced_at.map(|value| value.to_string()),
+            last_error: self.last_error,
+        }
     }
 }
 
@@ -1414,6 +2262,103 @@ struct ProviderCredentialRow {
     username: String,
     secret_ref: String,
     status: i32,
+}
+
+impl ProviderCredentialRow {
+    fn into_credential(self) -> MailProviderCredential {
+        MailProviderCredential {
+            id: self.uuid,
+            tenant_id: self.tenant_id.to_string(),
+            organization_id: self.organization_id.to_string(),
+            provider_account_id: self.provider_account_id,
+            username: self.username,
+            secret_ref: self.secret_ref,
+            status: if self.status == 1 {
+                MailProviderCredentialStatus::Active
+            } else {
+                MailProviderCredentialStatus::Disabled
+            },
+        }
+    }
+}
+
+async fn load_provider_account(
+    pool: &PgPool,
+    tenant_id: &str,
+    organization_id: &str,
+    account_id: &str,
+) -> MailPersistenceResult<MailProviderAccount> {
+    let row = sqlx::query_as::<_, ProviderAccountRow>(
+        r#"
+        SELECT uuid, tenant_id, organization_id, provider_kind, name, host, port, use_tls, status
+        FROM mail_provider_account
+        WHERE tenant_id = $1::bigint
+          AND organization_id = $2::bigint
+          AND uuid = $3
+          AND deleted_at IS NULL
+        "#,
+    )
+    .bind(parse_id(tenant_id))
+    .bind(parse_id(organization_id))
+    .bind(account_id)
+    .fetch_optional(pool)
+    .await
+    .map_err(map_sqlx_error)?
+    .ok_or_else(|| {
+        MailPersistenceError::NotFound(format!("provider account not found: {account_id}"))
+    })?;
+
+    Ok(row.into_provider_account())
+}
+
+async fn load_provider_credential(
+    pool: &PgPool,
+    tenant_id: &str,
+    organization_id: &str,
+    credential_id: &str,
+) -> MailPersistenceResult<MailProviderCredential> {
+    let row = sqlx::query_as::<_, ProviderCredentialRow>(
+        r#"
+        SELECT uuid, tenant_id, organization_id, provider_account_id, username, secret_ref, status
+        FROM mail_provider_credential
+        WHERE tenant_id = $1::bigint
+          AND organization_id = $2::bigint
+          AND uuid = $3
+          AND deleted_at IS NULL
+        "#,
+    )
+    .bind(parse_id(tenant_id))
+    .bind(parse_id(organization_id))
+    .bind(credential_id)
+    .fetch_optional(pool)
+    .await
+    .map_err(map_sqlx_error)?
+    .ok_or_else(|| {
+        MailPersistenceError::NotFound(format!("provider credential not found: {credential_id}"))
+    })?;
+
+    Ok(row.into_credential())
+}
+
+fn normalize_provider_kind(value: &str) -> Option<&'static str> {
+    match value.trim().to_ascii_lowercase().as_str() {
+        "smtp" => Some("smtp"),
+        "imap" => Some("imap"),
+        _ => None,
+    }
+}
+
+fn validate_secret_ref(value: &str) -> MailPersistenceResult<()> {
+    let trimmed = value.trim();
+    if trimmed.starts_with("env:") && trimmed.len() > 4 {
+        return Ok(());
+    }
+    if trimmed.starts_with("secret://mail/") && trimmed.len() > "secret://mail/".len() {
+        return Ok(());
+    }
+    Err(MailPersistenceError::Conflict(
+        "secretRef must use env: or secret://mail/ prefix".to_owned(),
+    ))
 }
 
 async fn load_delivery(
@@ -1620,4 +2565,99 @@ impl DeliveryRow {
             created_at: self.created_at.to_string(),
         }
     }
+}
+
+#[derive(sqlx::FromRow)]
+struct MarketingConsentRow {
+    uuid: String,
+    tenant_id: i64,
+    organization_id: i64,
+    recipient_email: String,
+    status: i32,
+    consent_source: String,
+    granted_at: NaiveDateTime,
+    revoked_at: Option<NaiveDateTime>,
+    metadata: serde_json::Value,
+}
+
+impl MarketingConsentRow {
+    fn into_consent(self) -> MailMarketingConsent {
+        MailMarketingConsent {
+            id: self.uuid,
+            tenant_id: self.tenant_id.to_string(),
+            organization_id: self.organization_id.to_string(),
+            recipient_email: self.recipient_email,
+            status: if self.status == 1 {
+                MailMarketingConsentStatus::Active
+            } else {
+                MailMarketingConsentStatus::Revoked
+            },
+            consent_source: self.consent_source,
+            granted_at: self.granted_at.to_string(),
+            revoked_at: self.revoked_at.map(|value| value.to_string()),
+            metadata: if self.metadata.is_null() {
+                json!({})
+            } else {
+                self.metadata
+            },
+        }
+    }
+}
+
+async fn load_marketing_consent(
+    pool: &PgPool,
+    tenant_id: &str,
+    organization_id: &str,
+    consent_id: &str,
+) -> MailPersistenceResult<MailMarketingConsent> {
+    let row = sqlx::query_as::<_, MarketingConsentRow>(
+        r#"
+        SELECT uuid, tenant_id, organization_id, recipient_email, status, consent_source,
+               granted_at, revoked_at, metadata
+        FROM mail_marketing_consent
+        WHERE tenant_id = $1::bigint
+          AND organization_id = $2::bigint
+          AND uuid = $3
+        "#,
+    )
+    .bind(parse_id(tenant_id))
+    .bind(parse_id(organization_id))
+    .bind(consent_id)
+    .fetch_optional(pool)
+    .await
+    .map_err(map_sqlx_error)?
+    .ok_or_else(|| {
+        MailPersistenceError::NotFound(format!("marketing consent not found: {consent_id}"))
+    })?;
+
+    Ok(row.into_consent())
+}
+
+async fn load_marketing_consent_by_email(
+    pool: &PgPool,
+    tenant_id: &str,
+    organization_id: &str,
+    recipient_email: &str,
+) -> MailPersistenceResult<MailMarketingConsent> {
+    let row = sqlx::query_as::<_, MarketingConsentRow>(
+        r#"
+        SELECT uuid, tenant_id, organization_id, recipient_email, status, consent_source,
+               granted_at, revoked_at, metadata
+        FROM mail_marketing_consent
+        WHERE tenant_id = $1::bigint
+          AND organization_id = $2::bigint
+          AND recipient_email = $3
+        "#,
+    )
+    .bind(parse_id(tenant_id))
+    .bind(parse_id(organization_id))
+    .bind(recipient_email)
+    .fetch_optional(pool)
+    .await
+    .map_err(map_sqlx_error)?
+    .ok_or_else(|| {
+        MailPersistenceError::NotFound(format!("marketing consent not found: {recipient_email}"))
+    })?;
+
+    Ok(row.into_consent())
 }

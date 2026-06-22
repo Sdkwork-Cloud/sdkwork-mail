@@ -7,7 +7,8 @@ use axum::{
     response::{IntoResponse, Response},
 };
 use sdkwork_communication_mail_service::{
-    CreateMailTemplateRequest, MailTemplateCategory, UpdateMailTemplateRequest,
+    CreateMailProviderAccountRequest, CreateMailTemplateRequest, GrantMailMarketingConsentRequest,
+    MailTemplateCategory, SyncMailProviderAccountRequest, UpdateMailTemplateRequest,
 };
 use sdkwork_mail_app_context::AppContext;
 use serde::{Deserialize, Serialize};
@@ -135,6 +136,55 @@ pub async fn list_templates(
     }
 }
 
+pub async fn create_provider_account(
+    Extension(context): Extension<AppContext>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+    Json(body): Json<CreateMailProviderAccountRequest>,
+) -> Response {
+    match service
+        .create_provider_account(context.tenant_id, context.organization_id, body)
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn ping_provider_account(
+    Extension(context): Extension<AppContext>,
+    Path(account_id): Path<String>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+) -> Response {
+    match service
+        .ping_provider_account(context.tenant_id, context.organization_id, account_id)
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn sync_provider_account(
+    Extension(context): Extension<AppContext>,
+    Path(account_id): Path<String>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+    Json(body): Json<SyncMailProviderAccountRequest>,
+) -> Response {
+    match service
+        .sync_provider_account(
+            context.tenant_id,
+            context.organization_id,
+            context.user_id,
+            account_id,
+            body,
+        )
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
 pub async fn create_template(
     Extension(context): Extension<AppContext>,
     State(service): State<Arc<dyn MailBackendApiService>>,
@@ -208,6 +258,48 @@ pub async fn list_transactional_deliveries(
             query.business_kind,
             query.recipient_email,
         )
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn list_marketing_consents(
+    Extension(context): Extension<AppContext>,
+    Query(query): Query<MailBackendListQuery>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+) -> Response {
+    match service
+        .list_marketing_consents(list_request(&context, &query), query.recipient_email)
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn grant_marketing_consent(
+    Extension(context): Extension<AppContext>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+    Json(body): Json<GrantMailMarketingConsentRequest>,
+) -> Response {
+    match service
+        .grant_marketing_consent(context.tenant_id, context.organization_id, body)
+        .await
+    {
+        Ok(data) => respond_ok(data),
+        Err(error) => respond_error(error),
+    }
+}
+
+pub async fn revoke_marketing_consent(
+    Extension(context): Extension<AppContext>,
+    Path(consent_id): Path<String>,
+    State(service): State<Arc<dyn MailBackendApiService>>,
+) -> Response {
+    match service
+        .revoke_marketing_consent(context.tenant_id, context.organization_id, consent_id)
         .await
     {
         Ok(data) => respond_ok(data),

@@ -1,0 +1,62 @@
+{
+  "name": "@sdkwork/Mail-sdk-provider-smtp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reserved TypeScript provider boundary for SMTP Mail Transport within sdkwork-mail-sdk",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@sdkwork/Mail-sdk": "^0.1.1"
+  },
+  "peerDependenciesMeta": {},
+  "devDependencies": {
+    "@sdkwork/Mail-sdk": "workspace:*"
+  },
+  "sdkworkMailProvider": {
+    "providerKey": "smtp",
+    "displayName": "SMTP Mail Transport",
+    "tier": "tier-a",
+    "builtin": true,
+    "status": "package_reference_boundary",
+    "registrationContract": "MailProviderModule",
+    "sourceModule": "./index.js",
+    "driverFactory": "createSmtpMailDriver",
+    "metadataSymbol": "SMTP_mail_PROVIDER_METADATA",
+    "moduleSymbol": "SMTP_mail_PROVIDER_MODULE",
+    "rootPublic": true,
+    "requiredCapabilities": [
+      "transport.connect",
+      "transport.authenticate",
+      "health"
+    ],
+    "optionalCapabilities": [
+      "smtp.send",
+      "transport.retry",
+      "transport.pool"
+    ],
+    "extensionKeys": [
+      "smtp.transport"
+    ],
+    "typescriptAdapter": {
+      "sdkProvisioning": "consumer-supplied",
+      "bindingStrategy": "native-factory",
+      "bundlePolicy": "must-not-bundle",
+      "runtimeBridgeStatus": "reserved",
+      "officialVendorSdkRequirement": "not-declared-until-bridge"
+    }
+  }
+}

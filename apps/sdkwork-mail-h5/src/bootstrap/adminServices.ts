@@ -1,4 +1,5 @@
 import {
+  MailMarketingConsentAdminService,
   MailProviderAccountService,
   MailTemplateAdminService,
   MailTransactionalDeliveryAdminService,
@@ -16,6 +17,7 @@ export interface MailAdminServices {
   templates: MailTemplateAdminService;
   deliveries: MailTransactionalDeliveryAdminService;
   providerAccounts: MailProviderAccountService;
+  marketingConsents: MailMarketingConsentAdminService;
 }
 
 export function createAdminServices(): MailAdminServices {
@@ -37,5 +39,6 @@ export function createAdminServices(): MailAdminServices {
     templates: new MailTemplateAdminService(backendApiBaseUrl, clientOptions),
     deliveries: new MailTransactionalDeliveryAdminService(backendApiBaseUrl, clientOptions),
     providerAccounts: new MailProviderAccountService(backendApiBaseUrl, clientOptions),
+    marketingConsents: new MailMarketingConsentAdminService(backendApiBaseUrl, clientOptions),
   };
 }

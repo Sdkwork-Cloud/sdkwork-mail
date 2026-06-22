@@ -1,18 +1,18 @@
 from dataclasses import dataclass
 
-from .driver_manager import RtcDriverManager
-from .provider_catalog import DEFAULT_RTC_PROVIDER_KEY
-from .provider_selection import RtcProviderSelection, RtcProviderSelectionRequest
-from .provider_support import RtcProviderSupport
+from .driver_manager import MailDriverManager
+from .provider_catalog import DEFAULT_mail_PROVIDER_KEY
+from .provider_selection import MailProviderSelection, MailProviderSelectionRequest
+from .provider_support import MailProviderSupport
 
 
 @dataclass(frozen=True)
-class RtcDataSourceOptions:
+class MailDataSourceOptions:
     providerUrl: str | None = None
     providerKey: str | None = None
     tenantOverrideProviderKey: str | None = None
     deploymentProfileProviderKey: str | None = None
-    defaultProviderKey: str = DEFAULT_RTC_PROVIDER_KEY
+    defaultProviderKey: str = DEFAULT_mail_PROVIDER_KEY
 
 
 def _prefer(overrideValue: str | None, baseValue: str | None) -> str | None:
@@ -20,13 +20,13 @@ def _prefer(overrideValue: str | None, baseValue: str | None) -> str | None:
 
 
 def _merge_options(
-    base: RtcDataSourceOptions,
-    overrides: RtcDataSourceOptions | None,
-) -> RtcDataSourceOptions:
+    base: MailDataSourceOptions,
+    overrides: MailDataSourceOptions | None,
+) -> MailDataSourceOptions:
     if overrides is None:
         return base
 
-    return RtcDataSourceOptions(
+    return MailDataSourceOptions(
         providerUrl=_prefer(overrides.providerUrl, base.providerUrl),
         providerKey=_prefer(overrides.providerKey, base.providerKey),
         tenantOverrideProviderKey=_prefer(
@@ -41,22 +41,22 @@ def _merge_options(
     )
 
 
-class RtcDataSource:
+class MailDataSource:
     def __init__(
         self,
-        options: RtcDataSourceOptions | None = None,
-        driverManager: RtcDriverManager | None = None,
+        options: MailDataSourceOptions | None = None,
+        driverManager: MailDriverManager | None = None,
     ) -> None:
-        self._options = options or RtcDataSourceOptions()
-        self._driverManager = driverManager or RtcDriverManager()
+        self._options = options or MailDataSourceOptions()
+        self._driverManager = driverManager or MailDriverManager()
 
     def describeSelection(
         self,
-        overrides: RtcDataSourceOptions | None = None,
-    ) -> RtcProviderSelection:
+        overrides: MailDataSourceOptions | None = None,
+    ) -> MailProviderSelection:
         merged = _merge_options(self._options, overrides)
         return self._driverManager.resolveSelection(
-            RtcProviderSelectionRequest(
+            MailProviderSelectionRequest(
                 providerUrl=merged.providerUrl,
                 providerKey=merged.providerKey,
                 tenantOverrideProviderKey=merged.tenantOverrideProviderKey,
@@ -67,10 +67,10 @@ class RtcDataSource:
 
     def describeProviderSupport(
         self,
-        overrides: RtcDataSourceOptions | None = None,
-    ) -> RtcProviderSupport:
+        overrides: MailDataSourceOptions | None = None,
+    ) -> MailProviderSupport:
         selection = self.describeSelection(overrides)
         return self._driverManager.describeProviderSupport(selection.providerKey)
 
-    def listProviderSupport(self) -> list[RtcProviderSupport]:
+    def listProviderSupport(self) -> list[MailProviderSupport]:
         return self._driverManager.listProviderSupport()

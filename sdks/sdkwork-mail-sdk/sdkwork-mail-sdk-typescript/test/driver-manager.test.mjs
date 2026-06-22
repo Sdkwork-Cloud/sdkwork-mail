@@ -7,23 +7,23 @@ import {
 } from './provider-test-helpers.mjs';
 
 test('driver manager resolves a provider package by explicit provider key', async () => {
-  const { manager } = await createManagerWithProviderPackages(['volcengine', 'aliyun']);
+  const { manager } = await createManagerWithProviderPackages(['smtp', 'imap']);
 
-  const driver = manager.resolve({ providerKey: 'aliyun' });
-  assert.equal(driver.metadata.providerKey, 'aliyun');
-  assert.equal(driver.metadata.pluginId, 'Mail-aliyun');
+  const driver = manager.resolve({ providerKey: 'imap' });
+  assert.equal(driver.metadata.providerKey, 'imap');
+  assert.equal(driver.metadata.pluginId, 'Mail-imap');
 });
 
 test('driver manager resolves a provider package by Mail provider url', async () => {
-  const { manager } = await createManagerWithProviderPackages(['volcengine', 'tencent']);
+  const { manager } = await createManagerWithProviderPackages(['smtp', 'imap']);
 
-  const driver = manager.resolve({ providerUrl: 'Mail:tencent://app/default' });
-  assert.equal(driver.metadata.providerKey, 'tencent');
-  assert.equal(driver.metadata.driverId, 'sdkwork-mail-driver-tencent');
+  const driver = manager.resolve({ providerUrl: 'Mail:imap://app/default' });
+  assert.equal(driver.metadata.providerKey, 'imap');
+  assert.equal(driver.metadata.driverId, 'sdkwork-mail-driver-imap');
 });
 
 test('driver manager throws a stable invalid_provider_url error for malformed Mail urls', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   await assert.rejects(
     async () => manager.connect({ providerUrl: 'https://example.test/not-an-Mail-url' }),
@@ -36,7 +36,7 @@ test('driver manager throws a stable invalid_provider_url error for malformed Ma
 });
 
 test('driver manager throws a stable driver_not_found error for unknown providers', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   await assert.rejects(
     async () => manager.connect({ providerKey: 'vendor-x' }),
@@ -49,16 +49,16 @@ test('driver manager throws a stable driver_not_found error for unknown provider
 });
 
 test('driver manager can inspect provider metadata without creating a client', async () => {
-  const { manager } = await createManagerWithProviderPackages(['volcengine', 'tencent']);
+  const { manager } = await createManagerWithProviderPackages(['smtp', 'imap']);
 
-  assert.equal(manager.hasDriver('volcengine'), true);
-  assert.equal(manager.hasDriver('aliyun'), false);
-  assert.equal(manager.getMetadata({ providerUrl: 'Mail:tencent://cluster/prod' }).providerKey, 'tencent');
-  assert.equal(manager.getDefaultMetadata().providerKey, 'volcengine');
+  assert.equal(manager.hasDriver('smtp'), true);
+  assert.equal(manager.hasDriver('vendor-x'), false);
+  assert.equal(manager.getMetadata({ providerUrl: 'Mail:imap://cluster/prod' }).providerKey, 'imap');
+  assert.equal(manager.getDefaultMetadata().providerKey, 'smtp');
 });
 
 test('driver manager rejects duplicate provider registration', async () => {
-  const { sdk, namespace, packageEntry } = await loadProviderPackage('volcengine');
+  const { sdk, namespace, packageEntry } = await loadProviderPackage('smtp');
   const createDriver = namespace[packageEntry.driverFactory];
   const manager = new sdk.MailDriverManager({
     drivers: [createDriver()],
@@ -69,7 +69,7 @@ test('driver manager rejects duplicate provider registration', async () => {
     (error) => {
       assert.ok(error instanceof sdk.MailSdkException);
       assert.equal(error.code, 'driver_already_registered');
-      assert.equal(error.providerKey, 'volcengine');
+      assert.equal(error.providerKey, 'smtp');
       return true;
     },
   );
@@ -87,9 +87,9 @@ test('driver manager rejects registering drivers for unknown providers', async (
       displayName: 'Vendor X Mail',
       defaultSelected: false,
       urlSchemes: ['Mail:vendor-x'],
-      requiredCapabilities: ['session', 'credential', 'provider.webhook', 'health', 'media.audio', 'media.video', 'live.broadcast', 'live.audience', 'provider.event-normalization'],
-      optionalCapabilities: ['screen-share'],
-      extensionKeys: ['vendor-x.native-client'],
+      requiredCapabilities: ['transport.connect', 'transport.authenticate', 'health'],
+      optionalCapabilities: ['smtp.send'],
+      extensionKeys: ['vendor-x.transport'],
     },
   });
 
@@ -112,14 +112,14 @@ test('driver manager rejects registering official providers with metadata drift'
     getOfficialMailProviderMetadataByKey,
   } = await loadSdk();
 
-  const officialAgora = getOfficialMailProviderMetadataByKey('agora');
-  assert.ok(officialAgora);
+  const officialImap = getOfficialMailProviderMetadataByKey('imap');
+  assert.ok(officialImap);
 
   const manager = new MailDriverManager();
   const driftedDriver = createMailProviderDriver({
     metadata: {
-      ...officialAgora,
-      pluginId: 'Mail-agora-custom',
+      ...officialImap,
+      pluginId: 'Mail-imap-custom',
     },
   });
 
@@ -128,24 +128,24 @@ test('driver manager rejects registering official providers with metadata drift'
     (error) => {
       assert.ok(error instanceof MailSdkException);
       assert.equal(error.code, 'provider_metadata_mismatch');
-      assert.equal(error.providerKey, 'agora');
-      assert.equal(error.pluginId, 'Mail-agora-custom');
+      assert.equal(error.providerKey, 'imap');
+      assert.equal(error.pluginId, 'Mail-imap-custom');
       return true;
     },
   );
 });
 
 test('driver manager distinguishes official-but-unregistered providers from unknown providers', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
-  assert.equal(manager.getMetadata({ providerKey: 'agora' }).providerKey, 'agora');
+  assert.equal(manager.getMetadata({ providerKey: 'imap' }).providerKey, 'imap');
 
   await assert.rejects(
-    async () => manager.connect({ providerKey: 'agora' }),
+    async () => manager.connect({ providerKey: 'imap' }),
     (error) => {
       assert.ok(error instanceof sdk.MailSdkException);
       assert.equal(error.code, 'provider_not_supported');
-      assert.equal(error.providerKey, 'agora');
+      assert.equal(error.providerKey, 'imap');
       return true;
     },
   );
@@ -153,87 +153,78 @@ test('driver manager distinguishes official-but-unregistered providers from unkn
 
 test('driver manager exposes stable provider selection precedence', async () => {
   const { manager } = await createManagerWithProviderPackages([
-    'volcengine',
-    'aliyun',
-    'tencent',
+    'smtp',
+    'imap',
   ]);
 
   assert.deepEqual(
     manager.resolveSelection({
-      tenantOverrideProviderKey: 'aliyun',
-      deploymentProfileProviderKey: 'tencent',
+      tenantOverrideProviderKey: 'imap',
+      deploymentProfileProviderKey: 'imap',
     }),
     {
-      providerKey: 'aliyun',
+      providerKey: 'imap',
       source: 'tenant_override',
     },
   );
 
   assert.deepEqual(
     manager.resolveSelection({
-      providerKey: 'tencent',
-      tenantOverrideProviderKey: 'aliyun',
-      deploymentProfileProviderKey: 'volcengine',
+      providerKey: 'imap',
+      tenantOverrideProviderKey: 'imap',
+      deploymentProfileProviderKey: 'smtp',
     }),
     {
-      providerKey: 'tencent',
+      providerKey: 'imap',
       source: 'provider_key',
     },
   );
 
   assert.deepEqual(
     manager.resolveSelection({
-      providerUrl: 'Mail:aliyun://cluster/main',
-      providerKey: 'tencent',
-      tenantOverrideProviderKey: 'volcengine',
+      providerUrl: 'Mail:imap://cluster/main',
+      providerKey: 'imap',
+      tenantOverrideProviderKey: 'smtp',
     }),
     {
-      providerKey: 'aliyun',
+      providerKey: 'imap',
       source: 'provider_url',
     },
   );
 
   assert.deepEqual(
     manager.resolveSelection({
-      deploymentProfileProviderKey: 'tencent',
+      deploymentProfileProviderKey: 'imap',
     }),
     {
-      providerKey: 'tencent',
+      providerKey: 'imap',
       source: 'deployment_profile',
     },
   );
 
   assert.deepEqual(manager.resolveSelection({}), {
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
     source: 'default_provider',
   });
 });
 
 test('driver manager exposes provider support-state introspection', async () => {
-  const { manager } = await createManagerWithProviderPackages(['volcengine', 'tencent']);
+  const { manager } = await createManagerWithProviderPackages(['smtp', 'imap']);
 
-  assert.deepEqual(manager.describeProviderSupport('volcengine'), {
-    providerKey: 'volcengine',
+  assert.deepEqual(manager.describeProviderSupport('smtp'), {
+    providerKey: 'smtp',
     status: 'builtin_registered',
     builtin: true,
     official: true,
     registered: true,
   });
 
-  assert.deepEqual(manager.describeProviderSupport('tencent'), {
-    providerKey: 'tencent',
+  assert.deepEqual(manager.describeProviderSupport('imap'), {
+    providerKey: 'imap',
     status: 'builtin_registered',
     builtin: true,
     official: true,
     registered: true,
-  });
-
-  assert.deepEqual(manager.describeProviderSupport('agora'), {
-    providerKey: 'agora',
-    status: 'official_unregistered',
-    builtin: true,
-    official: true,
-    registered: false,
   });
 
   assert.deepEqual(manager.describeProviderSupport('vendor-x'), {
@@ -246,15 +237,15 @@ test('driver manager exposes provider support-state introspection', async () => 
 });
 
 test('driver manager lists provider support-state across the official provider catalog', async () => {
-  const { manager } = await createManagerWithProviderPackages(['volcengine', 'tencent']);
+  const { manager } = await createManagerWithProviderPackages(['smtp']);
   const providerSupport = manager.listProviderSupport();
 
   assert.equal(Array.isArray(providerSupport), true);
-  assert.equal(providerSupport.length, 10);
+  assert.equal(providerSupport.length, 2);
   assert.deepEqual(
-    providerSupport.find((entry) => entry.providerKey === 'volcengine'),
+    providerSupport.find((entry) => entry.providerKey === 'smtp'),
     {
-      providerKey: 'volcengine',
+      providerKey: 'smtp',
       status: 'builtin_registered',
       builtin: true,
       official: true,
@@ -262,9 +253,9 @@ test('driver manager lists provider support-state across the official provider c
     },
   );
   assert.deepEqual(
-    providerSupport.find((entry) => entry.providerKey === 'agora'),
+    providerSupport.find((entry) => entry.providerKey === 'imap'),
     {
-      providerKey: 'agora',
+      providerKey: 'imap',
       status: 'official_unregistered',
       builtin: true,
       official: true,

@@ -25,20 +25,22 @@ pub trait MailDataSource<TNativeClient> {
 }
 
 pub trait MailClient<TNativeClient> {
-    fn join(&self);
-    fn leave(&self);
-    fn publish(&self, track_id: &str);
-    fn unpublish(&self, track_id: &str);
-    fn mute_audio(&self, muted: bool);
-    fn mute_video(&self, muted: bool);
+    fn connect_transport(&self);
+    fn authenticate_transport(&self);
+    fn disconnect_transport(&self);
+    fn send_mail(&self);
+    fn probe_mailbox(&self);
+    fn sync_mailbox(&self);
+    fn health_check(&self);
     fn unwrap(&self) -> Option<&TNativeClient>;
 }
 
 pub trait MailRuntimeController<TNativeClient> {
-    fn join(&self);
-    fn leave(&self);
-    fn publish(&self, track_id: &str);
-    fn unpublish(&self, track_id: &str);
-    fn mute_audio(&self, muted: bool);
-    fn mute_video(&self, muted: bool);
+    fn connect_transport(&self);
+    fn authenticate_transport(&self);
+    fn disconnect_transport(&self);
+    fn send_mail(&self);
+    fn probe_mailbox(&self);
+    fn sync_mailbox(&self);
+    fn health_check(&self);
 }

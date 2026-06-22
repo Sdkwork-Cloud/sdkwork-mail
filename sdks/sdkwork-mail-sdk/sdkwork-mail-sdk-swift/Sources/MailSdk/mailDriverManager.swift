@@ -1,21 +1,21 @@
-public struct RtcDriverManager {
+public struct MailDriverManager {
     public init() {}
 
     public func resolveSelection(
-        request: RtcProviderSelectionRequest = RtcProviderSelectionRequest(),
-        defaultProviderKey: String = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY
-    ) -> RtcProviderSelection {
-        return RtcProviderSelection.resolveRtcProviderSelection(
+        request: MailProviderSelectionRequest = MailProviderSelectionRequest(),
+        defaultProviderKey: String = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY
+    ) -> MailProviderSelection {
+        return MailProviderSelection.resolveMailProviderSelection(
             request: request,
             defaultProviderKey: defaultProviderKey
         )
     }
 
-    public func describeProviderSupport(providerKey: String) -> RtcProviderSupport {
-        let official = RtcProviderCatalog.getRtcProviderByProviderKey(providerKey) != nil
-        let activation = RtcProviderActivationCatalog.getRtcProviderActivationByProviderKey(providerKey)
+    public func describeProviderSupport(providerKey: String) -> MailProviderSupport {
+        let official = MailProviderCatalog.getMailProviderByProviderKey(providerKey) != nil
+        let activation = MailProviderActivationCatalog.getMailProviderActivationByProviderKey(providerKey)
 
-        return RtcProviderSupport.createRtcProviderSupportState(
+        return MailProviderSupport.createMailProviderSupportState(
             .init(
                 providerKey: providerKey,
                 builtin: activation?.builtin ?? false,
@@ -25,7 +25,7 @@ public struct RtcDriverManager {
         )
     }
 
-    public func listProviderSupport() -> [RtcProviderSupport] {
-        RtcProviderCatalog.entries.map { describeProviderSupport(providerKey: $0.providerKey) }
+    public func listProviderSupport() -> [MailProviderSupport] {
+        MailProviderCatalog.entries.map { describeProviderSupport(providerKey: $0.providerKey) }
     }
 }

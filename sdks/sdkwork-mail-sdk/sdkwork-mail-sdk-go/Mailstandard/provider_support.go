@@ -1,13 +1,13 @@
-package rtcstandard
+package Mailstandard
 
-type RtcProviderSupportStateRequest struct {
+type MailProviderSupportStateRequest struct {
     ProviderKey string
     Builtin     bool
     Official    bool
     Registered  bool
 }
 
-type RtcProviderSupport struct {
+type MailProviderSupport struct {
     ProviderKey string
     Status      string
     Builtin     bool
@@ -15,14 +15,14 @@ type RtcProviderSupport struct {
     Registered  bool
 }
 
-var RtcProviderSupportStatuses = []string{
+var MailProviderSupportStatuses = []string{
     "builtin_registered",
     "official_registered",
     "official_unregistered",
     "unknown",
 }
 
-func ResolveRtcProviderSupportStatus(request RtcProviderSupportStateRequest) string {
+func ResolveMailProviderSupportStatus(request MailProviderSupportStateRequest) string {
     if request.Official && request.Registered {
         if request.Builtin {
             return "builtin_registered"
@@ -37,12 +37,12 @@ func ResolveRtcProviderSupportStatus(request RtcProviderSupportStateRequest) str
     return "unknown"
 }
 
-func CreateRtcProviderSupportState(
-    request RtcProviderSupportStateRequest,
-) RtcProviderSupport {
-    return RtcProviderSupport{
+func CreateMailProviderSupportState(
+    request MailProviderSupportStateRequest,
+) MailProviderSupport {
+    return MailProviderSupport{
         ProviderKey: request.ProviderKey,
-        Status:      ResolveRtcProviderSupportStatus(request),
+        Status:      ResolveMailProviderSupportStatus(request),
         Builtin:     request.Builtin,
         Official:    request.Official,
         Registered:  request.Registered,

@@ -17,6 +17,11 @@ import {
   mail_PROVIDER_SELECTION_SOURCES as PROVIDER_SELECTION_SOURCES,
   mail_PROVIDER_SUPPORT_STATUSES as PROVIDER_SUPPORT_STATUSES,
 } from './Mail-standard-contract-constants.mjs';
+import {
+  renderMailTransportFlutterClientModule,
+  renderMailTransportFlutterStandardContractModule,
+  renderMailTransportFlutterTypesModule,
+} from './mail-transport-flutter-modules.mjs';
 function q(value) {
   return JSON.stringify(String(value));
 }
@@ -48,361 +53,11 @@ function renderFlutterRuntimeSurfaceMethodEntries(assembly, indent = '  ') {
 }
 
 function renderFlutterTypesModule() {
-  return lines(`
-import 'mail_provider_selection.dart';
-
-enum MailTrackKind {
-  audio,
-  video,
-  screenShare,
-  data,
-}
-
-String MailTrackKindWireName(MailTrackKind kind) {
-  switch (kind) {
-    case MailTrackKind.audio:
-      return 'audio';
-    case MailTrackKind.video:
-      return 'video';
-    case MailTrackKind.screenShare:
-      return 'screen-share';
-    case MailTrackKind.data:
-      return 'data';
-  }
-}
-
-enum MailSessionConnectionState {
-  joined,
-  left,
-}
-
-class MailProviderMetadata {
-  const MailProviderMetadata({
-    required this.providerKey,
-    required this.pluginId,
-    required this.driverId,
-    required this.displayName,
-    required this.defaultSelected,
-    this.requiredCapabilities = const <String>[],
-    this.optionalCapabilities = const <String>[],
-    this.extensionKeys = const <String>[],
-  });
-
-  final String providerKey;
-  final String pluginId;
-  final String driverId;
-  final String displayName;
-  final bool defaultSelected;
-  final List<String> requiredCapabilities;
-  final List<String> optionalCapabilities;
-  final List<String> extensionKeys;
-
-  Map<String, Object?> toDebugMap() {
-    return <String, Object?>{
-      'providerKey': providerKey,
-      'pluginId': pluginId,
-      'driverId': driverId,
-      'displayName': displayName,
-      'defaultSelected': defaultSelected,
-      'requiredCapabilities': requiredCapabilities,
-      'optionalCapabilities': optionalCapabilities,
-      'extensionKeys': extensionKeys,
-    };
-  }
-}
-
-class MailJoinOptions {
-  const MailJoinOptions({
-    required this.sessionId,
-    required this.roomId,
-    required this.participantId,
-    this.token,
-    this.metadata,
-  });
-
-  final String sessionId;
-  final String roomId;
-  final String participantId;
-  final String? token;
-  final Map<String, Object?>? metadata;
-}
-
-class MailSessionDescriptor {
-  const MailSessionDescriptor({
-    required this.sessionId,
-    required this.roomId,
-    required this.participantId,
-    required this.providerKey,
-    required this.connectionState,
-  });
-
-  final String sessionId;
-  final String roomId;
-  final String participantId;
-  final String providerKey;
-  final MailSessionConnectionState connectionState;
-}
-
-class MailPublishOptions {
-  const MailPublishOptions({
-    required this.trackId,
-    required this.kind,
-    this.metadata,
-  });
-
-  final String trackId;
-  final MailTrackKind kind;
-  final Map<String, Object?>? metadata;
-}
-
-class MailScreenShareOptions {
-  const MailScreenShareOptions({
-    required this.trackId,
-    this.metadata,
-  });
-
-  final String trackId;
-  final Map<String, Object?>? metadata;
-}
-
-class MailTrackPublication {
-  const MailTrackPublication({
-    required this.trackId,
-    required this.kind,
-    required this.muted,
-  });
-
-  final String trackId;
-  final MailTrackKind kind;
-  final bool muted;
-}
-
-class MailMuteState {
-  const MailMuteState({
-    required this.kind,
-    required this.muted,
-  });
-
-  final MailTrackKind kind;
-  final bool muted;
-}
-
-class MailClientConfig {
-  const MailClientConfig({
-    this.providerUrl,
-    this.providerKey,
-    this.tenantOverrideProviderKey,
-    this.deploymentProfileProviderKey,
-    this.defaultProviderKey,
-    this.nativeConfig,
-  });
-
-  final String? providerUrl;
-  final String? providerKey;
-  final String? tenantOverrideProviderKey;
-  final String? deploymentProfileProviderKey;
-  final String? defaultProviderKey;
-  final Object? nativeConfig;
-}
-
-class MailResolvedClientConfig extends MailClientConfig {
-  const MailResolvedClientConfig({
-    super.providerUrl,
-    required super.providerKey,
-    super.tenantOverrideProviderKey,
-    super.deploymentProfileProviderKey,
-    super.defaultProviderKey,
-    super.nativeConfig,
-    required this.selectionSource,
-  });
-
-  final MailProviderSelectionSource selectionSource;
-}
-
-class MailRuntimeControllerContext<TNativeClient> {
-  const MailRuntimeControllerContext({
-    required this.metadata,
-    required this.selection,
-    required this.nativeClient,
-  });
-
-  final MailProviderMetadata metadata;
-  final MailProviderSelection selection;
-  final TNativeClient nativeClient;
-}
-`);
+  return renderMailTransportFlutterTypesModule();
 }
 
 function renderFlutterClientModule() {
-  return lines(`
-import 'mail_errors.dart';
-import 'mail_provider_selection.dart';
-import 'mail_standard_contract.dart';
-import 'mail_types.dart';
-
-final class StandardMailClient<TNativeClient> implements MailClient<TNativeClient> {
-  StandardMailClient({
-    required this.metadata,
-    required this.selection,
-    required TNativeClient nativeClient,
-    MailRuntimeController<TNativeClient>? runtimeController,
-  })  : _nativeClient = nativeClient,
-        _runtimeController = runtimeController;
-
-  @override
-  final MailProviderMetadata metadata;
-
-  @override
-  final MailProviderSelection selection;
-
-  final TNativeClient _nativeClient;
-  final MailRuntimeController<TNativeClient>? _runtimeController;
-
-  MailRuntimeControllerContext<TNativeClient> get _runtimeContext {
-    return MailRuntimeControllerContext<TNativeClient>(
-      metadata: metadata,
-      selection: selection,
-      nativeClient: _nativeClient,
-    );
-  }
-
-  MailRuntimeController<TNativeClient> _requireRuntimeController(
-    String methodName,
-  ) {
-    if (_runtimeController != null) {
-      return _runtimeController;
-    }
-
-    throw MailSdkException(
-      code: MailStandardContract.runtimeSurfaceFailureCode,
-      message: 'Mail runtime bridge method not available: $methodName',
-      providerKey: metadata.providerKey,
-      pluginId: metadata.pluginId,
-      details: <String, Object?>{
-        'methodName': methodName,
-      },
-    );
-  }
-
-  MailScreenShareRuntimeController<TNativeClient>?
-      _resolveScreenShareRuntimeController() {
-    final runtimeController = _runtimeController;
-    if (runtimeController is MailScreenShareRuntimeController<TNativeClient>) {
-      return runtimeController as MailScreenShareRuntimeController<TNativeClient>;
-    }
-
-    return null;
-  }
-
-  @override
-  Future<MailSessionDescriptor> join(MailJoinOptions options) {
-    return _requireRuntimeController('join').join(options, _runtimeContext);
-  }
-
-  @override
-  Future<MailSessionDescriptor> leave() {
-    return _requireRuntimeController('leave').leave(_runtimeContext);
-  }
-
-  @override
-  Future<MailTrackPublication> publish(MailPublishOptions options) {
-    return _requireRuntimeController('publish').publish(options, _runtimeContext);
-  }
-
-  @override
-  Future<void> unpublish(String trackId) {
-    return _requireRuntimeController('unpublish').unpublish(
-      trackId,
-      _runtimeContext,
-    );
-  }
-
-  @override
-  Future<MailTrackPublication> startScreenShare(
-    MailScreenShareOptions options,
-  ) {
-    requireCapability('screen-share');
-    final runtimeController = _requireRuntimeController('startScreenShare');
-    final screenShareRuntimeController = _resolveScreenShareRuntimeController();
-    if (screenShareRuntimeController != null) {
-      return screenShareRuntimeController.startScreenShare(options, _runtimeContext);
-    }
-
-    return runtimeController.publish(
-      MailPublishOptions(
-        trackId: options.trackId,
-        kind: MailTrackKind.screenShare,
-        metadata: options.metadata,
-      ),
-      _runtimeContext,
-    );
-  }
-
-  @override
-  Future<void> stopScreenShare(String trackId) {
-    requireCapability('screen-share');
-    final runtimeController = _requireRuntimeController('stopScreenShare');
-    final screenShareRuntimeController = _resolveScreenShareRuntimeController();
-    if (screenShareRuntimeController != null) {
-      return screenShareRuntimeController.stopScreenShare(trackId, _runtimeContext);
-    }
-
-    return runtimeController.unpublish(trackId, _runtimeContext);
-  }
-
-  @override
-  Future<MailMuteState> muteAudio(bool muted) {
-    return _requireRuntimeController('muteAudio').muteAudio(
-      muted,
-      _runtimeContext,
-    );
-  }
-
-  @override
-  Future<MailMuteState> muteVideo(bool muted) {
-    return _requireRuntimeController('muteVideo').muteVideo(
-      muted,
-      _runtimeContext,
-    );
-  }
-
-  @override
-  List<String> getProviderExtensions() {
-    return List<String>.unmodifiable(metadata.extensionKeys);
-  }
-
-  @override
-  bool supportsProviderExtension(String extensionKey) {
-    return metadata.extensionKeys.contains(extensionKey);
-  }
-
-  @override
-  bool supportsCapability(String capability) {
-    return metadata.requiredCapabilities.contains(capability) ||
-        metadata.optionalCapabilities.contains(capability);
-  }
-
-  @override
-  void requireCapability(String capability) {
-    if (supportsCapability(capability)) {
-      return;
-    }
-
-    throw MailSdkException(
-      code: 'capability_not_supported',
-      message: 'Mail capability not supported: $capability',
-      providerKey: metadata.providerKey,
-      pluginId: metadata.pluginId,
-      details: <String, Object?>{
-        'capability': capability,
-      },
-    );
-  }
-
-  @override
-  TNativeClient unwrap() => _nativeClient;
-}
-`);
+  return renderMailTransportFlutterClientModule();
 }
 
 function renderFlutterRuntimeSurfaceModule(assembly) {
@@ -6432,84 +6087,7 @@ flutter:
     },
     {
       relativePath: `${languageEntry.workspace}/${languageEntry.contractScaffold.relativePath}`,
-      content: lines(`
-import 'mail_provider_selection.dart';
-import 'mail_types.dart';
-
-abstract interface class MailProviderDriver<TNativeClient> {
-  MailProviderMetadata get metadata;
-  Future<MailClient<TNativeClient>> connect(MailResolvedClientConfig config);
-}
-
-abstract interface class MailClient<TNativeClient> {
-  MailProviderMetadata get metadata;
-  MailProviderSelection get selection;
-  Future<MailSessionDescriptor> join(MailJoinOptions options);
-  Future<MailSessionDescriptor> leave();
-  Future<MailTrackPublication> publish(MailPublishOptions options);
-  Future<void> unpublish(String trackId);
-  Future<MailTrackPublication> startScreenShare(MailScreenShareOptions options);
-  Future<void> stopScreenShare(String trackId);
-  Future<MailMuteState> muteAudio(bool muted);
-  Future<MailMuteState> muteVideo(bool muted);
-  List<String> getProviderExtensions();
-  bool supportsProviderExtension(String extensionKey);
-  bool supportsCapability(String capability);
-  void requireCapability(String capability);
-  TNativeClient unwrap();
-}
-
-abstract interface class MailRuntimeController<TNativeClient> {
-  Future<MailSessionDescriptor> join(
-    MailJoinOptions options,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-  Future<MailSessionDescriptor> leave(
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-  Future<MailTrackPublication> publish(
-    MailPublishOptions options,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-  Future<void> unpublish(
-    String trackId,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-  Future<MailMuteState> muteAudio(
-    bool muted,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-  Future<MailMuteState> muteVideo(
-    bool muted,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-}
-
-abstract interface class MailScreenShareRuntimeController<TNativeClient> {
-  Future<MailTrackPublication> startScreenShare(
-    MailScreenShareOptions options,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-  Future<void> stopScreenShare(
-    String trackId,
-    MailRuntimeControllerContext<TNativeClient> context,
-  );
-}
-
-final class MailStandardContract {
-  static const String symbol = 'MailStandardContract';
-  static const List<String> jdbcStyleResolutionTypes = <String>[
-    'MailDriverManager',
-    'MailDataSource',
-  ];
-  static const List<String> runtimeSurfaceMethods = <String>[
-${renderFlutterRuntimeSurfaceMethodEntries(assembly, '    ')}
-  ];
-  static const String runtimeSurfaceFailureCode = 'native_sdk_not_available';
-
-  const MailStandardContract._();
-}
-`),
+      content: renderMailTransportFlutterStandardContractModule(assembly),
     },
     {
       relativePath: `${languageEntry.workspace}/lib/src/mail_types.dart`,
@@ -6541,7 +6119,7 @@ final class MailProviderCatalogEntry {
 }
 
 final class MailProviderCatalog {
-  static const String DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'volcengine')};
+  static const String DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'smtp')};
 
   static const List<MailProviderCatalogEntry> entries = <MailProviderCatalogEntry>[
 ${providerEntries}
@@ -6907,22 +6485,24 @@ pub trait MailDataSource<TNativeClient> {
 }
 
 pub trait MailClient<TNativeClient> {
-    fn join(&self);
-    fn leave(&self);
-    fn publish(&self, track_id: &str);
-    fn unpublish(&self, track_id: &str);
-    fn mute_audio(&self, muted: bool);
-    fn mute_video(&self, muted: bool);
+    fn connect_transport(&self);
+    fn authenticate_transport(&self);
+    fn disconnect_transport(&self);
+    fn send_mail(&self);
+    fn probe_mailbox(&self);
+    fn sync_mailbox(&self);
+    fn health_check(&self);
     fn unwrap(&self) -> Option<&TNativeClient>;
 }
 
 pub trait MailRuntimeController<TNativeClient> {
-    fn join(&self);
-    fn leave(&self);
-    fn publish(&self, track_id: &str);
-    fn unpublish(&self, track_id: &str);
-    fn mute_audio(&self, muted: bool);
-    fn mute_video(&self, muted: bool);
+    fn connect_transport(&self);
+    fn authenticate_transport(&self);
+    fn disconnect_transport(&self);
+    fn send_mail(&self);
+    fn probe_mailbox(&self);
+    fn sync_mailbox(&self);
+    fn health_check(&self);
 }
 `),
     },
@@ -6940,7 +6520,7 @@ pub struct MailProviderCatalogEntry {
 
 pub struct MailProviderCatalog;
 
-pub const DEFAULT_mail_PROVIDER_KEY: &str = ${q(assembly.defaults?.providerKey ?? 'volcengine')};
+pub const DEFAULT_mail_PROVIDER_KEY: &str = ${q(assembly.defaults?.providerKey ?? 'smtp')};
 
 pub const OFFICIAL_mail_PROVIDERS: [MailProviderCatalogEntry; ${providers.length}] = [
 ${providerEntries}
@@ -7390,33 +6970,37 @@ public final class MailStandardContract {
   }
 
   public interface MailClient<TNativeClient> {
-    void join();
+    void connectTransport();
 
-    void leave();
+    void authenticateTransport();
 
-    void publish(String trackId);
+    void disconnectTransport();
 
-    void unpublish(String trackId);
+    void sendMail();
 
-    void muteAudio(boolean muted);
+    void probeMailbox();
 
-    void muteVideo(boolean muted);
+    void syncMailbox();
+
+    void healthCheck();
 
     TNativeClient unwrap();
   }
 
   public interface MailRuntimeController<TNativeClient> {
-    void join();
+    void connectTransport();
 
-    void leave();
+    void authenticateTransport();
 
-    void publish(String trackId);
+    void disconnectTransport();
 
-    void unpublish(String trackId);
+    void sendMail();
 
-    void muteAudio(boolean muted);
+    void probeMailbox();
 
-    void muteVideo(boolean muted);
+    void syncMailbox();
+
+    void healthCheck();
   }
 }
 `),
@@ -7431,7 +7015,7 @@ import java.util.Optional;
 
 public final class MailProviderCatalog {
 
-  public static final String DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'volcengine')};
+  public static final String DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'smtp')};
 
   public static final List<Entry> ENTRIES = List.of(
 ${providerEntries}
@@ -7868,34 +7452,38 @@ public interface MailDataSource<TNativeClient>
 
 public interface MailClient<TNativeClient>
 {
-    void Join();
+    void ConnectTransport();
 
-    void Leave();
+    void AuthenticateTransport();
 
-    void Publish(string trackId);
+    void DisconnectTransport();
 
-    void Unpublish(string trackId);
+    void SendMail();
 
-    void MuteAudio(bool muted);
+    void ProbeMailbox();
 
-    void MuteVideo(bool muted);
+    void SyncMailbox();
+
+    void HealthCheck();
 
     TNativeClient? Unwrap();
 }
 
 public interface MailRuntimeController<TNativeClient>
 {
-    void Join();
+    void ConnectTransport();
 
-    void Leave();
+    void AuthenticateTransport();
 
-    void Publish(string trackId);
+    void DisconnectTransport();
 
-    void Unpublish(string trackId);
+    void SendMail();
 
-    void MuteAudio(bool muted);
+    void ProbeMailbox();
 
-    void MuteVideo(bool muted);
+    void SyncMailbox();
+
+    void HealthCheck();
 }
 `),
     },
@@ -7915,7 +7503,7 @@ public sealed record MailProviderCatalogEntry(
 
 public static class MailProviderCatalog
 {
-    public const string DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'volcengine')};
+    public const string DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'smtp')};
 
     public static readonly IReadOnlyList<MailProviderCatalogEntry> Entries =
     [
@@ -8365,22 +7953,24 @@ public protocol MailDataSource {
 }
 
 public protocol MailClient {
-    func join() async throws
-    func leave() async throws
-    func publish(trackId: String) async throws
-    func unpublish(trackId: String) async throws
-    func muteAudio(muted: Bool) async throws
-    func muteVideo(muted: Bool) async throws
+    func connectTransport() async throws
+    func authenticateTransport() async throws
+    func disconnectTransport() async throws
+    func sendMail() async throws
+    func probeMailbox() async throws
+    func syncMailbox() async throws
+    func healthCheck() async throws
     func unwrap() -> Any?
 }
 
 public protocol MailRuntimeController {
-    func join() async throws
-    func leave() async throws
-    func publish(trackId: String) async throws
-    func unpublish(trackId: String) async throws
-    func muteAudio(muted: Bool) async throws
-    func muteVideo(muted: Bool) async throws
+    func connectTransport() async throws
+    func authenticateTransport() async throws
+    func disconnectTransport() async throws
+    func sendMail() async throws
+    func probeMailbox() async throws
+    func syncMailbox() async throws
+    func healthCheck() async throws
 }
 `),
     },
@@ -8395,7 +7985,7 @@ public struct MailProviderCatalogEntry {
 }
 
 public enum MailProviderCatalog {
-    public static let DEFAULT_mail_PROVIDER_KEY: String = ${q(assembly.defaults?.providerKey ?? 'volcengine')}
+    public static let DEFAULT_mail_PROVIDER_KEY: String = ${q(assembly.defaults?.providerKey ?? 'smtp')}
 
     public static let entries: [MailProviderCatalogEntry] = [
 ${providerEntries}
@@ -8772,33 +8362,37 @@ interface MailDataSource<TNativeClient> {
 }
 
 interface MailClient<TNativeClient> {
-    fun join()
+    fun connectTransport()
 
-    fun leave()
+    fun authenticateTransport()
 
-    fun publish(trackId: String)
+    fun disconnectTransport()
 
-    fun unpublish(trackId: String)
+    fun sendMail()
 
-    fun muteAudio(muted: Boolean)
+    fun probeMailbox()
 
-    fun muteVideo(muted: Boolean)
+    fun syncMailbox()
+
+    fun healthCheck()
 
     fun unwrap(): TNativeClient?
 }
 
 interface MailRuntimeController<TNativeClient> {
-    fun join()
+    fun connectTransport()
 
-    fun leave()
+    fun authenticateTransport()
 
-    fun publish(trackId: String)
+    fun disconnectTransport()
 
-    fun unpublish(trackId: String)
+    fun sendMail()
 
-    fun muteAudio(muted: Boolean)
+    fun probeMailbox()
 
-    fun muteVideo(muted: Boolean)
+    fun syncMailbox()
+
+    fun healthCheck()
 }
 `),
     },
@@ -8815,7 +8409,7 @@ data class MailProviderCatalogEntry(
 )
 
 object MailProviderCatalog {
-    const val DEFAULT_mail_PROVIDER_KEY: String = ${q(assembly.defaults?.providerKey ?? 'volcengine')}
+    const val DEFAULT_mail_PROVIDER_KEY: String = ${q(assembly.defaults?.providerKey ?? 'smtp')}
 
     val entries: List<MailProviderCatalogEntry> = listOf(
 ${providerEntries}
@@ -9170,22 +8764,24 @@ type MailDataSource interface {
 }
 
 type MailClient interface {
-    Join() error
-    Leave() error
-    Publish(trackID string) error
-    Unpublish(trackID string) error
-    MuteAudio(muted bool) error
-    MuteVideo(muted bool) error
+    ConnectTransport() error
+    AuthenticateTransport() error
+    DisconnectTransport() error
+    SendMail() error
+    ProbeMailbox() error
+    SyncMailbox() error
+    HealthCheck() error
     Unwrap() any
 }
 
 type MailRuntimeController interface {
-    Join() error
-    Leave() error
-    Publish(trackID string) error
-    Unpublish(trackID string) error
-    MuteAudio(muted bool) error
-    MuteVideo(muted bool) error
+    ConnectTransport() error
+    AuthenticateTransport() error
+    DisconnectTransport() error
+    SendMail() error
+    ProbeMailbox() error
+    SyncMailbox() error
+    HealthCheck() error
 }
 `),
     },
@@ -9203,7 +8799,7 @@ type MailProviderCatalogEntry struct {
 
 type MailProviderCatalog struct{}
 
-const DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'volcengine')}
+const DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'smtp')}
 
 var OFFICIAL_mail_PROVIDERS = []MailProviderCatalogEntry{
 ${providerEntries}
@@ -9639,22 +9235,25 @@ class MailDataSource(Protocol[NativeClientT]):
 
 
 class MailClient(Protocol[NativeClientT]):
-    def join(self) -> None:
+    def connect_transport(self) -> None:
         ...
 
-    def leave(self) -> None:
+    def authenticate_transport(self) -> None:
         ...
 
-    def publish(self, track_id: str) -> None:
+    def disconnect_transport(self) -> None:
         ...
 
-    def unpublish(self, track_id: str) -> None:
+    def send_mail(self) -> None:
         ...
 
-    def mute_audio(self, muted: bool) -> None:
+    def probe_mailbox(self) -> None:
         ...
 
-    def mute_video(self, muted: bool) -> None:
+    def sync_mailbox(self) -> None:
+        ...
+
+    def health_check(self) -> None:
         ...
 
     def unwrap(self) -> NativeClientT | None:
@@ -9662,22 +9261,25 @@ class MailClient(Protocol[NativeClientT]):
 
 
 class MailRuntimeController(Protocol[NativeClientT]):
-    def join(self) -> None:
+    def connect_transport(self) -> None:
         ...
 
-    def leave(self) -> None:
+    def authenticate_transport(self) -> None:
         ...
 
-    def publish(self, track_id: str) -> None:
+    def disconnect_transport(self) -> None:
         ...
 
-    def unpublish(self, track_id: str) -> None:
+    def send_mail(self) -> None:
         ...
 
-    def mute_audio(self, muted: bool) -> None:
+    def probe_mailbox(self) -> None:
         ...
 
-    def mute_video(self, muted: bool) -> None:
+    def sync_mailbox(self) -> None:
+        ...
+
+    def health_check(self) -> None:
         ...
 `),
     },
@@ -9688,7 +9290,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 
-DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'volcengine')}
+DEFAULT_mail_PROVIDER_KEY = ${q(assembly.defaults?.providerKey ?? 'smtp')}
 
 
 @dataclass(frozen=True)

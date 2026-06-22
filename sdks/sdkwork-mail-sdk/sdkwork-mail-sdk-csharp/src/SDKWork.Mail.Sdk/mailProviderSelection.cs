@@ -1,9 +1,9 @@
-namespace Sdkwork.Rtc.Sdk;
+namespace Sdkwork.Mail.Sdk;
 
 using System;
 using System.Collections.Generic;
 
-public enum RtcProviderSelectionSource
+public enum MailProviderSelectionSource
 {
     provider_url,
     provider_key,
@@ -12,21 +12,21 @@ public enum RtcProviderSelectionSource
     default_provider,
 }
 
-public sealed record ParsedRtcProviderUrl(string providerKey, string rawUrl);
+public sealed record ParsedMailProviderUrl(string providerKey, string rawUrl);
 
-public sealed record RtcProviderSelectionRequest(
+public sealed record MailProviderSelectionRequest(
     string? providerUrl = null,
     string? providerKey = null,
     string? tenantOverrideProviderKey = null,
     string? deploymentProfileProviderKey = null
 );
 
-public sealed record RtcProviderSelection(
+public sealed record MailProviderSelection(
     string providerKey,
-    RtcProviderSelectionSource source
+    MailProviderSelectionSource source
 )
 {
-    public static readonly IReadOnlyList<string> RtcProviderSelectionSources =
+    public static readonly IReadOnlyList<string> MailProviderSelectionSources =
     [
         "provider_url",
         "provider_key",
@@ -35,7 +35,7 @@ public sealed record RtcProviderSelection(
         "default_provider",
     ];
 
-    public static readonly IReadOnlyList<string> RtcProviderSelectionPrecedence =
+    public static readonly IReadOnlyList<string> MailProviderSelectionPrecedence =
     [
         "provider_url",
         "provider_key",
@@ -44,62 +44,62 @@ public sealed record RtcProviderSelection(
         "default_provider",
     ];
 
-    public static ParsedRtcProviderUrl ParseRtcProviderUrl(string providerUrl)
+    public static ParsedMailProviderUrl ParseMailProviderUrl(string providerUrl)
     {
         var trimmed = providerUrl.Trim();
-        if (!trimmed.StartsWith("rtc:", StringComparison.OrdinalIgnoreCase) || !trimmed.Contains("://", StringComparison.Ordinal))
+        if (!trimmed.StartsWith("Mail:", StringComparison.OrdinalIgnoreCase) || !trimmed.Contains("://", StringComparison.Ordinal))
         {
-            throw new ArgumentException($"Invalid RTC provider URL: {providerUrl}", nameof(providerUrl));
+            throw new ArgumentException($"Invalid Mail provider URL: {providerUrl}", nameof(providerUrl));
         }
 
-        return new ParsedRtcProviderUrl(
+        return new ParsedMailProviderUrl(
             trimmed[4..trimmed.IndexOf("://", StringComparison.Ordinal)].ToLowerInvariant(),
             providerUrl
         );
     }
 
-    public static RtcProviderSelection ResolveRtcProviderSelection(
-        RtcProviderSelectionRequest? request = null,
-        string defaultProviderKey = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY
+    public static MailProviderSelection ResolveMailProviderSelection(
+        MailProviderSelectionRequest? request = null,
+        string defaultProviderKey = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY
     )
     {
-        request ??= new RtcProviderSelectionRequest();
+        request ??= new MailProviderSelectionRequest();
 
         if (HasText(request.providerUrl))
         {
-            return new RtcProviderSelection(
-                ParseRtcProviderUrl(request.providerUrl!).providerKey,
-                RtcProviderSelectionSource.provider_url
+            return new MailProviderSelection(
+                ParseMailProviderUrl(request.providerUrl!).providerKey,
+                MailProviderSelectionSource.provider_url
             );
         }
 
         if (HasText(request.providerKey))
         {
-            return new RtcProviderSelection(
+            return new MailProviderSelection(
                 request.providerKey!.Trim(),
-                RtcProviderSelectionSource.provider_key
+                MailProviderSelectionSource.provider_key
             );
         }
 
         if (HasText(request.tenantOverrideProviderKey))
         {
-            return new RtcProviderSelection(
+            return new MailProviderSelection(
                 request.tenantOverrideProviderKey!.Trim(),
-                RtcProviderSelectionSource.tenant_override
+                MailProviderSelectionSource.tenant_override
             );
         }
 
         if (HasText(request.deploymentProfileProviderKey))
         {
-            return new RtcProviderSelection(
+            return new MailProviderSelection(
                 request.deploymentProfileProviderKey!.Trim(),
-                RtcProviderSelectionSource.deployment_profile
+                MailProviderSelectionSource.deployment_profile
             );
         }
 
-        return new RtcProviderSelection(
+        return new MailProviderSelection(
             defaultProviderKey,
-            RtcProviderSelectionSource.default_provider
+            MailProviderSelectionSource.default_provider
         );
     }
 

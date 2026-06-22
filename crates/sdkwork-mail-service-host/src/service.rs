@@ -1,11 +1,13 @@
 use std::sync::Arc;
 
 use sdkwork_communication_mail_service::{
-    CreateMailMessageRequest, CreateMailTemplateRequest, MailAccount, MailFolder,
-    MailListWindowParams, MailMessage, MailPersistenceError, MailPersistencePort,
-    MailProviderAccount, MailTemplate, MailTemplateCategory, MailThread, MailTransactionalDelivery,
-    MailTransportPort, NoopMailPersistencePort, SendMailVerificationRequest,
-    SendMailVerificationResult, SendTransactionalMailRequest, UnconfiguredMailTransport,
+    CreateMailMessageRequest, CreateMailProviderAccountRequest, CreateMailProviderAccountResult,
+    CreateMailTemplateRequest, GrantMailMarketingConsentRequest, MailAccount, MailFolder,
+    MailListWindowParams, MailMarketingConsent, MailMessage, MailPersistenceError,
+    MailPersistencePort, MailProviderAccount, MailProviderPingResult, MailProviderSyncResult,
+    MailTemplate, MailTemplateCategory, MailThread, MailTransactionalDelivery, MailTransportPort,
+    NoopMailPersistencePort, SendMailVerificationRequest, SendMailVerificationResult,
+    SendTransactionalMailRequest, SyncMailProviderAccountRequest, UnconfiguredMailTransport,
     UpdateMailMessageRequest, UpdateMailTemplateRequest, VerifyMailCodeRequest,
     VerifyMailCodeResult, apply_list_window,
 };
@@ -281,6 +283,64 @@ impl MailBackendApiService for MailProductService {
         })
     }
 
+    fn create_provider_account(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: CreateMailProviderAccountRequest,
+    ) -> MailBackendApiFuture<CreateMailProviderAccountResult> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            crate::providers::create_provider_account(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                request,
+            )
+            .await
+        })
+    }
+
+    fn ping_provider_account(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        account_id: String,
+    ) -> MailBackendApiFuture<MailProviderPingResult> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            crate::providers::ping_provider_account(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                account_id,
+            )
+            .await
+        })
+    }
+
+    fn sync_provider_account(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        owner_user_id: String,
+        account_id: String,
+        request: SyncMailProviderAccountRequest,
+    ) -> MailBackendApiFuture<MailProviderSyncResult> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            crate::providers::sync_provider_account(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                owner_user_id,
+                account_id,
+                request,
+            )
+            .await
+        })
+    }
+
     fn list_templates(
         &self,
         request: MailBackendListRequest,
@@ -400,6 +460,64 @@ impl MailBackendApiService for MailProductService {
                 items,
                 next_cursor: None,
             })
+        })
+    }
+
+    fn list_marketing_consents(
+        &self,
+        request: MailBackendListRequest,
+        recipient_email: Option<String>,
+    ) -> MailBackendApiFuture<MailBackendListData<MailMarketingConsent>> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            let organization_id = organization_id_or_zero(&request.organization_id);
+            let items = transactional::list_marketing_consents(
+                persistence,
+                request.tenant_id,
+                organization_id,
+                recipient_email,
+            )
+            .await?;
+            Ok(MailBackendListData {
+                items,
+                next_cursor: None,
+            })
+        })
+    }
+
+    fn grant_marketing_consent(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: GrantMailMarketingConsentRequest,
+    ) -> MailBackendApiFuture<MailMarketingConsent> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::grant_marketing_consent(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                request,
+            )
+            .await
+        })
+    }
+
+    fn revoke_marketing_consent(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        consent_id: String,
+    ) -> MailBackendApiFuture<MailMarketingConsent> {
+        let persistence = self.persistence.clone();
+        Box::pin(async move {
+            transactional::revoke_marketing_consent(
+                persistence,
+                tenant_id,
+                organization_id_or_zero(&organization_id),
+                consent_id,
+            )
+            .await
         })
     }
 }

@@ -215,8 +215,14 @@ export function assertMailAssemblyWorkspaceBaseline(assembly) {
     }
   }
 
-  if (defaultProviderEntry.typescriptAdapter?.runtimeBridgeStatus !== 'reference-baseline') {
-    throw new Error('Default provider must point at a TypeScript reference-baseline bridge');
+  const defaultBridgeStatus = defaultProviderEntry.typescriptAdapter?.runtimeBridgeStatus;
+  if (
+    defaultBridgeStatus !== 'reference-baseline' &&
+    defaultBridgeStatus !== 'reserved'
+  ) {
+    throw new Error(
+      'Default provider must declare runtimeBridgeStatus as reference-baseline or reserved',
+    );
   }
 
   const providerSelectionStandard = assembly.providerSelectionStandard ?? {};

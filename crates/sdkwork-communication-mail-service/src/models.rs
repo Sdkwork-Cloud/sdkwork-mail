@@ -182,6 +182,8 @@ pub struct CreateMailMessageRequest {
     pub account_id: String,
     pub folder_id: Option<String>,
     pub thread_id: Option<String>,
+    pub from_name: Option<String>,
+    pub from_email: Option<String>,
     pub subject: String,
     pub body_text: Option<String>,
     pub body_html: Option<String>,
@@ -367,4 +369,126 @@ pub struct MailTransactionalDelivery {
     pub sent_at: Option<String>,
     pub metadata: JsonValue,
     pub created_at: String,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MailMarketingConsentStatus {
+    Active,
+    Revoked,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MailMarketingConsent {
+    pub id: String,
+    pub tenant_id: String,
+    pub organization_id: String,
+    pub recipient_email: String,
+    pub status: MailMarketingConsentStatus,
+    pub consent_source: String,
+    pub granted_at: String,
+    pub revoked_at: Option<String>,
+    pub metadata: JsonValue,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GrantMailMarketingConsentRequest {
+    pub recipient_email: String,
+    pub consent_source: Option<String>,
+    pub metadata: Option<JsonValue>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateMailProviderCredentialInput {
+    pub username: String,
+    pub secret_ref: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateMailProviderAccountRequest {
+    pub provider_kind: String,
+    pub name: String,
+    pub host: String,
+    pub port: u16,
+    pub use_tls: bool,
+    pub credential: Option<CreateMailProviderCredentialInput>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateMailProviderAccountResult {
+    pub account: MailProviderAccount,
+    pub credential: Option<MailProviderCredential>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MailProviderPingResult {
+    pub provider_kind: String,
+    pub account_id: String,
+    pub ok: bool,
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SyncMailProviderAccountRequest {
+    pub mailbox: Option<String>,
+    pub since_uid: Option<u32>,
+    pub limit: Option<u32>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MailProviderSyncResult {
+    pub provider_kind: String,
+    pub provider_account_id: String,
+    pub mail_account_id: String,
+    pub folder_id: String,
+    pub synced_count: u32,
+    pub highest_uid: Option<u32>,
+    pub uid_validity: Option<u32>,
+    pub message: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MailSyncState {
+    pub id: String,
+    pub account_id: String,
+    pub folder_id: Option<String>,
+    pub provider_kind: String,
+    pub cursor_token: Option<String>,
+    pub last_synced_at: Option<String>,
+    pub last_error: Option<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct EnsureMailAccountRequest {
+    pub owner_user_id: String,
+    pub email_address: String,
+    pub display_name: Option<String>,
+    pub provider_kind: String,
+    pub provider_account_id: String,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct IngestInboundMailMessageRequest {
+    pub account_id: String,
+    pub folder_id: String,
+    pub from_name: Option<String>,
+    pub from_email: String,
+    pub subject: String,
+    pub snippet: Option<String>,
+    pub body_text: Option<String>,
+    pub received_at: Option<String>,
+    pub metadata: JsonValue,
+    pub imap_uid: u32,
+    pub imap_uid_validity: Option<u32>,
 }

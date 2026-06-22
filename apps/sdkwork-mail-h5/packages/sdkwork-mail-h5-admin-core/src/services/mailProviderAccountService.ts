@@ -22,6 +22,38 @@ export interface MailTransportProviderAccount {
   status: string;
 }
 
+export interface CreateMailProviderCredentialInput {
+  username: string;
+  secretRef: string;
+}
+
+export interface CreateMailProviderAccountCommand {
+  providerKind: "smtp" | "imap";
+  name: string;
+  host: string;
+  port: number;
+  useTls: boolean;
+  credential?: CreateMailProviderCredentialInput;
+}
+
+export interface MailProviderPingResult {
+  providerKind: string;
+  accountId: string;
+  ok: boolean;
+  message: string;
+}
+
+export interface MailProviderSyncResult {
+  providerKind: string;
+  providerAccountId: string;
+  mailAccountId: string;
+  folderId: string;
+  syncedCount: number;
+  highestUid?: number;
+  uidValidity?: number;
+  message: string;
+}
+
 export class MailProviderAccountService {
   private readonly client;
 
@@ -37,5 +69,36 @@ export class MailProviderAccountService {
       await this.client.mailProviderAccounts.mail.providerAccounts.list(),
     );
     return (response.items ?? []) as MailTransportProviderAccount[];
+  }
+
+  async create(command: CreateMailProviderAccountCommand): Promise<MailTransportProviderAccount> {
+    const response = unwrapEnvelope(
+      await this.client.mailProviderAccounts.mail.providerAccounts.create(command),
+    );
+    const account = (response as { account?: MailTransportProviderAccount }).account;
+    if (!account) {
+      throw new Error("Invalid response: missing provider account data");
+    }
+    return account;
+  }
+
+  async ping(accountId: string): Promise<MailProviderPingResult> {
+    const response = unwrapEnvelope(
+      await this.client.mailProviderAccounts.mail.providerAccounts.ping(accountId),
+    );
+    if (!response) {
+      throw new Error("Invalid response: missing provider ping data");
+    }
+    return response as MailProviderPingResult;
+  }
+
+  async sync(accountId: string): Promise<MailProviderSyncResult> {
+    const response = unwrapEnvelope(
+      await this.client.mailProviderAccounts.mail.providerAccounts.sync(accountId, {}),
+    );
+    if (!response) {
+      throw new Error("Invalid response: missing provider sync data");
+    }
+    return response as MailProviderSyncResult;
   }
 }

@@ -1,11 +1,11 @@
-public enum RtcProviderSupportStatus: String {
+public enum MailProviderSupportStatus: String {
     case builtin_registered = "builtin_registered"
     case official_registered = "official_registered"
     case official_unregistered = "official_unregistered"
     case unknown = "unknown"
 }
 
-public struct RtcProviderSupportStateRequest {
+public struct MailProviderSupportStateRequest {
     public let providerKey: String
     public let builtin: Bool
     public let official: Bool
@@ -24,23 +24,23 @@ public struct RtcProviderSupportStateRequest {
     }
 }
 
-public struct RtcProviderSupport {
+public struct MailProviderSupport {
     public let providerKey: String
-    public let status: RtcProviderSupportStatus
+    public let status: MailProviderSupportStatus
     public let builtin: Bool
     public let official: Bool
     public let registered: Bool
 
-    public static let rtcProviderSupportStatuses: [String] = [
+    public static let MailProviderSupportStatuses: [String] = [
         "builtin_registered",
         "official_registered",
         "official_unregistered",
         "unknown",
     ]
 
-    public static func resolveRtcProviderSupportStatus(
-        _ request: RtcProviderSupportStateRequest
-    ) -> RtcProviderSupportStatus {
+    public static func resolveMailProviderSupportStatus(
+        _ request: MailProviderSupportStateRequest
+    ) -> MailProviderSupportStatus {
         if request.official && request.registered {
             return request.builtin ? .builtin_registered : .official_registered
         }
@@ -52,12 +52,12 @@ public struct RtcProviderSupport {
         return .unknown
     }
 
-    public static func createRtcProviderSupportState(
-        _ request: RtcProviderSupportStateRequest
-    ) -> RtcProviderSupport {
-        return RtcProviderSupport(
+    public static func createMailProviderSupportState(
+        _ request: MailProviderSupportStateRequest
+    ) -> MailProviderSupport {
+        return MailProviderSupport(
             providerKey: request.providerKey,
-            status: resolveRtcProviderSupportStatus(request),
+            status: resolveMailProviderSupportStatus(request),
             builtin: request.builtin,
             official: request.official,
             registered: request.registered

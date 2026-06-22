@@ -1,19 +1,19 @@
-package com.sdkwork.rtc.metadata
+package com.sdkwork.Mail.metadata
 
-class RtcDriverManager {
+class MailDriverManager {
     fun resolveSelection(
-        request: RtcProviderSelectionRequest = RtcProviderSelectionRequest(),
-        defaultProviderKey: String = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY,
-    ): RtcProviderSelection {
-        return resolveRtcProviderSelection(request, defaultProviderKey)
+        request: MailProviderSelectionRequest = MailProviderSelectionRequest(),
+        defaultProviderKey: String = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY,
+    ): MailProviderSelection {
+        return resolveMailProviderSelection(request, defaultProviderKey)
     }
 
-    fun describeProviderSupport(providerKey: String): RtcProviderSupport {
-        val official = getRtcProviderByProviderKey(providerKey) != null
-        val activation = getRtcProviderActivationByProviderKey(providerKey)
+    fun describeProviderSupport(providerKey: String): MailProviderSupport {
+        val official = getMailProviderByProviderKey(providerKey) != null
+        val activation = getMailProviderActivationByProviderKey(providerKey)
 
-        return createRtcProviderSupportState(
-            RtcProviderSupportStateRequest(
+        return createMailProviderSupportState(
+            MailProviderSupportStateRequest(
                 providerKey = providerKey,
                 builtin = activation?.builtin ?: false,
                 official = official,
@@ -22,7 +22,7 @@ class RtcDriverManager {
         )
     }
 
-    fun listProviderSupport(): List<RtcProviderSupport> {
-        return RtcProviderCatalog.entries.map { describeProviderSupport(it.providerKey) }
+    fun listProviderSupport(): List<MailProviderSupport> {
+        return MailProviderCatalog.entries.map { describeProviderSupport(it.providerKey) }
     }
 }

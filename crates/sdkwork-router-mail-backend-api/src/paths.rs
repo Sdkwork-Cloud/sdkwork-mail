@@ -14,6 +14,10 @@ pub struct MailBackendRoute {
 }
 
 pub const MAIL_BACKEND_PROVIDER_ACCOUNTS_PATH: &str = "/backend/v3/api/mail/provider_accounts";
+pub const MAIL_BACKEND_PROVIDER_ACCOUNT_PING_PATH: &str =
+    "/backend/v3/api/mail/provider_accounts/{account_id}/ping";
+pub const MAIL_BACKEND_PROVIDER_ACCOUNT_SYNC_PATH: &str =
+    "/backend/v3/api/mail/provider_accounts/{account_id}/sync";
 pub const MAIL_BACKEND_PROVIDER_WEBHOOK_RECEIVE_PATH: &str =
     "/backend/v3/api/mail/provider_webhooks/{provider}/events";
 
@@ -25,6 +29,14 @@ pub const MAIL_BACKEND_ROUTES: &[MailBackendRoute] = &[
         operation_id: "mail.providerAccounts.list",
         owner: MAIL_OWNER,
         permission: "mail.provider_accounts.read",
+    },
+    MailBackendRoute {
+        method: "POST",
+        path: MAIL_BACKEND_PROVIDER_ACCOUNT_SYNC_PATH,
+        tag: "mailProviderAccounts",
+        operation_id: "mail.providerAccounts.sync",
+        owner: MAIL_OWNER,
+        permission: "mail.provider_accounts.write",
     },
     MailBackendRoute {
         method: "POST",

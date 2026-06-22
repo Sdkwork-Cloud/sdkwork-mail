@@ -1,49 +1,53 @@
-package com.sdkwork.rtc.standard
+package com.sdkwork.Mail.standard
 
-object RtcStandardContract {
-    const val SYMBOL: String = "RtcStandardContract"
+object MailStandardContract {
+    const val SYMBOL: String = "MailStandardContract"
 }
 
-interface RtcProviderDriver<TNativeClient> {
+interface MailProviderDriver<TNativeClient> {
     val providerKey: String
 
-    fun createClient(): RtcClient<TNativeClient>
+    fun createClient(): MailClient<TNativeClient>
 }
 
-interface RtcDriverManager<TNativeClient> {
-    fun resolveDriver(providerKey: String): RtcProviderDriver<TNativeClient>
+interface MailDriverManager<TNativeClient> {
+    fun resolveDriver(providerKey: String): MailProviderDriver<TNativeClient>
 }
 
-interface RtcDataSource<TNativeClient> {
-    fun createClient(): RtcClient<TNativeClient>
+interface MailDataSource<TNativeClient> {
+    fun createClient(): MailClient<TNativeClient>
 }
 
-interface RtcClient<TNativeClient> {
-    fun join()
+interface MailClient<TNativeClient> {
+    fun connectTransport()
 
-    fun leave()
+    fun authenticateTransport()
 
-    fun publish(trackId: String)
+    fun disconnectTransport()
 
-    fun unpublish(trackId: String)
+    fun sendMail()
 
-    fun muteAudio(muted: Boolean)
+    fun probeMailbox()
 
-    fun muteVideo(muted: Boolean)
+    fun syncMailbox()
+
+    fun healthCheck()
 
     fun unwrap(): TNativeClient?
 }
 
-interface RtcRuntimeController<TNativeClient> {
-    fun join()
+interface MailRuntimeController<TNativeClient> {
+    fun connectTransport()
 
-    fun leave()
+    fun authenticateTransport()
 
-    fun publish(trackId: String)
+    fun disconnectTransport()
 
-    fun unpublish(trackId: String)
+    fun sendMail()
 
-    fun muteAudio(muted: Boolean)
+    fun probeMailbox()
 
-    fun muteVideo(muted: Boolean)
+    fun syncMailbox()
+
+    fun healthCheck()
 }

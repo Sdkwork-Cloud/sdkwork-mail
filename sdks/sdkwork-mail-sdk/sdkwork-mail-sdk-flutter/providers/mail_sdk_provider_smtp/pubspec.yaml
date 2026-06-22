@@ -1,0 +1,24 @@
+name: mail_sdk_provider_smtp
+description: >
+  Reserved Flutter provider package boundary for SMTP Mail Transport.
+  providerKey: smtp
+  pluginId: Mail-smtp
+  driverId: sdkwork-mail-driver-smtp
+  status: future-runtime-bridge-only
+  runtimeBridgeStatus: reserved
+publish_to: none
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+sdkwork_mail_provider:
+  providerKey: smtp
+  pluginId: Mail-smtp
+  driverId: sdkwork-mail-driver-smtp
+  packageIdentity: mail_sdk_provider_smtp
+  sourcePath: lib/src/mail_provider_smtp_package_contract.dart
+  sourceSymbol: MailProviderSmtpPackageContract
+  rootPublic: false
+  status: future-runtime-bridge-only
+  runtimeBridgeStatus: reserved

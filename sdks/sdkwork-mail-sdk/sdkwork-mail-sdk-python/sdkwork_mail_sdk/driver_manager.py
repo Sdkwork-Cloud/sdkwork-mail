@@ -1,39 +1,39 @@
-from .provider_activation_catalog import get_rtc_provider_activation_by_provider_key
+from .provider_activation_catalog import get_mail_provider_activation_by_provider_key
 from .provider_catalog import (
-    DEFAULT_RTC_PROVIDER_KEY,
-    RtcProviderCatalog,
-    get_rtc_provider_by_provider_key,
+    DEFAULT_mail_PROVIDER_KEY,
+    MailProviderCatalog,
+    get_mail_provider_by_provider_key,
 )
 from .provider_selection import (
-    RtcProviderSelection,
-    RtcProviderSelectionRequest,
-    resolve_rtc_provider_selection,
+    MailProviderSelection,
+    MailProviderSelectionRequest,
+    resolve_mail_provider_selection,
 )
 from .provider_support import (
-    RtcProviderSupport,
-    RtcProviderSupportStateRequest,
-    create_rtc_provider_support_state,
+    MailProviderSupport,
+    MailProviderSupportStateRequest,
+    create_mail_provider_support_state,
 )
 
 
-class RtcDriverManager:
+class MailDriverManager:
     def resolveSelection(
         self,
-        request: RtcProviderSelectionRequest | None = None,
+        request: MailProviderSelectionRequest | None = None,
         *,
-        defaultProviderKey: str = DEFAULT_RTC_PROVIDER_KEY,
-    ) -> RtcProviderSelection:
-        return resolve_rtc_provider_selection(
+        defaultProviderKey: str = DEFAULT_mail_PROVIDER_KEY,
+    ) -> MailProviderSelection:
+        return resolve_mail_provider_selection(
             request,
             default_provider_key=defaultProviderKey,
         )
 
-    def describeProviderSupport(self, providerKey: str) -> RtcProviderSupport:
-        official = get_rtc_provider_by_provider_key(providerKey) is not None
-        activation = get_rtc_provider_activation_by_provider_key(providerKey)
+    def describeProviderSupport(self, providerKey: str) -> MailProviderSupport:
+        official = get_mail_provider_by_provider_key(providerKey) is not None
+        activation = get_mail_provider_activation_by_provider_key(providerKey)
 
-        return create_rtc_provider_support_state(
-            RtcProviderSupportStateRequest(
+        return create_mail_provider_support_state(
+            MailProviderSupportStateRequest(
                 providerKey=providerKey,
                 builtin=activation.builtin if activation is not None else False,
                 official=official,
@@ -41,8 +41,8 @@ class RtcDriverManager:
             )
         )
 
-    def listProviderSupport(self) -> list[RtcProviderSupport]:
+    def listProviderSupport(self) -> list[MailProviderSupport]:
         return [
             self.describeProviderSupport(entry.providerKey)
-            for entry in RtcProviderCatalog.entries
+            for entry in MailProviderCatalog.entries
         ]

@@ -42,40 +42,40 @@ test('materialized provider extension catalog matches the assembly extension reg
 });
 
 test('data source and client expose provider extension descriptors through standard metadata helpers', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
   });
 
   assert.deepEqual(dataSource.describeProviderExtensions(), [
     {
-      extensionKey: 'volcengine.native-client',
-      providerKey: 'volcengine',
-      displayName: 'Volcengine Native Client',
+      extensionKey: 'smtp.transport',
+      providerKey: 'smtp',
+      displayName: 'SMTP Transport',
       surface: 'runtime-bridge',
       access: 'unwrap-only',
-      status: 'reference-baseline',
+      status: 'reserved',
     },
   ]);
-  assert.equal(dataSource.supportsProviderExtension('volcengine.native-client'), true);
-  assert.equal(dataSource.supportsProviderExtension('aliyun.native-client'), false);
+  assert.equal(dataSource.supportsProviderExtension('smtp.transport'), true);
+  assert.equal(dataSource.supportsProviderExtension('imap.sync'), false);
 
   const client = await dataSource.createClient();
 
   assert.deepEqual(client.getProviderExtensions(), [
     {
-      extensionKey: 'volcengine.native-client',
-      providerKey: 'volcengine',
-      displayName: 'Volcengine Native Client',
+      extensionKey: 'smtp.transport',
+      providerKey: 'smtp',
+      displayName: 'SMTP Transport',
       surface: 'runtime-bridge',
       access: 'unwrap-only',
-      status: 'reference-baseline',
+      status: 'reserved',
     },
   ]);
-  assert.equal(client.supportsProviderExtension('volcengine.native-client'), true);
-  assert.equal(client.supportsProviderExtension('agora.native-client'), false);
+  assert.equal(client.supportsProviderExtension('smtp.transport'), true);
+  assert.equal(client.supportsProviderExtension('imap.sync'), false);
 });
 
 test('materialized provider extension catalog is runtime-frozen', async () => {
@@ -84,14 +84,14 @@ test('materialized provider extension catalog is runtime-frozen', async () => {
   assert.equal(Object.isFrozen(catalog.mail_PROVIDER_EXTENSION_KEYS), true);
   assert.equal(Object.isFrozen(catalog.mail_PROVIDER_EXTENSION_CATALOG), true);
   assert.equal(
-    Object.isFrozen(catalog.VOLCENGINE_NATIVE_CLIENT_mail_PROVIDER_EXTENSION_DESCRIPTOR),
+    Object.isFrozen(catalog.SMTP_TRANSPORT_mail_PROVIDER_EXTENSION_DESCRIPTOR),
     true,
   );
   assert.equal(
-    Object.isFrozen(catalog.getMailProviderExtensionsForProvider('volcengine')),
+    Object.isFrozen(catalog.getMailProviderExtensionsForProvider('smtp')),
     true,
   );
   assert.throws(() => {
-    catalog.VOLCENGINE_NATIVE_CLIENT_mail_PROVIDER_EXTENSION_DESCRIPTOR.status = 'reserved';
+    catalog.SMTP_TRANSPORT_mail_PROVIDER_EXTENSION_DESCRIPTOR.status = 'reference-baseline';
   }, /TypeError/);
 });

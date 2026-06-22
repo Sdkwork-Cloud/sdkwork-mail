@@ -1,4 +1,4 @@
-public struct RtcDataSourceOptions {
+public struct MailDataSourceOptions {
     public let providerUrl: String?
     public let providerKey: String?
     public let tenantOverrideProviderKey: String?
@@ -10,7 +10,7 @@ public struct RtcDataSourceOptions {
         providerKey: String? = nil,
         tenantOverrideProviderKey: String? = nil,
         deploymentProfileProviderKey: String? = nil,
-        defaultProviderKey: String = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY
+        defaultProviderKey: String = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY
     ) {
         self.providerUrl = providerUrl
         self.providerKey = providerKey
@@ -20,22 +20,22 @@ public struct RtcDataSourceOptions {
     }
 }
 
-public struct RtcDataSource {
-    public let options: RtcDataSourceOptions
-    public let driverManager: RtcDriverManager
+public struct MailDataSource {
+    public let options: MailDataSourceOptions
+    public let driverManager: MailDriverManager
 
     public init(
-        options: RtcDataSourceOptions = RtcDataSourceOptions(),
-        driverManager: RtcDriverManager = RtcDriverManager()
+        options: MailDataSourceOptions = MailDataSourceOptions(),
+        driverManager: MailDriverManager = MailDriverManager()
     ) {
         self.options = options
         self.driverManager = driverManager
     }
 
-    public func describeSelection(_ overrides: RtcDataSourceOptions? = nil) -> RtcProviderSelection {
+    public func describeSelection(_ overrides: MailDataSourceOptions? = nil) -> MailProviderSelection {
         let merged = merge(options, overrides)
         return driverManager.resolveSelection(
-            request: RtcProviderSelectionRequest(
+            request: MailProviderSelectionRequest(
                 providerUrl: merged.providerUrl,
                 providerKey: merged.providerKey,
                 tenantOverrideProviderKey: merged.tenantOverrideProviderKey,
@@ -45,21 +45,21 @@ public struct RtcDataSource {
         )
     }
 
-    public func describeProviderSupport(_ overrides: RtcDataSourceOptions? = nil) -> RtcProviderSupport {
+    public func describeProviderSupport(_ overrides: MailDataSourceOptions? = nil) -> MailProviderSupport {
         let selection = describeSelection(overrides)
         return driverManager.describeProviderSupport(providerKey: selection.providerKey)
     }
 
-    public func listProviderSupport() -> [RtcProviderSupport] {
+    public func listProviderSupport() -> [MailProviderSupport] {
         driverManager.listProviderSupport()
     }
 
-    private func merge(_ base: RtcDataSourceOptions, _ overrides: RtcDataSourceOptions?) -> RtcDataSourceOptions {
+    private func merge(_ base: MailDataSourceOptions, _ overrides: MailDataSourceOptions?) -> MailDataSourceOptions {
         guard let overrides else {
             return base
         }
 
-        return RtcDataSourceOptions(
+        return MailDataSourceOptions(
             providerUrl: overrides.providerUrl ?? base.providerUrl,
             providerKey: overrides.providerKey ?? base.providerKey,
             tenantOverrideProviderKey: overrides.tenantOverrideProviderKey ?? base.tenantOverrideProviderKey,

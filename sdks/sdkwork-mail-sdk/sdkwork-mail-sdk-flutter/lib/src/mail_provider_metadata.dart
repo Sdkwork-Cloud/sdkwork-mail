@@ -5,43 +5,19 @@ import 'mail_provider_extension_catalog.dart';
 import 'mail_types.dart';
 
 const Map<String, String> _MailProviderDisplayNames = <String, String>{
-  'volcengine': 'Volcengine Mail',
-  'aliyun': 'Aliyun Mail',
-  'tencent': 'Tencent Mail',
-  'agora': 'Agora Mail',
-  'zego': 'ZEGO Mail',
-  'livekit': 'LiveKit Mail',
-  'twilio': 'Twilio Video',
-  'jitsi': 'Jitsi Meet',
-  'janus': 'Janus Mail',
-  'mediasoup': 'mediasoup Mail',
+  'smtp': 'SMTP Mail Transport',
+  'imap': 'IMAP Mail Transport',
 };
 
 const Map<String, List<String>> _MailProviderOptionalCapabilityMap =
     <String, List<String>>{
-  'volcengine': <String>['screen-share', 'recording', 'cloud-mix'],
-  'aliyun': <String>['screen-share', 'recording'],
-  'tencent': <String>['screen-share', 'recording', 'cdn-relay'],
-  'agora': <String>[
-    'screen-share',
-    'recording',
-    'cloud-mix',
-    'data-channel',
-    'spatial-audio',
-    'e2ee',
+  'smtp': <String>['smtp.send', 'transport.retry', 'transport.pool'],
+  'imap': <String>[
+    'imap.sync',
+    'imap.folder-sync',
+    'imap.message-sync',
+    'transport.retry',
   ],
-  'zego': <String>['screen-share', 'recording', 'cloud-mix', 'beauty'],
-  'livekit': <String>[
-    'screen-share',
-    'recording',
-    'data-channel',
-    'transcription',
-    'e2ee',
-  ],
-  'twilio': <String>['screen-share', 'recording', 'data-channel'],
-  'jitsi': <String>['screen-share', 'recording', 'transcription'],
-  'janus': <String>['data-channel'],
-  'mediasoup': <String>['data-channel'],
 };
 
 List<String> _buildRequiredCapabilities() {
@@ -78,34 +54,40 @@ final List<MailProviderMetadata> _officialMailProviderMetadataCatalog =
         .map(_buildProviderMetadata)
         .toList(growable: false);
 
-final Map<String, MailProviderMetadata> _officialMailProviderMetadataByKey =
-    <String, MailProviderMetadata>{
-  for (final metadata in _officialMailProviderMetadataCatalog)
-    metadata.providerKey: metadata,
-};
-
-final Set<String> _builtinMailProviderKeys = MailProviderActivationCatalog.entries
-    .where((entry) => entry.builtin)
-    .map((entry) => entry.providerKey)
-    .toSet();
-
-final List<MailProviderMetadata> _builtinMailProviderMetadataCatalog =
-    _officialMailProviderMetadataCatalog
-        .where((metadata) => _builtinMailProviderKeys.contains(metadata.providerKey))
-        .toList(growable: false);
-
-List<MailProviderMetadata> getOfficialMailProviderMetadataCatalog() {
-  return List<MailProviderMetadata>.unmodifiable(
-    _officialMailProviderMetadataCatalog,
-  );
+MailProviderMetadata? getMailProviderMetadataByProviderKey(String providerKey) {
+  for (final metadata in _officialMailProviderMetadataCatalog) {
+    if (metadata.providerKey == providerKey) {
+      return metadata;
+    }
+  }
+  return null;
 }
 
-List<MailProviderMetadata> getBuiltinMailProviderMetadataCatalog() {
-  return List<MailProviderMetadata>.unmodifiable(
-    _builtinMailProviderMetadataCatalog,
-  );
+MailProviderMetadata getMailProviderMetadataOrThrow(String providerKey) {
+  final metadata = getMailProviderMetadataByProviderKey(providerKey);
+  if (metadata == null) {
+    throw StateError('unknown Mail provider key: $providerKey');
+  }
+  return metadata;
+}
+
+List<MailProviderMetadata> getOfficialMailProviderMetadataCatalog() {
+  return List<MailProviderMetadata>.unmodifiable(_officialMailProviderMetadataCatalog);
+}
+
+MailProviderMetadata getDefaultMailProviderMetadata() {
+  return getMailProviderMetadataOrThrow(MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY);
+}
+
+MailProviderActivationEntry? getMailProviderActivationEntry(String providerKey) {
+  for (final entry in MailProviderActivationCatalog.entries) {
+    if (entry.providerKey == providerKey) {
+      return entry;
+    }
+  }
+  return null;
 }
 
 MailProviderMetadata? getOfficialMailProviderMetadataByKey(String providerKey) {
-  return _officialMailProviderMetadataByKey[providerKey];
+  return getMailProviderMetadataByProviderKey(providerKey);
 }

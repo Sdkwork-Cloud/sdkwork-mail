@@ -3,6 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { pathToFileURL } from 'node:url';
+import './provider-test-helpers.mjs';
 
 const packageRoot = path.resolve('.');
 
@@ -27,7 +28,7 @@ function getProviderEntrypointPaths() {
   const providersRoot = path.join(packageRoot, 'providers');
 
   return readdirSync(providersRoot, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
+    .filter((entry) => entry.isDirectory() && entry.name.startsWith('mail-sdk-provider-'))
     .map((entry) => path.join(providersRoot, entry.name, 'index.js'));
 }
 
@@ -63,23 +64,23 @@ test('loadMailProviderModule resolves provider packages by providerKey and packa
     getMailProviderPackageByPackageIdentity,
   } = await loadSdk();
 
-  const agoraPackage = getMailProviderPackageByProviderKey('agora');
-  assert.ok(agoraPackage);
+  const smtpPackage = getMailProviderPackageByProviderKey('smtp');
+  assert.ok(smtpPackage);
 
   const loader = createMailProviderPackageLoader(createPackageImporter());
-  const byProviderKey = await loadMailProviderModule({ providerKey: 'agora' }, loader);
+  const byProviderKey = await loadMailProviderModule({ providerKey: 'smtp' }, loader);
   const byPackageIdentity = await loadMailProviderModule(
-    { packageIdentity: agoraPackage.packageIdentity },
+    { packageIdentity: smtpPackage.packageIdentity },
     loader,
   );
 
-  assert.equal(byProviderKey.packageName, '@sdkwork/Mail-sdk-provider-agora');
-  assert.equal(byProviderKey.metadata.providerKey, 'agora');
-  assert.equal(byPackageIdentity.packageName, '@sdkwork/Mail-sdk-provider-agora');
-  assert.equal(byPackageIdentity.metadata.providerKey, 'agora');
+  assert.equal(byProviderKey.packageName, '@sdkwork/Mail-sdk-provider-smtp');
+  assert.equal(byProviderKey.metadata.providerKey, 'smtp');
+  assert.equal(byPackageIdentity.packageName, '@sdkwork/Mail-sdk-provider-smtp');
+  assert.equal(byPackageIdentity.metadata.providerKey, 'smtp');
   assert.deepEqual(
-    getMailProviderPackageByPackageIdentity(agoraPackage.packageIdentity),
-    agoraPackage,
+    getMailProviderPackageByPackageIdentity(smtpPackage.packageIdentity),
+    smtpPackage,
   );
 });
 
@@ -90,35 +91,35 @@ test('loadMailProviderModule rejects loader drift between requested package and 
     getMailProviderPackageByProviderKey,
   } = await loadSdk();
 
-  const tencentPackage = getMailProviderPackageByProviderKey('tencent');
-  assert.ok(tencentPackage);
+  const imapPackage = getMailProviderPackageByProviderKey('imap');
+  assert.ok(imapPackage);
 
   await assert.rejects(
     async () =>
       loadMailProviderModule(
         {
-          providerKey: 'agora',
+          providerKey: 'smtp',
         },
         async (_target) => {
-          const tencentManifestPath = path.join(packageRoot, tencentPackage.manifestPath);
-          const tencentManifest = readJson(tencentManifestPath);
-          const tencentEntrypointPath = path.join(
-            path.dirname(tencentManifestPath),
-            tencentManifest.exports['.'].import,
+          const imapManifestPath = path.join(packageRoot, imapPackage.manifestPath);
+          const imapManifest = readJson(imapManifestPath);
+          const imapEntrypointPath = path.join(
+            path.dirname(imapManifestPath),
+            imapManifest.exports['.'].import,
           );
-          const tencentNamespace = await import(pathToFileURL(tencentEntrypointPath).href);
+          const imapNamespace = await import(pathToFileURL(imapEntrypointPath).href);
 
           return {
-            AGORA_mail_PROVIDER_MODULE: tencentNamespace[tencentPackage.moduleSymbol],
+            SMTP_mail_PROVIDER_MODULE: imapNamespace[imapPackage.moduleSymbol],
           };
         },
       ),
     (error) =>
       error instanceof MailSdkException &&
       error.code === 'provider_module_contract_mismatch' &&
-      error.providerKey === 'agora' &&
-      error.details?.expectedProviderKey === 'agora' &&
-      error.details?.receivedProviderKey === 'tencent',
+      error.providerKey === 'smtp' &&
+      error.details?.expectedProviderKey === 'smtp' &&
+      error.details?.receivedProviderKey === 'imap',
   );
 });
 
@@ -129,11 +130,11 @@ test('installMailProviderPackage installs a package-boundary provider through th
     installMailProviderPackage,
   } = await loadSdk();
 
-  const nativeClient = { sdk: 'agora-web-native' };
+  const nativeClient = { sdk: 'smtp-transport-native' };
   const manager = await installMailProviderPackage(
     new MailDriverManager(),
     {
-      providerKey: 'agora',
+      providerKey: 'smtp',
       options: {
         nativeFactory: async () => nativeClient,
       },
@@ -141,10 +142,10 @@ test('installMailProviderPackage installs a package-boundary provider through th
     createMailProviderPackageLoader(createPackageImporter()),
   );
 
-  const client = await manager.connect({ providerKey: 'agora' });
+  const client = await manager.connect({ providerKey: 'smtp' });
   assert.equal(client.unwrap(), nativeClient);
-  assert.deepEqual(manager.describeProviderSupport('agora'), {
-    providerKey: 'agora',
+  assert.deepEqual(manager.describeProviderSupport('smtp'), {
+    providerKey: 'smtp',
     status: 'builtin_registered',
     builtin: true,
     official: true,
@@ -169,15 +170,15 @@ test('installMailProviderPackages keeps registration atomic after loading all pr
         manager,
         [
           {
-            providerKey: 'agora',
+            providerKey: 'smtp',
             options: {
-              nativeFactory: async () => ({ sdk: 'agora-web-native' }),
+              nativeFactory: async () => ({ sdk: 'smtp-transport-native' }),
             },
           },
           {
-            providerKey: 'agora',
+            providerKey: 'smtp',
             options: {
-              nativeFactory: async () => ({ sdk: 'agora-web-native-2' }),
+              nativeFactory: async () => ({ sdk: 'smtp-transport-native-2' }),
             },
           },
         ],
@@ -186,11 +187,11 @@ test('installMailProviderPackages keeps registration atomic after loading all pr
     (error) =>
       error instanceof MailSdkException &&
       error.code === 'driver_already_registered' &&
-      error.providerKey === 'agora',
+      error.providerKey === 'smtp',
   );
 
-  assert.deepEqual(manager.describeProviderSupport('agora'), {
-    providerKey: 'agora',
+  assert.deepEqual(manager.describeProviderSupport('smtp'), {
+    providerKey: 'smtp',
     status: 'official_unregistered',
     builtin: true,
     official: true,
@@ -220,8 +221,8 @@ test('loadMailProviderModule exposes stable package-loading failures', async () 
     async () =>
       loadMailProviderModule(
         {
-          providerKey: 'agora',
-          packageIdentity: '@sdkwork/Mail-sdk-provider-twilio',
+          providerKey: 'smtp',
+          packageIdentity: '@sdkwork/Mail-sdk-provider-imap',
         },
         createMailProviderPackageLoader(createPackageImporter()),
       ),
@@ -234,7 +235,7 @@ test('loadMailProviderModule exposes stable package-loading failures', async () 
     async () =>
       loadMailProviderModule(
         {
-          providerKey: 'agora',
+          providerKey: 'smtp',
         },
         createMailProviderPackageLoader(async () => {
           throw new Error('simulated loader failure');
@@ -249,7 +250,7 @@ test('loadMailProviderModule exposes stable package-loading failures', async () 
     async () =>
       loadMailProviderModule(
         {
-          providerKey: 'agora',
+          providerKey: 'smtp',
         },
         async () => ({}),
       ),

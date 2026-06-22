@@ -1,10 +1,10 @@
-package com.sdkwork.rtc.metadata;
+package com.sdkwork.Mail.metadata;
 
 import java.util.List;
 
-public record RtcProviderSelection(String providerKey, RtcProviderSelectionSource source) {
+public record MailProviderSelection(String providerKey, MailProviderSelectionSource source) {
 
-  public enum RtcProviderSelectionSource {
+  public enum MailProviderSelectionSource {
     provider_url,
     provider_key,
     tenant_override,
@@ -12,10 +12,10 @@ public record RtcProviderSelection(String providerKey, RtcProviderSelectionSourc
     default_provider
   }
 
-  public record ParsedRtcProviderUrl(String providerKey, String rawUrl) {
+  public record ParsedMailProviderUrl(String providerKey, String rawUrl) {
   }
 
-  public record RtcProviderSelectionRequest(
+  public record MailProviderSelectionRequest(
       String providerUrl,
       String providerKey,
       String tenantOverrideProviderKey,
@@ -23,7 +23,7 @@ public record RtcProviderSelection(String providerKey, RtcProviderSelectionSourc
   ) {
   }
 
-  public static final List<String> RTC_PROVIDER_SELECTION_SOURCES = List.of(
+  public static final List<String> mail_PROVIDER_SELECTION_SOURCES = List.of(
       "provider_url",
       "provider_key",
       "tenant_override",
@@ -31,7 +31,7 @@ public record RtcProviderSelection(String providerKey, RtcProviderSelectionSourc
       "default_provider"
   );
 
-  public static final List<String> RTC_PROVIDER_SELECTION_PRECEDENCE = List.of(
+  public static final List<String> mail_PROVIDER_SELECTION_PRECEDENCE = List.of(
       "provider_url",
       "provider_key",
       "tenant_override",
@@ -39,63 +39,63 @@ public record RtcProviderSelection(String providerKey, RtcProviderSelectionSourc
       "default_provider"
   );
 
-  public static ParsedRtcProviderUrl parseRtcProviderUrl(String providerUrl) {
+  public static ParsedMailProviderUrl parseMailProviderUrl(String providerUrl) {
     var trimmed = providerUrl.trim();
-    if (!trimmed.startsWith("rtc:") || !trimmed.contains("://")) {
-      throw new IllegalArgumentException("Invalid RTC provider URL: " + providerUrl);
+    if (!trimmed.startsWith("Mail:") || !trimmed.contains("://")) {
+      throw new IllegalArgumentException("Invalid Mail provider URL: " + providerUrl);
     }
 
-    return new ParsedRtcProviderUrl(
+    return new ParsedMailProviderUrl(
         trimmed.substring(4, trimmed.indexOf("://")).toLowerCase(),
         providerUrl
     );
   }
 
-  public static RtcProviderSelection resolveRtcProviderSelection(
-      RtcProviderSelectionRequest request
+  public static MailProviderSelection resolveMailProviderSelection(
+      MailProviderSelectionRequest request
   ) {
-    return resolveRtcProviderSelection(request, RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY);
+    return resolveMailProviderSelection(request, MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY);
   }
 
-  public static RtcProviderSelection resolveRtcProviderSelection(
-      RtcProviderSelectionRequest request,
+  public static MailProviderSelection resolveMailProviderSelection(
+      MailProviderSelectionRequest request,
       String defaultProviderKey
   ) {
     var resolvedRequest = request == null
-        ? new RtcProviderSelectionRequest(null, null, null, null)
+        ? new MailProviderSelectionRequest(null, null, null, null)
         : request;
 
     if (hasText(resolvedRequest.providerUrl())) {
-      return new RtcProviderSelection(
-          parseRtcProviderUrl(resolvedRequest.providerUrl()).providerKey(),
-          RtcProviderSelectionSource.provider_url
+      return new MailProviderSelection(
+          parseMailProviderUrl(resolvedRequest.providerUrl()).providerKey(),
+          MailProviderSelectionSource.provider_url
       );
     }
 
     if (hasText(resolvedRequest.providerKey())) {
-      return new RtcProviderSelection(
+      return new MailProviderSelection(
           resolvedRequest.providerKey().trim(),
-          RtcProviderSelectionSource.provider_key
+          MailProviderSelectionSource.provider_key
       );
     }
 
     if (hasText(resolvedRequest.tenantOverrideProviderKey())) {
-      return new RtcProviderSelection(
+      return new MailProviderSelection(
           resolvedRequest.tenantOverrideProviderKey().trim(),
-          RtcProviderSelectionSource.tenant_override
+          MailProviderSelectionSource.tenant_override
       );
     }
 
     if (hasText(resolvedRequest.deploymentProfileProviderKey())) {
-      return new RtcProviderSelection(
+      return new MailProviderSelection(
           resolvedRequest.deploymentProfileProviderKey().trim(),
-          RtcProviderSelectionSource.deployment_profile
+          MailProviderSelectionSource.deployment_profile
       );
     }
 
-    return new RtcProviderSelection(
+    return new MailProviderSelection(
         defaultProviderKey,
-        RtcProviderSelectionSource.default_provider
+        MailProviderSelectionSource.default_provider
     );
   }
 

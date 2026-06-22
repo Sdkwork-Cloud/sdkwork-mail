@@ -11,7 +11,15 @@ pub fn build_sdkwork_mail_backend_api_router(service: Arc<dyn MailBackendApiServ
     Router::new()
         .route(
             "/backend/v3/api/mail/provider_accounts",
-            get(handlers::list_provider_accounts),
+            get(handlers::list_provider_accounts).post(handlers::create_provider_account),
+        )
+        .route(
+            "/backend/v3/api/mail/provider_accounts/{account_id}/ping",
+            post(handlers::ping_provider_account),
+        )
+        .route(
+            "/backend/v3/api/mail/provider_accounts/{account_id}/sync",
+            post(handlers::sync_provider_account),
         )
         .route(
             "/backend/v3/api/mail/provider_webhooks/{provider}/events",
@@ -30,6 +38,14 @@ pub fn build_sdkwork_mail_backend_api_router(service: Arc<dyn MailBackendApiServ
         .route(
             "/backend/v3/api/mail/transactional_deliveries",
             get(handlers::list_transactional_deliveries),
+        )
+        .route(
+            "/backend/v3/api/mail/marketing_consents",
+            get(handlers::list_marketing_consents).post(handlers::grant_marketing_consent),
+        )
+        .route(
+            "/backend/v3/api/mail/marketing_consents/{consent_id}/revoke",
+            post(handlers::revoke_marketing_consent),
         )
         .with_state(service)
 }

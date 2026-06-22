@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sdkwork_mail_flutter_mobile_Mail/sdkwork_mail_flutter_mobile_Mail.dart';
+import 'package:sdkwork_mail_flutter_mobile_mail/sdkwork_mail_flutter_mobile_mail.dart';
 
 import '../admin/admin_home.dart';
 import '../bootstrap/admin_auth.dart';

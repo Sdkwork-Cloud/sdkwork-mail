@@ -1,4 +1,4 @@
-public enum RtcProviderSelectionSource: String {
+public enum MailProviderSelectionSource: String {
     case provider_url = "provider_url"
     case provider_key = "provider_key"
     case tenant_override = "tenant_override"
@@ -6,7 +6,7 @@ public enum RtcProviderSelectionSource: String {
     case default_provider = "default_provider"
 }
 
-public struct ParsedRtcProviderUrl {
+public struct ParsedMailProviderUrl {
     public let providerKey: String
     public let rawUrl: String
 
@@ -16,7 +16,7 @@ public struct ParsedRtcProviderUrl {
     }
 }
 
-public struct RtcProviderSelectionRequest {
+public struct MailProviderSelectionRequest {
     public let providerUrl: String?
     public let providerKey: String?
     public let tenantOverrideProviderKey: String?
@@ -35,11 +35,11 @@ public struct RtcProviderSelectionRequest {
     }
 }
 
-public struct RtcProviderSelection {
+public struct MailProviderSelection {
     public let providerKey: String
-    public let source: RtcProviderSelectionSource
+    public let source: MailProviderSelectionSource
 
-    public static let rtcProviderSelectionSources: [String] = [
+    public static let MailProviderSelectionSources: [String] = [
         "provider_url",
         "provider_key",
         "tenant_override",
@@ -47,7 +47,7 @@ public struct RtcProviderSelection {
         "default_provider",
     ]
 
-    public static let rtcProviderSelectionPrecedence: [String] = [
+    public static let MailProviderSelectionPrecedence: [String] = [
         "provider_url",
         "provider_key",
         "tenant_override",
@@ -55,51 +55,51 @@ public struct RtcProviderSelection {
         "default_provider",
     ]
 
-    public static func parseRtcProviderUrl(_ providerUrl: String) -> ParsedRtcProviderUrl {
+    public static func parseMailProviderUrl(_ providerUrl: String) -> ParsedMailProviderUrl {
         let trimmed = providerUrl.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard trimmed.hasPrefix("rtc:"), let delimiter = trimmed.range(of: "://") else {
-            fatalError("Invalid RTC provider URL: \(providerUrl)")
+        guard trimmed.hasPrefix("Mail:"), let delimiter = trimmed.range(of: "://") else {
+            fatalError("Invalid Mail provider URL: \(providerUrl)")
         }
 
-        return ParsedRtcProviderUrl(
+        return ParsedMailProviderUrl(
             providerKey: String(trimmed[trimmed.index(trimmed.startIndex, offsetBy: 4)..<delimiter.lowerBound]).lowercased(),
             rawUrl: providerUrl
         )
     }
 
-    public static func resolveRtcProviderSelection(
-        request: RtcProviderSelectionRequest = RtcProviderSelectionRequest(),
-        defaultProviderKey: String = RtcProviderCatalog.DEFAULT_RTC_PROVIDER_KEY
-    ) -> RtcProviderSelection {
+    public static func resolveMailProviderSelection(
+        request: MailProviderSelectionRequest = MailProviderSelectionRequest(),
+        defaultProviderKey: String = MailProviderCatalog.DEFAULT_mail_PROVIDER_KEY
+    ) -> MailProviderSelection {
         if let providerUrl = request.providerUrl, hasText(providerUrl) {
-            return RtcProviderSelection(
-                providerKey: parseRtcProviderUrl(providerUrl).providerKey,
+            return MailProviderSelection(
+                providerKey: parseMailProviderUrl(providerUrl).providerKey,
                 source: .provider_url
             )
         }
 
         if let providerKey = request.providerKey, hasText(providerKey) {
-            return RtcProviderSelection(
+            return MailProviderSelection(
                 providerKey: providerKey.trimmingCharacters(in: .whitespacesAndNewlines),
                 source: .provider_key
             )
         }
 
         if let tenantOverrideProviderKey = request.tenantOverrideProviderKey, hasText(tenantOverrideProviderKey) {
-            return RtcProviderSelection(
+            return MailProviderSelection(
                 providerKey: tenantOverrideProviderKey.trimmingCharacters(in: .whitespacesAndNewlines),
                 source: .tenant_override
             )
         }
 
         if let deploymentProfileProviderKey = request.deploymentProfileProviderKey, hasText(deploymentProfileProviderKey) {
-            return RtcProviderSelection(
+            return MailProviderSelection(
                 providerKey: deploymentProfileProviderKey.trimmingCharacters(in: .whitespacesAndNewlines),
                 source: .deployment_profile
             )
         }
 
-        return RtcProviderSelection(
+        return MailProviderSelection(
             providerKey: defaultProviderKey,
             source: .default_provider
         )

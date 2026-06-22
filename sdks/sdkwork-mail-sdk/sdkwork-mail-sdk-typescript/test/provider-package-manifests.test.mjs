@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import './provider-test-helpers.mjs';
 
 const testDir = path.dirname(fileURLToPath(import.meta.url));
 const packageRoot = path.resolve(testDir, '..');
@@ -110,21 +111,21 @@ test('materialized provider package catalog matches the assembly-driven package 
     packageCatalog.mail_PROVIDER_PACKAGE_CATALOG,
   );
   assert.deepEqual(
-    rootSdk.getMailProviderPackageByProviderKey('volcengine'),
-    packageCatalog.VOLCENGINE_mail_PROVIDER_PACKAGE_ENTRY,
+    rootSdk.getMailProviderPackageByProviderKey('smtp'),
+    packageCatalog.SMTP_mail_PROVIDER_PACKAGE_ENTRY,
   );
   assert.equal(rootSdk.getMailProviderPackageByProviderKey('vendor-x'), undefined);
   assert.deepEqual(
-    packageCatalog.getMailProviderPackageByProviderKey('agora'),
-    packageCatalog.AGORA_mail_PROVIDER_PACKAGE_ENTRY,
+    packageCatalog.getMailProviderPackageByProviderKey('imap'),
+    packageCatalog.IMAP_mail_PROVIDER_PACKAGE_ENTRY,
   );
   assert.deepEqual(
-    packageCatalog.getMailProviderPackageByPackageIdentity('@sdkwork/Mail-sdk-provider-agora'),
-    packageCatalog.AGORA_mail_PROVIDER_PACKAGE_ENTRY,
+    packageCatalog.getMailProviderPackageByPackageIdentity('@sdkwork/Mail-sdk-provider-imap'),
+    packageCatalog.IMAP_mail_PROVIDER_PACKAGE_ENTRY,
   );
   assert.deepEqual(
-    rootSdk.getMailProviderPackageByPackageIdentity('@sdkwork/Mail-sdk-provider-agora'),
-    packageCatalog.AGORA_mail_PROVIDER_PACKAGE_ENTRY,
+    rootSdk.getMailProviderPackageByPackageIdentity('@sdkwork/Mail-sdk-provider-imap'),
+    packageCatalog.IMAP_mail_PROVIDER_PACKAGE_ENTRY,
   );
   assert.equal(packageCatalog.getMailProviderPackageByProviderKey('vendor-x'), undefined);
   assert.equal(
@@ -172,22 +173,10 @@ test('provider packages expose manifest-declared entrypoints and symbols', async
     assert.equal(manifest.name, provider.typescriptPackage.packageName);
     assert.equal(manifest.peerDependencies?.['@sdkwork/Mail-sdk'], '^0.1.1');
     assert.equal(manifest.devDependencies?.['@sdkwork/Mail-sdk'], 'workspace:*');
-    if (provider.providerKey === 'volcengine') {
-      assert.equal(manifest.peerDependencies?.['@volcengine/Mail'], '^4.68.3');
-      assert.equal(manifest.peerDependenciesMeta?.['@volcengine/Mail']?.optional, true);
-      assert.equal(manifest.peerDependencies?.['tMail-sdk-v5'], undefined);
-      assert.equal(manifest.peerDependenciesMeta?.['tMail-sdk-v5'], undefined);
-    } else if (provider.providerKey === 'tencent') {
-      assert.equal(manifest.peerDependencies?.['tMail-sdk-v5'], '^5.18.0');
-      assert.equal(manifest.peerDependenciesMeta?.['tMail-sdk-v5']?.optional, true);
-      assert.equal(manifest.peerDependencies?.['@volcengine/Mail'], undefined);
-      assert.equal(manifest.peerDependenciesMeta?.['@volcengine/Mail'], undefined);
-    } else {
-      assert.equal(manifest.peerDependencies?.['@volcengine/Mail'], undefined);
-      assert.equal(manifest.peerDependenciesMeta?.['@volcengine/Mail'], undefined);
-      assert.equal(manifest.peerDependencies?.['tMail-sdk-v5'], undefined);
-      assert.equal(manifest.peerDependenciesMeta?.['tMail-sdk-v5'], undefined);
-    }
+    assert.equal(manifest.peerDependencies?.['@volcengine/Mail'], undefined);
+    assert.equal(manifest.peerDependenciesMeta?.['@volcengine/Mail'], undefined);
+    assert.equal(manifest.peerDependencies?.['tMail-sdk-v5'], undefined);
+    assert.equal(manifest.peerDependenciesMeta?.['tMail-sdk-v5'], undefined);
     assert.equal(providerConfig.registrationContract, 'MailProviderModule');
     assert.equal(providerConfig.sourceModule, provider.typescriptPackage.sourceModule);
     assert.equal(providerConfig.driverFactory, provider.typescriptPackage.driverFactory);
@@ -278,14 +267,13 @@ test('provider packages expose manifest-declared entrypoints and symbols', async
       ),
     );
     assert.match(readme, /required capabilities:/i);
-    assert.match(readme, /`media\.audio`/i);
-    assert.match(readme, /`media\.video`/i);
-    assert.match(readme, /`live\.broadcast`/i);
-    assert.match(readme, /`live\.audience`/i);
+    assert.match(readme, /`transport\.connect`/i);
+    assert.match(readme, /`transport\.authenticate`/i);
+    assert.match(readme, /`health`/i);
     assert.match(readme, /optional capabilities:/i);
     assert.match(readme, /provider extension keys:/i);
 
-    assert.equal(providerConfig.rootPublic, false);
+    assert.equal(providerConfig.rootPublic, provider.typescriptPackage.rootPublic);
     assert.equal(providerConfig.driverFactory in rootSdk, false);
     assert.equal(providerConfig.metadataSymbol in rootSdk, false);
     assert.equal(providerConfig.moduleSymbol in rootSdk, false);

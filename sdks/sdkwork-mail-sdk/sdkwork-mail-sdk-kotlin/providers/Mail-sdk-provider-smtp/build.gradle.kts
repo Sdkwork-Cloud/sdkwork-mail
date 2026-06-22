@@ -1,0 +1,13 @@
+group = "com.sdkwork"
+version = "0.1.0"
+description = "Reserved Kotlin provider package boundary for SMTP Mail Transport"
+
+extra["sdkworkMailProviderKey"] = "smtp"
+extra["sdkworkMailPluginId"] = "Mail-smtp"
+extra["sdkworkMailDriverId"] = "sdkwork-mail-driver-smtp"
+extra["sdkworkMailPackageIdentity"] = "com.sdkwork:Mail-sdk-provider-smtp"
+extra["sdkworkMailSourcePath"] = "src/main/kotlin/com/sdkwork/Mail/provider/smtp/MailProviderSmtpPackageContract.kt"
+extra["sdkworkMailSourceSymbol"] = "MailProviderSmtpPackageContract"
+extra["sdkworkMailRootPublic"] = "false"
+extra["sdkworkMailStatus"] = "future-runtime-bridge-only"
+extra["sdkworkMailRuntimeBridgeStatus"] = "reserved"

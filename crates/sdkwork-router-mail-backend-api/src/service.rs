@@ -1,10 +1,11 @@
 use std::future::Future;
 use std::pin::Pin;
 
-use sdkwork_communication_mail_service::MailProviderAccount;
 use sdkwork_communication_mail_service::{
-    CreateMailTemplateRequest, MailTemplate, MailTemplateCategory, MailTransactionalDelivery,
-    UpdateMailTemplateRequest,
+    CreateMailProviderAccountRequest, CreateMailProviderAccountResult, CreateMailTemplateRequest,
+    GrantMailMarketingConsentRequest, MailMarketingConsent, MailProviderAccount,
+    MailProviderPingResult, MailProviderSyncResult, MailTemplate, MailTemplateCategory,
+    MailTransactionalDelivery, SyncMailProviderAccountRequest, UpdateMailTemplateRequest,
 };
 use serde::{Deserialize, Serialize};
 
@@ -77,6 +78,26 @@ pub trait MailBackendApiService: Send + Sync + 'static {
         &self,
         request: MailBackendListRequest,
     ) -> MailBackendApiFuture<MailBackendListData<MailProviderAccount>>;
+    fn create_provider_account(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: CreateMailProviderAccountRequest,
+    ) -> MailBackendApiFuture<CreateMailProviderAccountResult>;
+    fn ping_provider_account(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        account_id: String,
+    ) -> MailBackendApiFuture<MailProviderPingResult>;
+    fn sync_provider_account(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        owner_user_id: String,
+        account_id: String,
+        request: SyncMailProviderAccountRequest,
+    ) -> MailBackendApiFuture<MailProviderSyncResult>;
     fn list_templates(
         &self,
         request: MailBackendListRequest,
@@ -114,4 +135,21 @@ pub trait MailBackendApiService: Send + Sync + 'static {
         business_kind: Option<String>,
         recipient_email: Option<String>,
     ) -> MailBackendApiFuture<MailBackendListData<MailTransactionalDelivery>>;
+    fn list_marketing_consents(
+        &self,
+        request: MailBackendListRequest,
+        recipient_email: Option<String>,
+    ) -> MailBackendApiFuture<MailBackendListData<MailMarketingConsent>>;
+    fn grant_marketing_consent(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        request: GrantMailMarketingConsentRequest,
+    ) -> MailBackendApiFuture<MailMarketingConsent>;
+    fn revoke_marketing_consent(
+        &self,
+        tenant_id: String,
+        organization_id: Option<String>,
+        consent_id: String,
+    ) -> MailBackendApiFuture<MailMarketingConsent>;
 }

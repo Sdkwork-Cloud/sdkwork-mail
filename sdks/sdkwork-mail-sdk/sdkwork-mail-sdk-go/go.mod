@@ -1,4 +1,4 @@
-module github.com/sdkwork/rtc-sdk
+module github.com/sdkwork/Mail-sdk
 
 go 1.22
 

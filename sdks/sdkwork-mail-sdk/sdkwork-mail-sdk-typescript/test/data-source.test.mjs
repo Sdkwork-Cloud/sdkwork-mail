@@ -5,8 +5,8 @@ import {
   loadProviderPackage,
 } from './provider-test-helpers.mjs';
 
-test('data source defaults provider selection to volcengine after installing the provider package', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine']);
+test('data source defaults provider selection to smtp after installing the provider package', async () => {
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
@@ -14,32 +14,32 @@ test('data source defaults provider selection to volcengine after installing the
 
   const client = await dataSource.createClient();
   assert.deepEqual(dataSource.describeSelection(), {
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
     source: 'default_provider',
   });
-  assert.equal(client.metadata.providerKey, 'volcengine');
+  assert.equal(client.metadata.providerKey, 'smtp');
   assert.equal(client.metadata.defaultSelected, true);
 });
 
 test('data source preserves provider metadata and capability declarations', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['aliyun']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['imap']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerKey: 'aliyun',
+    providerKey: 'imap',
   });
 
   const client = await dataSource.createClient();
 
-  assert.equal(client.metadata.providerKey, 'aliyun');
-  assert.equal(sdk.hasCapability(client.capabilities, 'session'), true);
-  assert.equal(sdk.hasCapability(client.capabilities, 'screen-share'), true);
+  assert.equal(client.metadata.providerKey, 'imap');
+  assert.equal(sdk.hasCapability(client.capabilities, 'transport.connect'), true);
+  assert.equal(sdk.hasCapability(client.capabilities, 'imap.sync'), true);
 });
 
 test('data source unwrap returns the native client instance created by the provider package adapter', async () => {
-  const nativeClient = { sdk: 'volcengine-web-native' };
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine'], {
-    volcengine: {
+  const nativeClient = { sdk: 'smtp-transport-native' };
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp'], {
+    smtp: {
       nativeFactory: async () => nativeClient,
     },
   });
@@ -52,39 +52,38 @@ test('data source unwrap returns the native client instance created by the provi
 });
 
 test('data source describe resolves metadata before client creation', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine', 'tencent']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp', 'imap']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerUrl: 'Mail:tencent://room-service/default',
+    providerUrl: 'Mail:imap://mailbox-service/default',
   });
 
   const metadata = dataSource.describe();
-  assert.equal(metadata.providerKey, 'tencent');
-  assert.equal(metadata.pluginId, 'Mail-tencent');
+  assert.equal(metadata.providerKey, 'imap');
+  assert.equal(metadata.pluginId, 'Mail-imap');
 });
 
 test('data source exposes stable provider selection introspection', async () => {
   const { sdk, manager } = await createManagerWithProviderPackages([
-    'volcengine',
-    'aliyun',
-    'tencent',
+    'smtp',
+    'imap',
   ]);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    deploymentProfileProviderKey: 'tencent',
-    tenantOverrideProviderKey: 'aliyun',
+    deploymentProfileProviderKey: 'imap',
+    tenantOverrideProviderKey: 'imap',
   });
 
   assert.deepEqual(dataSource.describeSelection(), {
-    providerKey: 'aliyun',
+    providerKey: 'imap',
     source: 'tenant_override',
   });
   assert.deepEqual(
-    dataSource.describeSelection({ providerUrl: 'Mail:volcengine://default/main' }),
+    dataSource.describeSelection({ providerUrl: 'Mail:smtp://default/main' }),
     {
-      providerKey: 'volcengine',
+      providerKey: 'smtp',
       source: 'provider_url',
     },
   );
@@ -92,26 +91,26 @@ test('data source exposes stable provider selection introspection', async () => 
 
 test('data source can describe provider support state without connecting', async () => {
   const { sdk, manager } = await createManagerWithProviderPackages([
-    'volcengine',
-    'agora',
+    'smtp',
+    'imap',
   ]);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerKey: 'agora',
+    providerKey: 'imap',
   });
 
   assert.deepEqual(dataSource.describeProviderSupport(), {
-    providerKey: 'agora',
+    providerKey: 'imap',
     status: 'builtin_registered',
     builtin: true,
     official: true,
     registered: true,
   });
   assert.deepEqual(
-    dataSource.describeProviderSupport({ providerKey: 'volcengine' }),
+    dataSource.describeProviderSupport({ providerKey: 'smtp' }),
     {
-      providerKey: 'volcengine',
+      providerKey: 'smtp',
       status: 'builtin_registered',
       builtin: true,
       official: true,
@@ -122,8 +121,7 @@ test('data source can describe provider support state without connecting', async
 
 test('data source can list provider support state matrix without connecting', async () => {
   const { sdk, manager } = await createManagerWithProviderPackages([
-    'volcengine',
-    'livekit',
+    'smtp',
   ]);
 
   const dataSource = new sdk.MailDataSource({
@@ -132,11 +130,11 @@ test('data source can list provider support state matrix without connecting', as
   const providerSupport = dataSource.listProviderSupport();
 
   assert.equal(Array.isArray(providerSupport), true);
-  assert.equal(providerSupport.length, 10);
+  assert.equal(providerSupport.length, 2);
   assert.deepEqual(
-    providerSupport.find((entry) => entry.providerKey === 'volcengine'),
+    providerSupport.find((entry) => entry.providerKey === 'smtp'),
     {
-      providerKey: 'volcengine',
+      providerKey: 'smtp',
       status: 'builtin_registered',
       builtin: true,
       official: true,
@@ -144,95 +142,85 @@ test('data source can list provider support state matrix without connecting', as
     },
   );
   assert.deepEqual(
-    providerSupport.find((entry) => entry.providerKey === 'livekit'),
+    providerSupport.find((entry) => entry.providerKey === 'imap'),
     {
-      providerKey: 'livekit',
-      status: 'builtin_registered',
+      providerKey: 'imap',
+      status: 'official_unregistered',
       builtin: true,
       official: true,
-      registered: true,
+      registered: false,
     },
   );
 });
 
 test('client capability checks use a stable capability_not_supported error', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['aliyun']);
+  const { sdk, manager } = await createManagerWithProviderPackages(['imap']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
-    providerKey: 'aliyun',
+    providerKey: 'imap',
   });
   const client = await dataSource.createClient();
 
   assert.deepEqual(client.selection, {
-    providerKey: 'aliyun',
+    providerKey: 'imap',
     source: 'provider_key',
   });
-  assert.equal(client.supportsCapability('recording'), true);
-  assert.equal(client.supportsCapability('data-channel'), false);
+  assert.equal(client.supportsCapability('imap.folder-sync'), true);
+  assert.equal(client.supportsCapability('smtp.send'), false);
   assert.throws(
-    () => client.requireCapability('data-channel'),
+    () => client.requireCapability('smtp.send'),
     (error) => {
       assert.ok(error instanceof sdk.MailSdkException);
       assert.equal(error.code, 'capability_not_supported');
-      assert.equal(error.providerKey, 'aliyun');
+      assert.equal(error.providerKey, 'imap');
       return true;
     },
   );
 });
 
 test('client delegates runtime bridge operations through the provider-neutral runtime surface', async () => {
-  const nativeClient = { sdk: 'volcengine-web-native' };
+  const nativeClient = { sdk: 'smtp-transport-native' };
   const calls = [];
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine'], {
-    volcengine: {
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp'], {
+    smtp: {
       nativeFactory: async () => nativeClient,
       runtimeController: {
-        async join(options, context) {
-          calls.push(['join', options, context.selection.providerKey]);
+        async connectTransport(options, context) {
+          calls.push(['connectTransport', options, context.selection.providerKey]);
           assert.equal(context.nativeClient, nativeClient);
           return {
-            sessionId: options.sessionId,
-            roomId: options.roomId,
-            participantId: options.participantId,
+            accountId: options.accountId,
             providerKey: context.metadata.providerKey,
-            connectionState: 'joined',
+            connectionState: 'connected',
           };
         },
-        async leave(context) {
-          calls.push(['leave', context.selection.providerKey]);
+        async authenticateTransport(options, context) {
+          calls.push(['authenticateTransport', options.username, context.selection.providerKey]);
           return {
-            sessionId: 'session-1',
-            roomId: 'room-1',
-            participantId: 'local-user',
+            accountId: 'account-1',
             providerKey: context.metadata.providerKey,
-            connectionState: 'left',
+            connectionState: 'connected',
           };
         },
-        async publish(options, context) {
-          calls.push(['publish', options.trackId, context.selection.providerKey]);
+        async disconnectTransport(context) {
+          calls.push(['disconnectTransport', context.selection.providerKey]);
           return {
-            trackId: options.trackId,
-            kind: options.kind,
-            muted: false,
+            accountId: 'account-1',
+            providerKey: context.metadata.providerKey,
+            connectionState: 'disconnected',
           };
         },
-        async unpublish(trackId, context) {
-          calls.push(['unpublish', trackId, context.selection.providerKey]);
-        },
-        async muteAudio(muted, context) {
-          calls.push(['mute-audio', muted, context.selection.providerKey]);
+        async sendMail(options, context) {
+          calls.push(['sendMail', options.subject, context.selection.providerKey]);
           return {
-            kind: 'audio',
-            muted,
+            messageId: options.messageId ?? 'msg-1',
+            accepted: options.to,
           };
         },
-        async muteVideo(muted, context) {
-          calls.push(['mute-video', muted, context.selection.providerKey]);
-          return {
-            kind: 'video',
-            muted,
-          };
+        async healthCheck(context) {
+          calls.push(['healthCheck', context.selection.providerKey]);
+          return { healthy: true };
         },
       },
     },
@@ -244,184 +232,54 @@ test('client delegates runtime bridge operations through the provider-neutral ru
   const client = await dataSource.createClient();
 
   assert.deepEqual(
-    await client.join({
-      sessionId: 'session-1',
-      roomId: 'room-1',
-      participantId: 'local-user',
+    await client.connectTransport({
+      accountId: 'account-1',
     }),
     {
-      sessionId: 'session-1',
-      roomId: 'room-1',
-      participantId: 'local-user',
-      providerKey: 'volcengine',
-      connectionState: 'joined',
+      accountId: 'account-1',
+      providerKey: 'smtp',
+      connectionState: 'connected',
     },
   );
   assert.deepEqual(
-    await client.publish({
-      trackId: 'track-audio-1',
-      kind: 'audio',
+    await client.authenticateTransport({
+      username: 'user@example.test',
     }),
     {
-      trackId: 'track-audio-1',
-      kind: 'audio',
-      muted: false,
+      accountId: 'account-1',
+      providerKey: 'smtp',
+      connectionState: 'connected',
     },
   );
-  assert.deepEqual(await client.muteAudio(), {
-    kind: 'audio',
-    muted: true,
-  });
-  assert.deepEqual(await client.muteVideo(false), {
-    kind: 'video',
-    muted: false,
-  });
-  await client.unpublish('track-audio-1');
-  assert.deepEqual(await client.leave(), {
-    sessionId: 'session-1',
-    roomId: 'room-1',
-    participantId: 'local-user',
-    providerKey: 'volcengine',
-    connectionState: 'left',
-  });
-  assert.deepEqual(calls, [
-    [
-      'join',
-      {
-        sessionId: 'session-1',
-        roomId: 'room-1',
-        participantId: 'local-user',
-      },
-      'volcengine',
-    ],
-    ['publish', 'track-audio-1', 'volcengine'],
-    ['mute-audio', true, 'volcengine'],
-    ['mute-video', false, 'volcengine'],
-    ['unpublish', 'track-audio-1', 'volcengine'],
-    ['leave', 'volcengine'],
-  ]);
-});
-
-test('client delegates explicit screen-share operations when the provider bridge implements them', async () => {
-  const nativeClient = { sdk: 'volcengine-web-native' };
-  const calls = [];
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine'], {
-    volcengine: {
-      nativeFactory: async () => nativeClient,
-      runtimeController: {
-        async startScreenShare(options, context) {
-          calls.push(['start-screen-share', options, context.selection.providerKey]);
-          assert.equal(context.nativeClient, nativeClient);
-          return {
-            trackId: options.trackId,
-            kind: 'screen-share',
-            muted: false,
-          };
-        },
-        async stopScreenShare(trackId, context) {
-          calls.push(['stop-screen-share', trackId, context.selection.providerKey]);
-        },
-        async publish(options, context) {
-          calls.push(['publish', options.kind, context.selection.providerKey]);
-          return {
-            trackId: options.trackId,
-            kind: options.kind,
-            muted: false,
-          };
-        },
-        async unpublish(trackId, context) {
-          calls.push(['unpublish', trackId, context.selection.providerKey]);
-        },
-      },
-    },
-  });
-
-  const dataSource = new sdk.MailDataSource({
-    driverManager: manager,
-  });
-  const client = await dataSource.createClient();
-
   assert.deepEqual(
-    await client.startScreenShare({
-      trackId: 'screen-track-1',
-      metadata: {
-        source: 'window',
-      },
+    await client.sendMail({
+      from: 'sender@example.test',
+      to: ['recipient@example.test'],
+      subject: 'Hello',
+      bodyText: 'Mail body',
     }),
     {
-      trackId: 'screen-track-1',
-      kind: 'screen-share',
-      muted: false,
+      messageId: 'msg-1',
+      accepted: ['recipient@example.test'],
     },
   );
-  await client.stopScreenShare('screen-track-1');
+  assert.deepEqual(await client.healthCheck(), { healthy: true });
+  assert.deepEqual(await client.disconnectTransport(), {
+    accountId: 'account-1',
+    providerKey: 'smtp',
+    connectionState: 'disconnected',
+  });
   assert.deepEqual(calls, [
-    [
-      'start-screen-share',
-      {
-        trackId: 'screen-track-1',
-        metadata: {
-          source: 'window',
-        },
-      },
-      'volcengine',
-    ],
-    ['stop-screen-share', 'screen-track-1', 'volcengine'],
+    ['connectTransport', { accountId: 'account-1' }, 'smtp'],
+    ['authenticateTransport', 'user@example.test', 'smtp'],
+    ['sendMail', 'Hello', 'smtp'],
+    ['healthCheck', 'smtp'],
+    ['disconnectTransport', 'smtp'],
   ]);
 });
 
-test('client falls back to screen-share publish and unpublish for provider bridges without specialized methods', async () => {
-  const calls = [];
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine'], {
-    volcengine: {
-      nativeFactory: async () => ({ sdk: 'fallback-native' }),
-      runtimeController: {
-        async publish(options, context) {
-          calls.push(['publish', options, context.selection.providerKey]);
-          return {
-            trackId: options.trackId,
-            kind: options.kind,
-            muted: false,
-          };
-        },
-        async unpublish(trackId, context) {
-          calls.push(['unpublish', trackId, context.selection.providerKey]);
-        },
-      },
-    },
-  });
-
-  const dataSource = new sdk.MailDataSource({
-    driverManager: manager,
-  });
-  const client = await dataSource.createClient();
-
-  assert.deepEqual(
-    await client.startScreenShare({
-      trackId: 'screen-track-fallback',
-    }),
-    {
-      trackId: 'screen-track-fallback',
-      kind: 'screen-share',
-      muted: false,
-    },
-  );
-  await client.stopScreenShare('screen-track-fallback');
-  assert.deepEqual(calls, [
-    [
-      'publish',
-      {
-        trackId: 'screen-track-fallback',
-        kind: 'screen-share',
-      },
-      'volcengine',
-    ],
-    ['unpublish', 'screen-track-fallback', 'volcengine'],
-  ]);
-});
-
-test('default Volcengine provider plugin runtime requires explicit native appId configuration before join', async () => {
-  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine']);
+test('default smtp provider runtime reports native_sdk_not_available without a runtime controller', async () => {
+  const { sdk, manager } = await createManagerWithProviderPackages(['smtp']);
 
   const dataSource = new sdk.MailDataSource({
     driverManager: manager,
@@ -430,27 +288,25 @@ test('default Volcengine provider plugin runtime requires explicit native appId 
 
   await assert.rejects(
     async () =>
-      client.join({
-        sessionId: 'session-1',
-        roomId: 'room-1',
-        participantId: 'local-user',
+      client.connectTransport({
+        accountId: 'account-1',
       }),
     (error) => {
       assert.ok(error instanceof sdk.MailSdkException);
-      assert.equal(error.code, 'invalid_native_config');
-      assert.equal(error.providerKey, 'volcengine');
-      assert.deepEqual(error.details?.missingConfigKeys, ['appId']);
+      assert.equal(error.code, 'native_sdk_not_available');
+      assert.equal(error.providerKey, 'smtp');
+      assert.equal(error.details?.methodName, 'connectTransport');
       return true;
     },
   );
 });
 
 test('root data source without installed provider package does not create runtime clients', async () => {
-  const { sdk } = await loadProviderPackage('volcengine');
+  const { sdk } = await loadProviderPackage('smtp');
   const dataSource = new sdk.MailDataSource();
 
   assert.deepEqual(dataSource.describeProviderSupport(), {
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
     status: 'official_unregistered',
     builtin: true,
     official: true,
@@ -462,6 +318,6 @@ test('root data source without installed provider package does not create runtim
     (error) =>
       error instanceof sdk.MailSdkException &&
       error.code === 'provider_not_supported' &&
-      error.providerKey === 'volcengine',
+      error.providerKey === 'smtp',
   );
 });

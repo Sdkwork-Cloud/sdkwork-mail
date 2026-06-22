@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>Sdkwork.Mail.Sdk.Provider.Imap</AssemblyName>
+    <RootNamespace>Sdkwork.Mail.Sdk.Provider.Imap</RootNamespace>
+    <PackageId>Sdkwork.Mail.Sdk.Provider.Imap</PackageId>
+    <Version>0.1.0</Version>
+    <Description>Reserved C# provider package boundary for IMAP Mail Sync</Description>
+    <IsPackable>true</IsPackable>
+    <SdkworkMailProviderKey>imap</SdkworkMailProviderKey>
+    <SdkworkMailPluginId>Mail-imap</SdkworkMailPluginId>
+    <SdkworkMailDriverId>sdkwork-mail-driver-imap</SdkworkMailDriverId>
+    <SdkworkMailSourcePath>src/MailProviderImapPackageContract.cs</SdkworkMailSourcePath>
+    <SdkworkMailSourceSymbol>MailProviderImapPackageContract</SdkworkMailSourceSymbol>
+    <SdkworkMailRootPublic>false</SdkworkMailRootPublic>
+    <SdkworkMailStatus>future-runtime-bridge-only</SdkworkMailStatus>
+    <SdkworkMailRuntimeBridgeStatus>reserved</SdkworkMailRuntimeBridgeStatus>
+  </PropertyGroup>
+</Project>

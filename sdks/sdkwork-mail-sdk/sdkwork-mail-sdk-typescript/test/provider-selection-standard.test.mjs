@@ -32,44 +32,44 @@ test('provider selection standard exports stable sources and precedence', async 
 test('provider selection standard resolves precedence independently from driver manager state', async () => {
   const sdk = await loadSdk();
 
-  const parsed = sdk.parseMailProviderUrl('Mail:aliyun://cluster/main');
+  const parsed = sdk.parseMailProviderUrl('Mail:imap://cluster/main');
   const explicitSelection = sdk.resolveMailProviderSelection(
     {
-      providerKey: 'tencent',
-      tenantOverrideProviderKey: 'aliyun',
-      deploymentProfileProviderKey: 'volcengine',
+      providerKey: 'imap',
+      tenantOverrideProviderKey: 'imap',
+      deploymentProfileProviderKey: 'smtp',
     },
-    'volcengine',
+    'smtp',
   );
   const urlSelection = sdk.resolveMailProviderSelection(
     {
-      providerUrl: 'Mail:aliyun://cluster/main',
-      providerKey: 'tencent',
-      tenantOverrideProviderKey: 'volcengine',
+      providerUrl: 'Mail:imap://cluster/main',
+      providerKey: 'imap',
+      tenantOverrideProviderKey: 'smtp',
     },
-    'volcengine',
+    'smtp',
   );
-  const defaultSelection = sdk.resolveMailProviderSelection({}, 'volcengine');
+  const defaultSelection = sdk.resolveMailProviderSelection({}, 'smtp');
   const implicitDefaultSelection = sdk.resolveMailProviderSelection({});
 
   assert.deepEqual(parsed, {
-    providerKey: 'aliyun',
-    rawUrl: 'Mail:aliyun://cluster/main',
+    providerKey: 'imap',
+    rawUrl: 'Mail:imap://cluster/main',
   });
   assert.deepEqual(explicitSelection, {
-    providerKey: 'tencent',
+    providerKey: 'imap',
     source: 'provider_key',
   });
   assert.deepEqual(urlSelection, {
-    providerKey: 'aliyun',
+    providerKey: 'imap',
     source: 'provider_url',
   });
   assert.deepEqual(defaultSelection, {
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
     source: 'default_provider',
   });
   assert.deepEqual(implicitDefaultSelection, {
-    providerKey: 'volcengine',
+    providerKey: 'smtp',
     source: 'default_provider',
   });
   assert.equal(Object.isFrozen(parsed), true);

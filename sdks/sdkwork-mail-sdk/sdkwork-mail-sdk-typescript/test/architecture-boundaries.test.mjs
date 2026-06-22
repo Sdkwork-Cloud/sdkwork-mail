@@ -40,15 +40,10 @@ test('provider-neutral core files do not depend on provider implementation modul
       /from\s+['"]@sdkwork\/Mail-sdk-provider-|import\(['"]@sdkwork\/Mail-sdk-provider-/,
       `expected ${relativePath} to avoid static provider package imports`,
     );
-    assert.doesNotMatch(
-      source,
-      /from\s+['"](?:@volcengine\/Mail|tMail-sdk-v5)['"]|import\(['"](?:@volcengine\/Mail|tMail-sdk-v5)['"]\)/,
-      `expected ${relativePath} to avoid direct vendor SDK imports`,
-    );
   }
 });
 
-test('root package manifest keeps provider packages and vendor SDKs out of dependencies', () => {
+test('root package manifest keeps provider packages out of dependencies', () => {
   const manifest = JSON.parse(readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
   const dependencyScopes = [
     manifest.dependencies ?? {},
@@ -63,16 +58,6 @@ test('root package manifest keeps provider packages and vendor SDKs out of depen
         dependencyName,
         /^@sdkwork\/Mail-sdk-provider-/,
         'root Mail SDK must not declare provider packages as direct dependencies',
-      );
-      assert.notEqual(
-        dependencyName,
-        '@volcengine/Mail',
-        'root Mail SDK must not declare the Volcengine vendor SDK directly',
-      );
-      assert.notEqual(
-        dependencyName,
-        'tMail-sdk-v5',
-        'root Mail SDK must not declare the Tencent vendor SDK directly',
       );
     }
   }
@@ -95,26 +80,17 @@ test('root TypeScript build config has no retired provider implementation bounda
   const serializedConfig = JSON.stringify(tsconfigBuild);
 
   assert.doesNotMatch(serializedConfig, /src\/providers/);
-  assert.doesNotMatch(serializedConfig, /volcengine-official-web/);
   assert.doesNotMatch(serializedConfig, /builtin-driver-manager/);
 });
 
 test('provider plugin entrypoints depend on the root public SDK boundary only', () => {
   const providerPackageDirs = readdirSync(providerPackagesRoot)
-    .filter((entry) => entry.startsWith('Mail-sdk-provider-'))
+    .filter((entry) => entry.startsWith('mail-sdk-provider-'))
     .sort();
 
   assert.deepEqual(providerPackageDirs, [
-    'Mail-sdk-provider-agora',
-    'Mail-sdk-provider-aliyun',
-    'Mail-sdk-provider-janus',
-    'Mail-sdk-provider-jitsi',
-    'Mail-sdk-provider-livekit',
-    'Mail-sdk-provider-mediasoup',
-    'Mail-sdk-provider-tencent',
-    'Mail-sdk-provider-twilio',
-    'Mail-sdk-provider-volcengine',
-    'Mail-sdk-provider-zego',
+    'mail-sdk-provider-imap',
+    'mail-sdk-provider-smtp',
   ]);
 
   for (const providerPackageDir of providerPackageDirs) {

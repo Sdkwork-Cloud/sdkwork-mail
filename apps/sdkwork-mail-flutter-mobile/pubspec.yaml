@@ -17,8 +17,8 @@ dependencies:
     path: packages/sdkwork_mail_flutter_mobile_admin_core
   sdkwork_mail_flutter_mobile_core:
     path: packages/sdkwork_mail_flutter_mobile_core
-  sdkwork_mail_flutter_mobile_Mail:
-    path: packages/sdkwork_mail_flutter_mobile_Mail
+  sdkwork_mail_flutter_mobile_mail:
+    path: packages/sdkwork_mail_flutter_mobile_mail
 
 dev_dependencies:
   flutter_test:

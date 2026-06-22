@@ -1,4 +1,5 @@
 import 'mail_errors.dart';
+import 'mail_provider_metadata.dart';
 import 'mail_provider_selection.dart';
 import 'mail_standard_contract.dart';
 import 'mail_types.dart';
@@ -6,10 +7,12 @@ import 'mail_types.dart';
 final class StandardMailClient<TNativeClient> implements MailClient<TNativeClient> {
   StandardMailClient({
     required this.metadata,
+    required MailCapabilitySet capabilities,
     required this.selection,
     required TNativeClient nativeClient,
     MailRuntimeController<TNativeClient>? runtimeController,
-  })  : _nativeClient = nativeClient,
+  })  : _capabilities = capabilities,
+        _nativeClient = nativeClient,
         _runtimeController = runtimeController;
 
   @override
@@ -18,24 +21,26 @@ final class StandardMailClient<TNativeClient> implements MailClient<TNativeClien
   @override
   final MailProviderSelection selection;
 
+  final MailCapabilitySet _capabilities;
   final TNativeClient _nativeClient;
   final MailRuntimeController<TNativeClient>? _runtimeController;
+
+  @override
+  MailCapabilitySet get capabilities => MailCapabilitySet(
+        required: List<String>.of(_capabilities.required, growable: false),
+        optional: List<String>.of(_capabilities.optional, growable: false),
+      );
 
   MailRuntimeControllerContext<TNativeClient> get _runtimeContext {
     return MailRuntimeControllerContext<TNativeClient>(
       metadata: metadata,
+      capabilities: capabilities,
       selection: selection,
       nativeClient: _nativeClient,
     );
   }
 
-  MailRuntimeController<TNativeClient> _requireRuntimeController(
-    String methodName,
-  ) {
-    if (_runtimeController != null) {
-      return _runtimeController;
-    }
-
+  Never _throwMissingRuntimeMethod(String methodName) {
     throw MailSdkException(
       code: MailStandardContract.runtimeSurfaceFailureCode,
       message: 'Mail runtime bridge method not available: $methodName',
@@ -47,86 +52,57 @@ final class StandardMailClient<TNativeClient> implements MailClient<TNativeClien
     );
   }
 
-  MailScreenShareRuntimeController<TNativeClient>?
-      _resolveScreenShareRuntimeController() {
+  MailRuntimeController<TNativeClient> _requireRuntimeController() {
     final runtimeController = _runtimeController;
-    if (runtimeController is MailScreenShareRuntimeController<TNativeClient>) {
-      return runtimeController as MailScreenShareRuntimeController<TNativeClient>;
+    if (runtimeController != null) {
+      return runtimeController;
     }
-
-    return null;
+    return _throwMissingRuntimeMethod('runtimeController');
   }
 
   @override
-  Future<MailSessionDescriptor> join(MailJoinOptions options) {
-    return _requireRuntimeController('join').join(options, _runtimeContext);
-  }
-
-  @override
-  Future<MailSessionDescriptor> leave() {
-    return _requireRuntimeController('leave').leave(_runtimeContext);
-  }
-
-  @override
-  Future<MailTrackPublication> publish(MailPublishOptions options) {
-    return _requireRuntimeController('publish').publish(options, _runtimeContext);
-  }
-
-  @override
-  Future<void> unpublish(String trackId) {
-    return _requireRuntimeController('unpublish').unpublish(
-      trackId,
-      _runtimeContext,
-    );
-  }
-
-  @override
-  Future<MailTrackPublication> startScreenShare(
-    MailScreenShareOptions options,
+  Future<MailTransportDescriptor> connectTransport(
+    MailTransportConnectOptions options,
   ) {
-    requireCapability('screen-share');
-    final runtimeController = _requireRuntimeController('startScreenShare');
-    final screenShareRuntimeController = _resolveScreenShareRuntimeController();
-    if (screenShareRuntimeController != null) {
-      return screenShareRuntimeController.startScreenShare(options, _runtimeContext);
-    }
-
-    return runtimeController.publish(
-      MailPublishOptions(
-        trackId: options.trackId,
-        kind: MailTrackKind.screenShare,
-        metadata: options.metadata,
-      ),
-      _runtimeContext,
-    );
+    requireCapability('transport.connect');
+    return _requireRuntimeController().connectTransport(options, _runtimeContext);
   }
 
   @override
-  Future<void> stopScreenShare(String trackId) {
-    requireCapability('screen-share');
-    final runtimeController = _requireRuntimeController('stopScreenShare');
-    final screenShareRuntimeController = _resolveScreenShareRuntimeController();
-    if (screenShareRuntimeController != null) {
-      return screenShareRuntimeController.stopScreenShare(trackId, _runtimeContext);
-    }
-
-    return runtimeController.unpublish(trackId, _runtimeContext);
+  Future<MailTransportDescriptor> authenticateTransport(
+    MailTransportAuthenticateOptions options,
+  ) {
+    requireCapability('transport.authenticate');
+    return _requireRuntimeController().authenticateTransport(options, _runtimeContext);
   }
 
   @override
-  Future<MailMuteState> muteAudio(bool muted) {
-    return _requireRuntimeController('muteAudio').muteAudio(
-      muted,
-      _runtimeContext,
-    );
+  Future<MailTransportDescriptor> disconnectTransport() {
+    return _requireRuntimeController().disconnectTransport(_runtimeContext);
   }
 
   @override
-  Future<MailMuteState> muteVideo(bool muted) {
-    return _requireRuntimeController('muteVideo').muteVideo(
-      muted,
-      _runtimeContext,
-    );
+  Future<MailSendResult> sendMail(MailSendOptions options) {
+    requireCapability('smtp.send');
+    return _requireRuntimeController().sendMail(options, _runtimeContext);
+  }
+
+  @override
+  Future<MailMailboxProbeResult> probeMailbox([MailMailboxProbeOptions? options]) {
+    requireCapability('imap.sync');
+    return _requireRuntimeController().probeMailbox(options, _runtimeContext);
+  }
+
+  @override
+  Future<MailMailboxSyncResult> syncMailbox([MailMailboxSyncOptions? options]) {
+    requireCapability('imap.sync');
+    return _requireRuntimeController().syncMailbox(options, _runtimeContext);
+  }
+
+  @override
+  Future<MailTransportHealthResult> healthCheck() {
+    requireCapability('health');
+    return _requireRuntimeController().healthCheck(_runtimeContext);
   }
 
   @override
@@ -141,8 +117,8 @@ final class StandardMailClient<TNativeClient> implements MailClient<TNativeClien
 
   @override
   bool supportsCapability(String capability) {
-    return metadata.requiredCapabilities.contains(capability) ||
-        metadata.optionalCapabilities.contains(capability);
+    return _capabilities.required.contains(capability) ||
+        _capabilities.optional.contains(capability);
   }
 
   @override

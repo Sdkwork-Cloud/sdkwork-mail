@@ -1,7 +1,7 @@
 import type { MailSdkErrorCode } from './errors.js';
 import { freezeMailRuntimeValue } from './runtime-freeze.js';
 
-export const mail_RUNTIME_SURFACE_METHODS = freezeMailRuntimeValue(['join', 'leave', 'publish', 'unpublish', 'startScreenShare', 'stopScreenShare', 'muteAudio', 'muteVideo'] as const);
+export const mail_RUNTIME_SURFACE_METHODS = freezeMailRuntimeValue(['connectTransport', 'authenticateTransport', 'disconnectTransport', 'sendMail', 'probeMailbox', 'syncMailbox', 'healthCheck'] as const);
 
 export type MailRuntimeSurfaceMethodName = (typeof mail_RUNTIME_SURFACE_METHODS)[number];
 

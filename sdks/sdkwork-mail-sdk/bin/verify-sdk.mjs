@@ -57,6 +57,8 @@ function buildRetiredFiles() {
     `bin/Mail-${callSmoke}-standard.mjs`,
     `bin/verify-flutter-Mail-${transportWord}-boundary.mjs`,
     'bin/verify-flutter-typescript-parity.mjs',
+    'docs/typescript-volcengine-runtime-usage.md',
+    'docs/flutter-volcengine-runtime-usage.md',
     `docs/typescript-volcengine-${transportWord}-usage.md`,
     `docs/flutter-volcengine-${transportWord}-usage.md`,
     `sdkwork-mail-sdk-typescript/bin/${callSmoke}.mjs`,
@@ -287,11 +289,11 @@ function assertTypeScriptPublicSurface(workspaceRoot, assembly) {
 function assertRuntimeDocs(workspaceRoot) {
   const usageGuide = readFileSync(path.join(workspaceRoot, 'docs', 'usage-guide.md'), 'utf8');
   const typescriptGuide = readFileSync(
-    path.join(workspaceRoot, 'docs', 'typescript-volcengine-runtime-usage.md'),
+    path.join(workspaceRoot, 'docs', 'typescript-smtp-runtime-usage.md'),
     'utf8',
   );
   const flutterGuide = readFileSync(
-    path.join(workspaceRoot, 'docs', 'flutter-volcengine-runtime-usage.md'),
+    path.join(workspaceRoot, 'docs', 'flutter-smtp-runtime-usage.md'),
     'utf8',
   );
 
@@ -300,7 +302,7 @@ function assertRuntimeDocs(workspaceRoot) {
     ['TypeScript runtime guide', typescriptGuide],
     ['Flutter runtime guide', flutterGuide],
   ]) {
-    for (const term of ['media runtime', 'provider', 'volcengine']) {
+    for (const term of ['mail transport', 'provider', 'smtp']) {
       if (!content.toLowerCase().includes(term)) {
         fail(`${label} must describe ${term}`);
       }
@@ -312,7 +314,7 @@ function assertRuntimeDocs(workspaceRoot) {
   }
 
   if (!flutterGuide.includes('MailDataSource')) {
-    fail('Flutter runtime guide must use the media runtime data source entrypoint');
+    fail('Flutter runtime guide must use the mail transport data source entrypoint');
   }
 }
 

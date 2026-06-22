@@ -1,58 +1,58 @@
-package com.sdkwork.rtc.metadata
+package com.sdkwork.Mail.metadata
 
-enum class RtcProviderSupportStatus {
+enum class MailProviderSupportStatus {
     builtin_registered,
     official_registered,
     official_unregistered,
     unknown,
 }
 
-data class RtcProviderSupport(
+data class MailProviderSupport(
     val providerKey: String,
-    val status: RtcProviderSupportStatus,
+    val status: MailProviderSupportStatus,
     val builtin: Boolean,
     val official: Boolean,
     val registered: Boolean,
 )
 
-data class RtcProviderSupportStateRequest(
+data class MailProviderSupportStateRequest(
     val providerKey: String,
     val builtin: Boolean,
     val official: Boolean,
     val registered: Boolean,
 )
 
-val RTC_PROVIDER_SUPPORT_STATUSES: List<String> = listOf(
+val mail_PROVIDER_SUPPORT_STATUSES: List<String> = listOf(
     "builtin_registered",
     "official_registered",
     "official_unregistered",
     "unknown",
 )
 
-fun resolveRtcProviderSupportStatus(
-    request: RtcProviderSupportStateRequest,
-): RtcProviderSupportStatus {
+fun resolveMailProviderSupportStatus(
+    request: MailProviderSupportStateRequest,
+): MailProviderSupportStatus {
     if (request.official && request.registered) {
         return if (request.builtin) {
-            RtcProviderSupportStatus.builtin_registered
+            MailProviderSupportStatus.builtin_registered
         } else {
-            RtcProviderSupportStatus.official_registered
+            MailProviderSupportStatus.official_registered
         }
     }
 
     if (request.official) {
-        return RtcProviderSupportStatus.official_unregistered
+        return MailProviderSupportStatus.official_unregistered
     }
 
-    return RtcProviderSupportStatus.unknown
+    return MailProviderSupportStatus.unknown
 }
 
-fun createRtcProviderSupportState(
-    request: RtcProviderSupportStateRequest,
-): RtcProviderSupport {
-    return RtcProviderSupport(
+fun createMailProviderSupportState(
+    request: MailProviderSupportStateRequest,
+): MailProviderSupport {
+    return MailProviderSupport(
         providerKey = request.providerKey,
-        status = resolveRtcProviderSupportStatus(request),
+        status = resolveMailProviderSupportStatus(request),
         builtin = request.builtin,
         official = request.official,
         registered = request.registered,
