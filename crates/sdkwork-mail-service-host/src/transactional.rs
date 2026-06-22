@@ -13,10 +13,11 @@ use sdkwork_router_mail_backend_api::service::MailBackendApiError;
 use serde_json::json;
 
 use crate::outbound::{render_template_bodies, resolve_from_email, send_outbound_mail};
+use crate::transport_resolver::resolve_transport_for_tenant;
 
 pub async fn send_verification_code(
     persistence: Arc<dyn MailPersistencePort>,
-    transport: Arc<dyn MailTransportPort>,
+    fallback_transport: Arc<dyn MailTransportPort>,
     default_from_email: Option<String>,
     tenant_id: String,
     organization_id: String,
@@ -46,9 +47,22 @@ pub async fn send_verification_code(
         &request.variables,
     );
     let (subject, body_text, body_html) = render_template_bodies(&template, &variables);
-    let from_email = resolve_from_email(None, default_from_email.as_deref())?;
+    let resolved = resolve_transport_for_tenant(
+        persistence.clone(),
+        &tenant_id,
+        &organization_id,
+        fallback_transport,
+    )
+    .await?;
+    let from_email = resolve_from_email(
+        None,
+        resolved
+            .from_email
+            .as_deref()
+            .or(default_from_email.as_deref()),
+    )?;
     send_outbound_mail(
-        transport,
+        resolved.transport,
         from_email,
         recipient_email.clone(),
         subject.clone(),
@@ -94,7 +108,11 @@ pub async fn send_verification_code(
 
     let sent_at = utc_now_rfc3339_millis();
     let _ = persistence
-        .mark_transactional_delivery_sent(&delivery.id, &sent_at, None)
+        .mark_transactional_delivery_sent(
+            &delivery.id,
+            &sent_at,
+            resolved.provider_account_id.as_deref(),
+        )
         .await
         .map_err(map_app_persistence_error)?;
 
@@ -163,7 +181,7 @@ pub async fn verify_verification_code(
 
 pub async fn send_transactional_mail(
     persistence: Arc<dyn MailPersistencePort>,
-    transport: Arc<dyn MailTransportPort>,
+    fallback_transport: Arc<dyn MailTransportPort>,
     default_from_email: Option<String>,
     tenant_id: String,
     organization_id: String,
@@ -186,10 +204,22 @@ pub async fn send_transactional_mail(
 
     let variables = json_to_string_map(&request.variables);
     let (subject, body_text, body_html) = render_template_bodies(&template, &variables);
-    let from_email =
-        resolve_from_email(request.from_email.as_deref(), default_from_email.as_deref())?;
+    let resolved = resolve_transport_for_tenant(
+        persistence.clone(),
+        &tenant_id,
+        &organization_id,
+        fallback_transport,
+    )
+    .await?;
+    let from_email = resolve_from_email(
+        request.from_email.as_deref(),
+        resolved
+            .from_email
+            .as_deref()
+            .or(default_from_email.as_deref()),
+    )?;
     send_outbound_mail(
-        transport.clone(),
+        resolved.transport,
         from_email.clone(),
         recipient_email.clone(),
         subject.clone(),
@@ -220,7 +250,11 @@ pub async fn send_transactional_mail(
 
     let sent_at = utc_now_rfc3339_millis();
     persistence
-        .mark_transactional_delivery_sent(&delivery.id, &sent_at, None)
+        .mark_transactional_delivery_sent(
+            &delivery.id,
+            &sent_at,
+            resolved.provider_account_id.as_deref(),
+        )
         .await
         .map_err(map_app_persistence_error)
 }

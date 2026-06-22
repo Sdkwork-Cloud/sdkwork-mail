@@ -5,8 +5,9 @@ use std::pin::Pin;
 
 use crate::models::{
     CreateMailMessageRequest, CreateMailTemplateRequest, MailAccount, MailFolder, MailMessage,
-    MailProviderAccount, MailTemplate, MailTemplateCategory, MailThread, MailTransactionalDelivery,
-    MailVerificationPurpose, UpdateMailMessageRequest, UpdateMailTemplateRequest,
+    MailProviderAccount, MailSmtpTransportBinding, MailTemplate, MailTemplateCategory, MailThread,
+    MailTransactionalDelivery, MailVerificationPurpose, UpdateMailMessageRequest,
+    UpdateMailTemplateRequest,
 };
 
 pub type MailPersistenceResult<T> = Result<T, MailPersistenceError>;
@@ -96,6 +97,12 @@ pub trait MailPersistencePort: Send + Sync {
         tenant_id: &'a str,
         organization_id: &'a str,
     ) -> MailPersistenceFuture<'a, Vec<MailProviderAccount>>;
+
+    fn resolve_active_smtp_transport_binding<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+    ) -> MailPersistenceFuture<'a, Option<MailSmtpTransportBinding>>;
 
     fn list_templates<'a>(
         &'a self,
@@ -326,6 +333,14 @@ impl MailPersistencePort for NoopMailPersistencePort {
         _: &'a str,
     ) -> MailPersistenceFuture<'a, Vec<MailProviderAccount>> {
         Box::pin(async move { Ok(Vec::new()) })
+    }
+
+    fn resolve_active_smtp_transport_binding<'a>(
+        &'a self,
+        _: &'a str,
+        _: &'a str,
+    ) -> MailPersistenceFuture<'a, Option<MailSmtpTransportBinding>> {
+        Box::pin(async move { Ok(None) })
     }
 
     fn list_templates<'a>(

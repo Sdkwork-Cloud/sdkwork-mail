@@ -64,6 +64,20 @@ test("sdkwork-mail migration contract uses mail transport provider schemas only"
   assert.deepEqual(schemaNames, ["imap.json", "smtp.json"]);
 });
 
+test("sdkwork-mail migration contract resolves SMTP transport from provider credentials", () => {
+  const persistence = readFileSync(
+    "crates/sdkwork-communication-mail-service/src/persistence.rs",
+    "utf8",
+  );
+  const repository = readFileSync(
+    "crates/sdkwork-communication-mail-repository-sqlx/src/persistence.rs",
+    "utf8",
+  );
+  assert.match(persistence, /resolve_active_smtp_transport_binding/u);
+  assert.match(repository, /mail_provider_credential/u);
+  assert.match(readFileSync("plugins/mail-smtp/src/config.rs", "utf8"), /smtp_config_from_binding/u);
+});
+
 test("sdkwork-mail migration contract wires transactional delivery through SMTP transport", () => {
   const smtpPlugin = readFileSync("plugins/mail-smtp/src/lib.rs", "utf8");
   const serviceHost = readFileSync("crates/sdkwork-mail-service-host/src/service.rs", "utf8");

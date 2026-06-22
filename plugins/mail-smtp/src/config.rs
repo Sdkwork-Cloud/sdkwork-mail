@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use sdkwork_communication_mail_service::MailTransportPort;
+use sdkwork_communication_mail_service::{MailSmtpTransportBinding, MailTransportPort};
 
 use crate::logging_transport::LoggingMailTransport;
 use crate::smtp_transport::SmtpMailTransport;
@@ -95,6 +95,29 @@ pub fn build_mail_transport_from_env() -> Result<Arc<dyn MailTransportPort>, Str
     };
 
     Ok(Arc::new(SmtpMailTransport::new(config)))
+}
+
+pub fn smtp_config_from_binding(
+    binding: &MailSmtpTransportBinding,
+) -> Result<SmtpTransportConfig, String> {
+    let password = resolve_secret_ref(&binding.secret_ref)
+        .ok_or_else(|| "smtp provider credential secret_ref could not be resolved".to_owned())?;
+    Ok(SmtpTransportConfig {
+        host: binding.host.clone(),
+        port: binding.port,
+        use_tls: binding.use_tls,
+        username: Some(binding.username.clone()),
+        password: Some(password),
+        from_email: binding.from_email.clone(),
+    })
+}
+
+pub fn build_smtp_transport_from_binding(
+    binding: &MailSmtpTransportBinding,
+) -> Result<Arc<dyn MailTransportPort>, String> {
+    Ok(Arc::new(SmtpMailTransport::new(smtp_config_from_binding(
+        binding,
+    )?)))
 }
 
 #[cfg(test)]

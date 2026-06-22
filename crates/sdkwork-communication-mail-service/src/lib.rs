@@ -4,6 +4,7 @@ pub mod error;
 pub mod list_window;
 pub mod models;
 pub mod persistence;
+pub mod sync;
 pub mod transactional;
 pub mod transport;
 
@@ -17,6 +18,7 @@ pub use persistence::{
     ActiveVerificationChallenge, MailPersistenceError, MailPersistenceFuture, MailPersistencePort,
     MailPersistenceResult, NoopMailPersistencePort,
 };
+pub use sync::{MailImapSyncConfig, MailSyncError, MailSyncFuture, MailSyncPort};
 pub use transactional::{
     DEFAULT_VERIFICATION_CODE_LENGTH, DEFAULT_VERIFICATION_MAX_ATTEMPTS,
     DEFAULT_VERIFICATION_TTL_MINUTES, build_verification_variables, empty_object,

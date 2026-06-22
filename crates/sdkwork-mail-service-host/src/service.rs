@@ -206,12 +206,12 @@ impl MailAppApiService for MailProductService {
         request: SendMailVerificationRequest,
     ) -> MailAppApiFuture<SendMailVerificationResult> {
         let persistence = self.persistence.clone();
-        let transport = self.transport.clone();
+        let fallback_transport = self.transport.clone();
         let default_from_email = self.default_from_email.clone();
         Box::pin(async move {
             transactional::send_verification_code(
                 persistence,
-                transport,
+                fallback_transport,
                 default_from_email,
                 tenant_id,
                 organization_id_or_zero(&organization_id),
@@ -246,12 +246,12 @@ impl MailAppApiService for MailProductService {
         request: SendTransactionalMailRequest,
     ) -> MailAppApiFuture<MailTransactionalDelivery> {
         let persistence = self.persistence.clone();
-        let transport = self.transport.clone();
+        let fallback_transport = self.transport.clone();
         let default_from_email = self.default_from_email.clone();
         Box::pin(async move {
             transactional::send_transactional_mail(
                 persistence,
-                transport,
+                fallback_transport,
                 default_from_email,
                 tenant_id,
                 organization_id_or_zero(&organization_id),

@@ -146,6 +146,36 @@ pub enum MailProviderAccountStatus {
     Disabled,
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MailProviderCredentialStatus {
+    Active,
+    Disabled,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MailProviderCredential {
+    pub id: String,
+    pub tenant_id: String,
+    pub organization_id: String,
+    pub provider_account_id: String,
+    pub username: String,
+    pub secret_ref: String,
+    pub status: MailProviderCredentialStatus,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct MailSmtpTransportBinding {
+    pub provider_account_id: String,
+    pub host: String,
+    pub port: u16,
+    pub use_tls: bool,
+    pub username: String,
+    pub secret_ref: String,
+    pub from_email: String,
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateMailMessageRequest {

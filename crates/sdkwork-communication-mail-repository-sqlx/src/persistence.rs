@@ -4,9 +4,9 @@ use sdkwork_communication_mail_service::{
     MailAccountStatus, MailAttachment, MailFolder, MailFolderKind, MailMessage,
     MailMessageRecipient, MailPersistenceError, MailPersistenceFuture, MailPersistencePort,
     MailPersistenceResult, MailProviderAccount, MailProviderAccountStatus, MailRecipientKind,
-    MailTemplate, MailTemplateCategory, MailTemplateStatus, MailThread, MailTransactionalDelivery,
-    MailTransactionalDeliveryStatus, MailVerificationPurpose, UpdateMailMessageRequest,
-    UpdateMailTemplateRequest, utc_now_rfc3339_millis,
+    MailSmtpTransportBinding, MailTemplate, MailTemplateCategory, MailTemplateStatus, MailThread,
+    MailTransactionalDelivery, MailTransactionalDeliveryStatus, MailVerificationPurpose,
+    UpdateMailMessageRequest, UpdateMailTemplateRequest, utc_now_rfc3339_millis,
 };
 use sdkwork_utils_rust::{is_blank, sha256_hash};
 use serde_json::json;
@@ -371,6 +371,74 @@ impl MailPersistencePort for MailPostgresPersistencePort {
                 .into_iter()
                 .map(ProviderAccountRow::into_provider_account)
                 .collect())
+        })
+    }
+
+    fn resolve_active_smtp_transport_binding<'a>(
+        &'a self,
+        tenant_id: &'a str,
+        organization_id: &'a str,
+    ) -> sdkwork_communication_mail_service::MailPersistenceFuture<
+        'a,
+        Option<MailSmtpTransportBinding>,
+    > {
+        Box::pin(async move {
+            let account = sqlx::query_as::<_, ProviderAccountRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, provider_kind, name, host, port, use_tls, status
+                FROM mail_provider_account
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND provider_kind = 'smtp'
+                  AND status = 1
+                  AND deleted_at IS NULL
+                ORDER BY updated_at DESC
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            let Some(account) = account else {
+                return Ok(None);
+            };
+
+            let credential = sqlx::query_as::<_, ProviderCredentialRow>(
+                r#"
+                SELECT uuid, tenant_id, organization_id, provider_account_id, username, secret_ref, status
+                FROM mail_provider_credential
+                WHERE tenant_id = $1::bigint
+                  AND organization_id = $2::bigint
+                  AND provider_account_id = $3
+                  AND status = 1
+                  AND deleted_at IS NULL
+                ORDER BY updated_at DESC
+                LIMIT 1
+                "#,
+            )
+            .bind(parse_id(tenant_id))
+            .bind(parse_id(organization_id))
+            .bind(&account.uuid)
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(map_sqlx_error)?;
+
+            let Some(credential) = credential else {
+                return Ok(None);
+            };
+
+            Ok(Some(MailSmtpTransportBinding {
+                provider_account_id: account.uuid.clone(),
+                host: account.host,
+                port: account.port.max(0) as u16,
+                use_tls: account.use_tls,
+                username: credential.username.clone(),
+                secret_ref: credential.secret_ref,
+                from_email: credential.username,
+            }))
         })
     }
 
@@ -1334,6 +1402,18 @@ impl ProviderAccountRow {
             },
         }
     }
+}
+
+#[derive(sqlx::FromRow)]
+#[allow(dead_code)]
+struct ProviderCredentialRow {
+    uuid: String,
+    tenant_id: i64,
+    organization_id: i64,
+    provider_account_id: String,
+    username: String,
+    secret_ref: String,
+    status: i32,
 }
 
 async fn load_delivery(

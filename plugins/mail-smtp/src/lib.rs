@@ -14,7 +14,10 @@ mod config;
 mod logging_transport;
 mod smtp_transport;
 
-pub use config::{SmtpTransportConfig, build_mail_transport_from_env, resolve_secret_ref};
+pub use config::{
+    SmtpTransportConfig, build_mail_transport_from_env, build_smtp_transport_from_binding,
+    resolve_secret_ref, smtp_config_from_binding,
+};
 pub use logging_transport::LoggingMailTransport;
 pub use smtp_transport::SmtpMailTransport;
 
