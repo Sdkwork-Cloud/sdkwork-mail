@@ -1,0 +1,208 @@
+{
+    "schemaVersion":  2,
+    "kind":  "sdkwork.app.topology",
+    "appId":  "sdkwork-mail",
+    "archetype":  "application-http-gateway",
+    "profileRoot":  "configs/topology",
+    "profilePattern":  "{hosting}.{serviceLayout}.{environment}.env",
+    "vocabulary":  {
+                       "hosting":  {
+                                       "allowed":  [
+                                                       "self-hosted",
+                                                       "cloud-hosted"
+                                                   ]
+                                   },
+                       "serviceLayout":  {
+                                             "allowed":  [
+                                                             "unified-process",
+                                                             "split-services"
+                                                         ]
+                                         },
+                       "environment":  {
+                                           "allowed":  [
+                                                           "development",
+                                                           "production"
+                                                       ]
+                                       },
+                       "connectivityPlane":  {
+                                                 "allowed":  [
+                                                                 "application",
+                                                                 "platform",
+                                                                 "operations"
+                                                             ]
+                                             }
+                   },
+    "defaults":  {
+                     "developmentProfileId":  "self-hosted.split-services.development",
+                     "productionProfileId":  "cloud-hosted.split-services.production",
+                     "desktopBuildProfileId":  "cloud-hosted.split-services.production",
+                     "gatewayBind":  "127.0.0.1:3900"
+                 },
+    "profileFiles":  {
+                         "self-hosted.split-services.development":  "configs/topology/self-hosted.split-services.development.env",
+                         "self-hosted.unified-process.development":  "configs/topology/self-hosted.unified-process.development.env",
+                         "self-hosted.split-services.production":  "configs/topology/self-hosted.split-services.production.env",
+                         "cloud-hosted.split-services.development":  "configs/topology/cloud-hosted.split-services.development.env",
+                         "cloud-hosted.split-services.production":  "configs/topology/cloud-hosted.split-services.production.env"
+                     },
+    "envKeys":  {
+                    "hosting":  "sdkwork_mail_HOSTING",
+                    "serviceLayout":  "sdkwork_mail_SERVICE_LAYOUT",
+                    "environment":  "sdkwork_mail_ENVIRONMENT",
+                    "profileId":  "sdkwork_mail_PROFILE_ID",
+                    "clientHosting":  "VITE_sdkwork_mail_PC_HOSTING",
+                    "gatewayAutostart":  "sdkwork_mail_PLATFORM_API_GATEWAY_AUTOSTART",
+                    "standaloneGatewayBind":  "sdkwork_mail_APPLICATION_PUBLIC_INGRESS_BIND",
+                    "cloudGatewayBind":  "SDKWORK_API_GATEWAY_BIND",
+                    "cloudGatewayConfig":  "SDKWORK_API_GATEWAY_CONFIG",
+                    "clientApiGatewayBaseUrl":  "VITE_sdkwork_mail_PC_PLATFORM_API_GATEWAY_HTTP_URL",
+                    "apiGatewayBaseUrl":  "sdkwork_mail_PLATFORM_API_GATEWAY_HTTP_URL"
+                },
+    "surfaces":  {
+                     "application.public-ingress":  {
+                                                        "connectivityPlane":  "application",
+                                                        "protocols":  [
+                                                                          "http"
+                                                                      ],
+                                                        "bindEnv":  "sdkwork_mail_APPLICATION_PUBLIC_INGRESS_BIND",
+                                                        "httpUrlEnv":  "sdkwork_mail_APPLICATION_PUBLIC_HTTP_URL",
+                                                        "clientHttpEnv":  "VITE_sdkwork_mail_PC_APPLICATION_PUBLIC_HTTP_URL"
+                                                    },
+                     "platform.api-gateway":  {
+                                                  "connectivityPlane":  "platform",
+                                                  "protocols":  [
+                                                                    "http"
+                                                                ],
+                                                  "owner":  "sdkwork-api-gateway",
+                                                  "bindEnv":  "SDKWORK_API_GATEWAY_BIND",
+                                                  "httpUrlEnv":  "sdkwork_mail_PLATFORM_API_GATEWAY_HTTP_URL",
+                                                  "clientHttpEnv":  "VITE_sdkwork_mail_PC_PLATFORM_API_GATEWAY_HTTP_URL",
+                                                  "autostartEnv":  "sdkwork_mail_PLATFORM_API_GATEWAY_AUTOSTART"
+                                              }
+                 },
+    "cloudPublicHosts":  {
+                             "application.public-ingress":  {
+                                                                "httpHost":  "Mail.sdkwork.com"
+                                                            },
+                             "platform.api-gateway":  {
+                                                          "httpHost":  "api.sdkwork.com"
+                                                      }
+                         },
+    "database":  {
+                     "appPrefix":  "sdkwork_mail"
+                 },
+    "components":  {
+                       "applicationApiServer":  {
+                                                    "crate":  "sdkwork-mail-api-server",
+                                                    "binary":  "sdkwork-mail-api-server"
+                                                },
+                       "cloudGateway":  {
+                                            "crate":  "sdkwork-api-gateway-api-server",
+                                            "binary":  "sdkwork-api-gateway",
+                                            "repository":  "sdkwork-api-gateway",
+                                            "configGlob":  "configs/sdkwork-api-gateway.sdkwork-mail.{profile}.toml"
+                                        }
+                   },
+    "orchestration":  {
+                          "profiles":  {
+                                           "self-hosted.split-services.development":  {
+                                                                                          "processes":  [
+                                                                                                            {
+                                                                                                                "id":  "application.public-ingress",
+                                                                                                                "crate":  "sdkwork-mail-api-server",
+                                                                                                                "binary":  "sdkwork-mail-api-server",
+                                                                                                                "required":  true
+                                                                                                            },
+                                                                                                            {
+                                                                                                                "id":  "pc-renderer",
+                                                                                                                "package":  "apps/sdkwork-mail-pc",
+                                                                                                                "script":  "dev",
+                                                                                                                "required":  false
+                                                                                                            }
+                                                                                                        ],
+                                                                                          "healthSurfaces":  [
+                                                                                                                 "application.public-ingress"
+                                                                                                             ]
+                                                                                      },
+                                           "self-hosted.unified-process.development":  {
+                                                                                           "processes":  [
+                                                                                                             {
+                                                                                                                 "id":  "application.public-ingress",
+                                                                                                                 "crate":  "sdkwork-mail-api-server",
+                                                                                                                 "binary":  "sdkwork-mail-api-server",
+                                                                                                                 "required":  true
+                                                                                                             }
+                                                                                                         ],
+                                                                                           "capabilitySubset":  [
+                                                                                                                    "application-http"
+                                                                                                                ],
+                                                                                           "healthSurfaces":  [
+                                                                                                                  "application.public-ingress"
+                                                                                                              ]
+                                                                                       },
+                                           "cloud-hosted.split-services.development":  {
+                                                                                           "processes":  [
+                                                                                                             {
+                                                                                                                 "id":  "platform.api-gateway",
+                                                                                                                 "crate":  "sdkwork-api-gateway-api-server",
+                                                                                                                 "binary":  "sdkwork-api-gateway",
+                                                                                                                 "repository":  "sdkwork-api-gateway",
+                                                                                                                 "required":  true
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "id":  "application.public-ingress",
+                                                                                                                 "crate":  "sdkwork-mail-api-server",
+                                                                                                                 "binary":  "sdkwork-mail-api-server",
+                                                                                                                 "required":  true
+                                                                                                             },
+                                                                                                             {
+                                                                                                                 "id":  "pc-renderer",
+                                                                                                                 "package":  "apps/sdkwork-mail-pc",
+                                                                                                                 "script":  "dev",
+                                                                                                                 "required":  false
+                                                                                                             }
+                                                                                                         ],
+                                                                                           "healthSurfaces":  [
+                                                                                                                  "platform.api-gateway",
+                                                                                                                  "application.public-ingress"
+                                                                                                              ]
+                                                                                       }
+                                       }
+                      },
+    "packaging":  {
+                      "cloudConfigFiles":  [
+                                               "sdkwork-api-gateway.sdkwork-mail.development.toml",
+                                               "sdkwork-api-gateway.sdkwork-mail.production.toml"
+                                           ],
+                      "targets":  [
+                                      {
+                                          "id":  "platform-config-bundle-tar-gz",
+                                          "profile":  "platform-config-bundle",
+                                          "platform":  "all",
+                                          "architecture":  "all",
+                                          "formats":  [
+                                                          "tar.gz"
+                                                      ],
+                                          "runner":  "ubuntu-24.04",
+                                          "outputGlob":  "dist/cloud-config/sdkwork-mail-api-gateway-config-*.tar.gz"
+                                      }
+                                  ]
+                  },
+    "scripts":  {
+                    "MailDev":  "scripts/Mail-dev.mjs",
+                    "gatewayCloudBundle":  "scripts/gateway-cloud-bundle.mjs"
+                },
+    "retired":  {
+                    "vocabulary":  {
+                                       "topology":  [
+                                                        "standalone",
+                                                        "cloud"
+                                                    ]
+                                   },
+                    "envKeys":  [
+                                    "sdkwork_mail_API_BIND",
+                                    "VITE_mail_API_BASE_URL",
+                                    "VITE_mail_BACKEND_API_BASE_URL"
+                                ]
+                }
+}

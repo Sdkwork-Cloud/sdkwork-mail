@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-mail-mp-host",
+    "displayName": "SDKWork Mail MP Host",
+    "version": "0.1.0",
+    "type": "mini-program-package",
+    "root": "sdkwork-mail/apps/sdkwork-mail-mini-program/packages/sdkwork-mail-mp-host",
+    "domain": "communication",
+    "declaredDomain": "communication",
+    "capability": "host",
+    "status": "ready",
+    "languages": ["typescript"],
+    "generated": false,
+    "private": true,
+    "manifests": ["package.json"]
+  },
+  "contracts": {
+    "publicExports": ["."]
+  }
+}

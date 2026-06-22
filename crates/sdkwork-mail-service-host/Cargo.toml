@@ -1,0 +1,10 @@
+[package]
+name = "sdkwork-mail-service-host"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sdkwork-communication-mail-service.workspace = true
+sdkwork-router-mail-app-api.workspace = true
+sdkwork-router-mail-backend-api.workspace = true

@@ -1,0 +1,27 @@
+# Local workspace probes and scratch directories
+/.tmp/
+/.sdkwork/tmp/
+
+# Transient package-manager and tool state
+**/node_modules/
+**/.npm-cache/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+
+# Local packed archives
+**/*.tgz
+
+# Mail workspace build artifacts
+/sdkwork-mail-sdk-typescript/dist/
+/sdkwork-mail-sdk-rust/target/
+/sdkwork-mail-sdk-java/target/
+/sdkwork-mail-sdk-csharp/src/**/bin/
+/sdkwork-mail-sdk-csharp/src/**/obj/
+/sdkwork-mail-sdk-flutter/build/
+/sdkwork-mail-sdk-flutter/pubspec.lock
+/sdkwork-mail-sdk-flutter/providers/*/pubspec.lock
+/sdkwork-mail-sdk-kotlin/build/
+/sdkwork-mail-sdk-swift/.build/
+/sdkwork-mail-sdk-python/**/__pycache__/
+/sdkwork-mail-sdk-python/**/*.pyc

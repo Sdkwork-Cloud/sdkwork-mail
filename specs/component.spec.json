@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-mail-workspace",
+    "displayName": "SDKWork Mail Authority Workspace",
+    "version": "0.1.0",
+    "type": "app",
+    "root": "sdkwork-mail",
+    "domain": "communication",
+    "declaredDomain": null,
+    "capability": "mail",
+    "status": "ACTIVE",
+    "languages": [
+      "javascript",
+      "rust",
+      "typescript"
+    ],
+    "generated": false,
+    "private": true,
+    "manifests": [
+      "package.json",
+      "Cargo.toml",
+      "sdkwork.workflow.json",
+      "specs/topology.spec.json"
+    ]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "SDKWORK_WORKSPACE_SPEC.md",
+      "path": "../sdkwork-specs/SDKWORK_WORKSPACE_SPEC.md",
+      "purpose": "Repository root directory dictionary, .sdkwork workspace, and agent discovery rules."
+    },
+    {
+      "file": "COMPONENT_SPEC.md",
+      "path": "../sdkwork-specs/COMPONENT_SPEC.md",
+      "purpose": "Local component specs directory and manifest rules."
+    },
+    {
+      "file": "API_SPEC.md",
+      "path": "../sdkwork-specs/API_SPEC.md",
+      "purpose": "HTTP API authority, OpenAPI materialization, and route manifest rules."
+    },
+    {
+      "file": "SDK_SPEC.md",
+      "path": "../sdkwork-specs/SDK_SPEC.md",
+      "purpose": "SDK family ownership, generation, and consumer integration rules."
+    },
+    {
+      "file": "DOMAIN_SPEC.md",
+      "path": "../sdkwork-specs/DOMAIN_SPEC.md",
+      "purpose": "Canonical domain ownership and naming."
+    },
+    {
+      "file": "WEB_FRAMEWORK_SPEC.md",
+      "path": "../sdkwork-specs/WEB_FRAMEWORK_SPEC.md",
+      "purpose": "Mandatory sdkwork-web-framework integration for HTTP gateway and API runtimes."
+    },
+    {
+      "file": "WEB_BACKEND_SPEC.md",
+      "path": "../sdkwork-specs/WEB_BACKEND_SPEC.md",
+      "purpose": "HTTP handler, service, repository, and request-context layering."
+    },
+    {
+      "file": "DATABASE_SPEC.md",
+      "path": "../sdkwork-specs/DATABASE_SPEC.md",
+      "purpose": "Database table naming, schema registry, and persistence bootstrap rules."
+    },
+    {
+      "file": "GITHUB_WORKFLOW_SPEC.md",
+      "path": "../sdkwork-specs/GITHUB_WORKFLOW_SPEC.md",
+      "purpose": "sdkwork.workflow.json packaging, release, and GitHub Actions integration."
+    },
+    {
+      "file": "APP_RUNTIME_TOPOLOGY_SPEC.md",
+      "path": "../sdkwork-specs/APP_RUNTIME_TOPOLOGY_SPEC.md",
+      "purpose": "Runtime topology profiles, gateway surfaces, and packaging matrices."
+    },
+    {
+      "file": "TEST_SPEC.md",
+      "path": "../sdkwork-specs/TEST_SPEC.md",
+      "purpose": "Verification and contract testing expectations."
+    },
+    {
+      "file": "INTEGRATION_SPEC.md",
+      "path": "../sdkwork-specs/INTEGRATION_SPEC.md",
+      "purpose": "Provider plugin and external integration rules."
+    },
+    {
+      "file": "SECURITY_SPEC.md",
+      "path": "../sdkwork-specs/SECURITY_SPEC.md",
+      "purpose": "Auth, secrets, and webhook ingress rules."
+    }
+  ],
+  "contracts": {
+    "publicExports": [
+      "sdks/sdkwork-mail-sdk",
+      "sdks/sdkwork-mail-app-sdk",
+      "sdks/sdkwork-mail-backend-sdk"
+    ],
+    "runtimeEntrypoints": [
+      "crates/sdkwork-mail-api-server/src/main.rs",
+      "package.json#scripts.verify"
+    ],
+    "routeManifest": [
+      "sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json",
+      "sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json"
+    ],
+    "sdkClients": [
+      "sdks/sdkwork-mail-app-sdk",
+      "sdks/sdkwork-mail-backend-sdk",
+      "sdks/sdkwork-mail-sdk"
+    ],
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-utils",
+        "role": "cross-language-utility-library",
+        "packages": [
+          "sdkwork-utils-rust",
+          "@sdkwork/utils"
+        ]
+      },
+      {
+        "workspace": "sdkwork-drive-app-sdk",
+        "role": "drive-media-resource-app-capability",
+        "apiAuthority": "sdkwork-drive-app-api",
+        "apiPrefix": "/app/v3/api/drive"
+      }
+    ],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": [
+      {
+        "workspace": "sdkwork-mail-app-sdk",
+        "sdkFamily": "sdkwork-mail-app-sdk",
+        "apiAuthority": "sdkwork-mail-app-api",
+        "surface": "app-api",
+        "apiPrefix": "/app/v3/api/Mail"
+      },
+      {
+        "workspace": "sdkwork-mail-backend-sdk",
+        "sdkFamily": "sdkwork-mail-backend-sdk",
+        "apiAuthority": "sdkwork-mail-backend-api",
+        "surface": "backend-api",
+        "apiPrefix": "/backend/v3/api/Mail"
+      }
+    ],
+    "events": [],
+    "configKeys": [
+      "sdkwork_mail_DATABASE_URL",
+      "sdkwork_mail_HOSTING",
+      "sdkwork_mail_SERVICE_LAYOUT",
+      "sdkwork_mail_ENVIRONMENT",
+      "sdkwork_mail_PROFILE_ID",
+      "sdkwork_mail_PLATFORM_API_GATEWAY_HTTP_URL"
+    ],
+    "databasePrefixRegistries": [
+      "specs/database-prefix-registry.json"
+    ],
+    "databaseTableRegistries": [
+      "specs/database-table-registry.json"
+    ],
+    "topologySpec": "specs/topology.spec.json"
+  },
+  "verification": {
+    "commands": [
+      "pnpm run test:workspace-standard",
+      "pnpm run test:contract:migration",
+      "pnpm run api:materialize",
+      "pnpm run api:materialize:check",
+      "pnpm run sdk:check",
+      "pnpm run test:contract:database",
+      "pnpm run test:topology-validate",
+      "pnpm run test:topology-contract",
+      "pnpm run test:topology-baggage",
+      "pnpm run test:topology-packaging",
+      "pnpm run typecheck",
+      "pnpm test",
+      "pnpm run test:mini-program",
+      "pnpm run test:flutter-analyze",
+      "pnpm run test:flutter",
+      "pnpm run test:rust-fmt",
+      "cargo test --workspace",
+      "pnpm run verify"
+    ]
+  },
+  "metadata": {
+    "managedBy": "specs/component.spec.json",
+    "standardVersion": "2026-06-18",
+    "notes": "Mail authority workspace without root sdkwork.app.config.json; runnable app surfaces live under apps/."
+  }
+}

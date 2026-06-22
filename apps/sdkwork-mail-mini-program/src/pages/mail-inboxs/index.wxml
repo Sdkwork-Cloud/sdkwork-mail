@@ -1,0 +1,58 @@
+<view class="container">
+  <view class="toolbar">
+    <text>Signed in as {{userId}}</text>
+    <button size="mini" bindtap="onSignOut">Sign out</button>
+  </view>
+
+  <view class="card">
+    <text class="title">Inbox</text>
+    <picker
+      wx:if="{{accounts.length}}"
+      mode="selector"
+      range="{{accounts}}"
+      range-key="emailAddress"
+      bindchange="onAccountChange"
+    >
+      <view class="picker">Account: {{selectedAccountId}}</view>
+    </picker>
+    <button class="primary" bindtap="onRefresh" loading="{{loading}}">Refresh</button>
+    <text wx:if="{{error}}" class="error">{{error}}</text>
+  </view>
+
+  <view class="card">
+    <text class="title">Folders</text>
+    <block wx:if="{{folders.length}}">
+      <view
+        class="session"
+        wx:for="{{folders}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onFolderTap"
+      >
+        <text class="session-title">{{item.name}}</text>
+        <text class="status">{{item.unreadCount || 0}} unread</text>
+      </view>
+    </block>
+    <text wx:elif="{{!loading}}" class="empty">No folders found.</text>
+  </view>
+
+  <view class="card">
+    <text class="title">Messages</text>
+    <block wx:if="{{messages.length}}">
+      <view
+        class="session"
+        wx:for="{{messages}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onOpenMessage"
+      >
+        <view>
+          <text class="session-title">{{item.subject}}</text>
+          <text class="session-mode">{{item.fromEmail}}</text>
+        </view>
+        <text class="status">{{item.snippet}}</text>
+      </view>
+    </block>
+    <text wx:elif="{{!loading}}" class="empty">No messages in this folder.</text>
+  </view>
+</view>

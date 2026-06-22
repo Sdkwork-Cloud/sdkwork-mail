@@ -1,0 +1,9 @@
+[package]
+name = "sdkwork-mail-adapter-smtp"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+sdkwork-communication-mail-service.workspace = true
+sdkwork-utils-rust.workspace = true

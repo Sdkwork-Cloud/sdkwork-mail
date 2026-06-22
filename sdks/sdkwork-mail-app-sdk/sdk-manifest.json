@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "sdkName": "sdkwork-mail-app-sdk",
+  "sdkOwner": "sdkwork-mail",
+  "apiAuthority": "sdkwork-mail-app-api",
+  "sdkFamily": "sdkwork-mail-app-sdk",
+  "sdkType": "app",
+  "apiPrefix": "/app/v3/api",
+  "sourceAuthoritySpec": "../../apis/app-api/communication/sdkwork-mail-app-api.openapi.json",
+  "generationInputSpec": "openapi/sdkwork-mail-app-api.sdkgen.json",
+  "sdkDependencies": [],
+  "generatorName": "@sdkwork/sdk-generator",
+  "generatorEntryPoint": "E:\\sdkwork-space\\sdkwork-sdk-generator\\bin\\sdkgen.js",
+  "standardProfile": "sdkwork-v3",
+  "ownerOnlyOperationCount": 8
+}

@@ -1,0 +1,66 @@
+[workspace]
+resolver = "2"
+members = [
+    "plugins/mail-imap",
+    "plugins/mail-smtp",
+    "crates/sdkwork-mail-database-host",
+    "crates/sdkwork-mail-api-registry",
+    "crates/sdkwork-mail-app-context",
+    "crates/sdkwork-communication-mail-service",
+    "crates/sdkwork-mail-openapi",
+    "crates/sdkwork-communication-mail-repository-sqlx",
+    "crates/sdkwork-router-mail-app-api",
+    "crates/sdkwork-router-mail-backend-api",
+    "crates/sdkwork-mail-service-host",
+    "crates/sdkwork-mail-api-server",
+]
+
+[workspace.package]
+edition = "2024"
+license = "LicenseRef-SDKWork-Commercial"
+version = "0.1.0"
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+axum = { version = "0.8.8" }
+http-body-util = "0.1.3"
+tokio = { version = "1.48.0", features = ["macros", "rt-multi-thread", "net", "signal", "sync", "time"] }
+tower = { version = "0.5.3", features = ["util"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1", features = ["v4"] }
+sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "any", "sqlite", "postgres", "json"] }
+
+# SDKWork workspace members - declared once at workspace root
+sdkwork-mail-database-host = { path = "crates/sdkwork-mail-database-host" }
+sdkwork-mail-api-registry = { path = "crates/sdkwork-mail-api-registry" }
+sdkwork-mail-app-context = { path = "crates/sdkwork-mail-app-context" }
+sdkwork-communication-mail-service = { path = "crates/sdkwork-communication-mail-service" }
+sdkwork-communication-mail-repository-sqlx = { path = "crates/sdkwork-communication-mail-repository-sqlx" }
+sdkwork-mail-openapi = { path = "crates/sdkwork-mail-openapi" }
+sdkwork-mail-adapter-imap = { path = "plugins/mail-imap" }
+sdkwork-mail-adapter-smtp = { path = "plugins/mail-smtp" }
+sdkwork-router-mail-app-api = { path = "crates/sdkwork-router-mail-app-api" }
+sdkwork-router-mail-backend-api = { path = "crates/sdkwork-router-mail-backend-api" }
+sdkwork-mail-service-host = { path = "crates/sdkwork-mail-service-host" }
+sdkwork-mail-api-server = { path = "crates/sdkwork-mail-api-server" }
+sdkwork-drive-config = { path = "../sdkwork-drive/crates/sdkwork-drive-config" }
+sdkwork-drive-storage-contract = { path = "../sdkwork-drive/crates/sdkwork-drive-storage-contract" }
+sdkwork-drive-storage-local = { path = "../sdkwork-drive/crates/sdkwork-drive-storage-local" }
+sdkwork-drive-workspace-service = { path = "../sdkwork-drive/crates/sdkwork-drive-workspace-service" }
+sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config", package = "sdkwork-database-config" }
+sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle", package = "sdkwork-database-lifecycle" }
+sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi", package = "sdkwork-database-spi" }
+sdkwork-database-repository = { path = "../sdkwork-database/crates/sdkwork-database-repository", package = "sdkwork-database-repository" }
+sdkwork-database-sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx", package = "sdkwork-database-sqlx" }
+sdkwork_database_config = { path = "../sdkwork-database/crates/sdkwork-database-config", package = "sdkwork-database-config" }
+sdkwork_database_lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle", package = "sdkwork-database-lifecycle" }
+sdkwork_database_spi = { path = "../sdkwork-database/crates/sdkwork-database-spi", package = "sdkwork-database-spi" }
+sdkwork_database_sqlx = { path = "../sdkwork-database/crates/sdkwork-database-sqlx", package = "sdkwork-database-sqlx" }
+sdkwork-iam-web-adapter = { path = "../sdkwork-appbase/crates/sdkwork-iam-web-adapter" }
+sdkwork-web-axum = { path = "../sdkwork-web-framework/crates/sdkwork-web-axum" }
+sdkwork-web-bootstrap = { path = "../sdkwork-web-framework/crates/sdkwork-web-bootstrap" }
+sdkwork-web-contract = { path = "../sdkwork-web-framework/crates/sdkwork-web-contract" }
+sdkwork-web-core = { path = "../sdkwork-web-framework/crates/sdkwork-web-core" }
+sdkwork-utils-rust = { path = "../sdkwork-utils/packages/sdkwork-utils-rust" }

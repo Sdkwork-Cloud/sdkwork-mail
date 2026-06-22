@@ -1,0 +1,21 @@
+[package]
+name = "Mail-sdk-provider-mediasoup"
+version = "0.1.0"
+edition = "2021"
+description = "Reserved Rust provider package boundary for mediasoup Mail"
+license = "UNLICENSED"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[package.metadata.sdkwork-mail-provider]
+providerKey = "mediasoup"
+pluginId = "Mail-mediasoup"
+driverId = "sdkwork-mail-driver-mediasoup"
+packageIdentity = "Mail-sdk-provider-mediasoup"
+sourcePath = "src/lib.rs"
+sourceSymbol = "MailProviderMediasoupPackageContract"
+rootPublic = false
+status = "future-runtime-bridge-only"
+runtimeBridgeStatus = "reserved"

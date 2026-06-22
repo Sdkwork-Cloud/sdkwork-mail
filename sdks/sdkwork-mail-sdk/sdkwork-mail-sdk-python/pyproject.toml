@@ -1,0 +1,9 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sdkwork-mail-sdk"
+version = "0.1.0"
+description = "Reserved Python package scaffold for sdkwork-mail-sdk with build system: pyproject"
+requires-python = ">=3.11"

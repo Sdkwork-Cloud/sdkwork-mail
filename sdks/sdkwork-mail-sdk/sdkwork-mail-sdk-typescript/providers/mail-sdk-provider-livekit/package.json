@@ -1,0 +1,72 @@
+{
+  "name": "@sdkwork/Mail-sdk-provider-livekit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Reserved TypeScript provider boundary for LiveKit Mail within sdkwork-mail-sdk",
+  "type": "module",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "README.md"
+  ],
+  "peerDependencies": {
+    "@sdkwork/Mail-sdk": "^0.1.1"
+  },
+  "peerDependenciesMeta": {},
+  "devDependencies": {
+    "@sdkwork/Mail-sdk": "workspace:*"
+  },
+  "sdkworkMailProvider": {
+    "providerKey": "livekit",
+    "displayName": "LiveKit Mail",
+    "tier": "tier-a",
+    "builtin": true,
+    "status": "package_reference_boundary",
+    "registrationContract": "MailProviderModule",
+    "sourceModule": "./index.js",
+    "driverFactory": "createLivekitMailDriver",
+    "metadataSymbol": "LIVEKIT_mail_PROVIDER_METADATA",
+    "moduleSymbol": "LIVEKIT_mail_PROVIDER_MODULE",
+    "rootPublic": false,
+    "requiredCapabilities": [
+      "session",
+      "credential",
+      "provider.webhook",
+      "health",
+      "media.audio",
+      "media.video",
+      "live.broadcast",
+      "live.audience",
+      "provider.event-normalization"
+    ],
+    "optionalCapabilities": [
+      "screen-share",
+      "recording",
+      "artifact",
+      "data-channel",
+      "transcription",
+      "e2ee",
+      "provider.active-query"
+    ],
+    "extensionKeys": [
+      "livekit.native-client"
+    ],
+    "typescriptAdapter": {
+      "sdkProvisioning": "consumer-supplied",
+      "bindingStrategy": "native-factory",
+      "bundlePolicy": "must-not-bundle",
+      "runtimeBridgeStatus": "reserved",
+      "officialVendorSdkRequirement": "not-declared-until-bridge"
+    }
+  }
+}

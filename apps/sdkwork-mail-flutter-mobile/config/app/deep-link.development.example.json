@@ -1,0 +1,25 @@
+{
+  "scheme": "sdkworkMail",
+  "host": "auth",
+  "path": "/callback",
+  "returnUrl": "sdkworkMail://auth/callback",
+  "android": {
+    "intentFilter": {
+      "action": "android.intent.action.VIEW",
+      "category": ["android.intent.category.DEFAULT", "android.intent.category.BROWSABLE"],
+      "data": {
+        "scheme": "sdkworkMail",
+        "host": "auth",
+        "pathPrefix": "/callback"
+      }
+    }
+  },
+  "ios": {
+    "cfBundleURLTypes": [
+      {
+        "CFBundleURLName": "sdkwork.Mail.auth",
+        "CFBundleURLSchemes": ["sdkworkMail"]
+      }
+    ]
+  }
+}

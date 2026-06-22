@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.database.prefixRegistry",
+  "appCode": "mail",
+  "product": "sdkwork-mail",
+  "authority": "../sdkwork-specs/DATABASE_SPEC.md",
+  "prefixes": [
+    {
+      "prefix": "mail",
+      "status": "ACTIVE",
+      "businessDomain": "communication",
+      "boundedContext": "mailbox accounts, folders, threads, messages, attachments, labels, transport providers",
+      "ownerTeam": "mail-platform",
+      "writeOwners": [
+        "sdkwork-communication-mail-repository-sqlx",
+        "sdkwork-mail-service-host"
+      ],
+      "allowedTableNamePattern": "^mail_[a-z0-9]+(_[a-z0-9]+)*$",
+      "tableExamples": [
+        "mail_account",
+        "mail_folder",
+        "mail_message",
+        "mail_provider_account"
+      ],
+      "forbiddenAliases": ["rtc", "im", "media_session", "room"],
+      "validFrom": "2026-06-22",
+      "notes": ["Use mail_ only for Mail authority-owned tables."]
+    }
+  ]
+}

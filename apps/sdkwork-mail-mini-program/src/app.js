@@ -1,0 +1,19 @@
+const { SESSION_STORAGE_KEY } = require("./constants/sessionStorageKey");
+const { bootstrapMailMiniProgram } = require("./runtime/mail-app");
+
+App({
+  onLaunch(options) {
+    const query = options?.query ?? {};
+    try {
+      bootstrapMailMiniProgram(query);
+    } catch {
+      // Runtime bundle may be unavailable before build; pages bootstrap on demand.
+    }
+    const session = wx.getStorageSync(SESSION_STORAGE_KEY);
+    if (!session) {
+      wx.reLaunch({ url: "/pages/login/index" });
+      return;
+    }
+    wx.reLaunch({ url: "/pages/mail-inboxs/index" });
+  },
+});

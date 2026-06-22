@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-mail-flutter-mobile",
+    "displayName": "SDKWork Mail Flutter Mobile",
+    "version": "0.1.0",
+    "type": "flutter-app-root",
+    "root": "apps/sdkwork-mail-flutter-mobile",
+    "domain": "mail",
+    "capability": "mail",
+    "surface": "app",
+    "languages": ["dart"],
+    "generated": false,
+    "manifests": ["pubspec.yaml", "sdkwork.app.config.json"]
+  },
+  "canonicalSpecs": [
+    {
+      "file": "FLUTTER_APP_MOBILE_ARCHITECTURE_SPEC.md",
+      "path": "../../../../sdkwork-specs/FLUTTER_APP_MOBILE_ARCHITECTURE_SPEC.md",
+      "purpose": "Flutter mobile application root architecture standard."
+    },
+    {
+      "file": "APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md",
+      "path": "../../../../sdkwork-specs/APP_CLIENT_ARCHITECTURE_ALIGNMENT_SPEC.md",
+      "purpose": "Cross-client architecture alignment."
+    }
+  ],
+  "contracts": {
+    "publicExports": ["lib/main.dart"],
+    "runtimeEntrypoints": ["pubspec.yaml#environment.sdk"],
+    "sdkClients": [],
+    "sdkDependencies": ["sdkwork-mail-app-sdk"],
+    "dependencyApiExports": [],
+    "dependencyApiSurfaces": []
+  },
+  "verification": {
+    "commands": ["flutter analyze", "flutter test"]
+  }
+}

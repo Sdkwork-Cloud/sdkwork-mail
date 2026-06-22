@@ -1,0 +1,21 @@
+[package]
+name = "Mail-sdk-provider-zego"
+version = "0.1.0"
+edition = "2021"
+description = "Reserved Rust provider package boundary for ZEGO Mail"
+license = "UNLICENSED"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[package.metadata.sdkwork-mail-provider]
+providerKey = "zego"
+pluginId = "Mail-zego"
+driverId = "sdkwork-mail-driver-zego"
+packageIdentity = "Mail-sdk-provider-zego"
+sourcePath = "src/lib.rs"
+sourceSymbol = "MailProviderZegoPackageContract"
+rootPublic = false
+status = "future-runtime-bridge-only"
+runtimeBridgeStatus = "reserved"

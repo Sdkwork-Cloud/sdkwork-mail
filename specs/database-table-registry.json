@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.database.tableRegistry",
+  "appCode": "mail",
+  "authority": "../sdkwork-specs/DATABASE_SPEC.md",
+  "prefixRegistry": "./database-prefix-registry.json",
+  "databaseProfiles": ["postgresql"],
+  "tables": [
+    {
+      "tableName": "mail_account",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_folder",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_thread",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_message",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_message_recipient",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "relation_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_attachment",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_label",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_message_label",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "relation_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_provider_account",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_provider_credential",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_sync_state",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_outbox_event",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "tenant_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    },
+    {
+      "tableName": "mail_audit_log",
+      "modulePrefix": "mail",
+      "boundedContext": "communication",
+      "tableProfile": "audit_entity",
+      "systemOfRecord": true,
+      "writeOwner": "sdkwork-communication-mail-repository-sqlx",
+      "migration": "database/ddl/baseline/postgres/0001_mail_baseline.sql"
+    }
+  ]
+}

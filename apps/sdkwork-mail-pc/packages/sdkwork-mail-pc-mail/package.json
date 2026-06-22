@@ -1,0 +1,12 @@
+{
+  "name": "@sdkwork/Mail-pc-Mail",
+  "private": true,
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@sdkwork/Mail-pc-core": "workspace:*",
+    "react": "catalog:",
+    "sdkwork-mail-app-sdk-generated-typescript": "workspace:*"
+  }
+}

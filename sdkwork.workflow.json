@@ -1,0 +1,172 @@
+{
+  "schemaVersion": "2026-06-06.sdkwork.workflow.v1",
+  "app": {
+    "id": "sdkwork-mail",
+    "name": "SDKWork Mail",
+    "repository": "Sdkwork-Cloud/sdkwork-mail",
+    "sourcePath": "."
+  },
+  "release": {
+    "artifactPrefix": "sdkwork-mail",
+    "defaultVersion": "0.1.0",
+    "changelog": {
+      "source": "auto",
+      "maxCommitSubjects": 50
+    }
+  },
+  "dependencies": [
+    {
+      "id": "sdkwork-appbase",
+      "repository": "Sdkwork-Cloud/sdkwork-appbase",
+      "ref": "main",
+      "refInput": "SDKWORK_APPBASE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-web-framework",
+      "repository": "Sdkwork-Cloud/sdkwork-web-framework",
+      "ref": "main",
+      "refInput": "SDKWORK_WEB_FRAMEWORK_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-database",
+      "repository": "Sdkwork-Cloud/sdkwork-database",
+      "ref": "main",
+      "refInput": "SDKWORK_DATABASE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-utils",
+      "repository": "Sdkwork-Cloud/sdkwork-utils",
+      "ref": "main",
+      "refInput": "SDKWORK_UTILS_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-drive",
+      "repository": "Sdkwork-Cloud/sdkwork-drive",
+      "ref": "main",
+      "refInput": "SDKWORK_DRIVE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-sdk-generator",
+      "repository": "Sdkwork-Cloud/sdkwork-sdk-generator",
+      "ref": "main",
+      "refInput": "SDKWORK_SDK_GENERATOR_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    },
+    {
+      "id": "sdkwork-app-topology",
+      "repository": "Sdkwork-Cloud/sdkwork-app-topology",
+      "ref": "main",
+      "refInput": "SDKWORK_APP_TOPOLOGY_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN"
+    }
+  ],
+  "verificationDependencies": [
+    {
+      "id": "sdkwork-im",
+      "repository": "Sdkwork-Cloud/sdkwork-im",
+      "ref": "main",
+      "refInput": "SDKWORK_IM_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN",
+      "purpose": "Mail-IM migration boundary contract tests"
+    },
+    {
+      "id": "sdkwork-core",
+      "repository": "Sdkwork-Cloud/sdkwork-core",
+      "ref": "main",
+      "refInput": "SDKWORK_CORE_REF",
+      "tokenSecret": "SDKWORK_RELEASE_TOKEN",
+      "purpose": "Mail core aggregation boundary contract tests"
+    }
+  ],
+  "toolchains": {
+    "node": "22",
+    "pnpm": "10.33.0",
+    "rust": "stable",
+    "flutter": "stable"
+  },
+  "lifecycle": {
+    "install": [
+      {
+        "name": "Install workspace dependencies",
+        "shell": "pwsh",
+        "run": "pnpm install --no-frozen-lockfile"
+      }
+    ],
+    "build": [
+      {
+        "name": "Run SDKWork Mail contract checks",
+        "shell": "pwsh",
+        "run": "pnpm run verify"
+      }
+    ],
+    "package": [
+      {
+        "name": "Package Mail cloud gateway config bundle",
+        "shell": "pwsh",
+        "run": "$ErrorActionPreference = \"Stop\"\nswitch ($env:SDKWORK_PACKAGE_VARIANT) {\n  'config-bundle' { pnpm gateway:bundle:cloud }\n  default { Write-Host \"Skipping Mail package archive for profile $($env:SDKWORK_PACKAGE_VARIANT)\" }\n}"
+      }
+    ],
+    "sbom": [
+      {
+        "name": "Write Mail package SBOM evidence",
+        "shell": "node",
+        "run": "import { mkdirSync, writeFileSync } from 'node:fs';\nimport path from 'node:path';\nconst env = process.env;\nconst packageId = env.SDKWORK_PACKAGE_ID || env.SDKWORK_PACKAGE_TARGET_ID || 'sdkwork-mail';\nconst output = path.posix.join('artifacts/release/sbom', `${packageId}.sbom.json`);\nmkdirSync(path.dirname(output), { recursive: true });\nwriteFileSync(output, `${JSON.stringify({ bomFormat: 'CycloneDX', specVersion: '1.6', version: 1, metadata: { timestamp: new Date().toISOString(), tools: [{ vendor: 'SDKWork', name: 'sdkwork-mail-workflow-sbom', version: '1.0.0' }], component: { type: 'application', name: env.SDKWORK_APP_ID || 'sdkwork-mail', version: env.SDKWORK_PACKAGE_VERSION || env.SDKWORK_RELEASE_TAG || '0.1.0', 'bom-ref': packageId }, properties: [{ name: 'sdkwork:packageId', value: packageId }, { name: 'sdkwork:targetId', value: env.SDKWORK_PACKAGE_TARGET_ID || packageId }, { name: 'sdkwork:runtimeTarget', value: env.SDKWORK_RUNTIME_TARGET || 'server' }, { name: 'sdkwork:deploymentProfile', value: env.SDKWORK_DEPLOYMENT_PROFILE || 'standalone' }] }, components: [] }, null, 2)}\\n`);"
+      }
+    ],
+    "validate": [
+      {
+        "name": "Validate Mail cloud gateway config bundle",
+        "shell": "pwsh",
+        "run": "$ErrorActionPreference = \"Stop\"\nswitch ($env:SDKWORK_PACKAGE_VARIANT) {\n  'config-bundle' { pnpm gateway:bundle:validate:cloud }\n  default { Write-Host \"Skipping Mail package validation for profile $($env:SDKWORK_PACKAGE_VARIANT)\" }\n}"
+      }
+    ]
+  },
+  "targets": [
+    {
+      "id": "linux-x64-standalone-server-tar-gz",
+      "profile": "server",
+      "platform": "linux",
+      "architecture": "x64",
+      "formats": [
+        "tar.gz"
+      ],
+      "runner": "ubuntu-24.04",
+      "outputGlobs": [
+        "artifacts/release/**/*"
+      ],
+      "deploymentProfile": "standalone",
+      "runtimeTarget": "server"
+    },
+    {
+      "id": "container-noarch-cloud-container-config-bundle-tar-gz",
+      "profile": "container",
+      "platform": "container",
+      "architecture": "noarch",
+      "formats": [
+        "tar.gz"
+      ],
+      "runner": "ubuntu-24.04",
+      "outputGlobs": [
+        "dist/config-bundle/sdkwork-mail-api-gateway-config-*.tar.gz"
+      ],
+      "deploymentProfile": "cloud",
+      "runtimeTarget": "container",
+      "variant": "config-bundle"
+    }
+  ],
+  "security": {
+    "artifactAttestations": true,
+    "sbomRequired": true,
+    "signingRequired": false
+  },
+  "publish": {
+    "workflowArtifact": true,
+    "githubRelease": false,
+    "retentionDays": 30
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.app.config",
+  "app": {
+    "id": "sdkwork-mail-flutter-mobile",
+    "displayName": "SDKWork Mail Mobile",
+    "version": "0.1.0",
+    "runtime": {
+      "family": "mobile",
+      "framework": "flutter",
+      "surface": "app"
+    }
+  },
+  "runtime": {
+    "supportedDeploymentProfiles": [
+      "cloud"
+    ],
+    "defaultDeploymentProfile": "cloud"
+  }
+}

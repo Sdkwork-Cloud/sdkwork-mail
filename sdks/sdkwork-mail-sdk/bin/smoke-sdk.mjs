@@ -1,0 +1,330 @@
+#!/usr/bin/env node
+import { existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { assertMailAssemblyWorkspaceBaseline } from './Mail-standard-assembly-baseline.mjs';
+import {
+  readJsonFile,
+  resolveMailSdkAppRootFromWorkspaceRoot,
+  resolveMailSdkWorkspaceRoot,
+} from './Mail-standard-file-helpers.mjs';
+
+function fail(message) {
+  throw new Error(message);
+}
+
+function resolveWindowsBatCommandPath(command) {
+  if (process.platform !== 'win32') {
+    return null;
+  }
+
+  const declaredExtension = path.extname(command).toLowerCase();
+  if (declaredExtension === '.cmd' || declaredExtension === '.bat') {
+    return command;
+  }
+
+  const resolution = spawnSync('where.exe', [command], {
+    encoding: 'utf8',
+    shell: false,
+  });
+
+  if (resolution.error || resolution.status !== 0 || typeof resolution.stdout !== 'string') {
+    return null;
+  }
+
+  return resolution.stdout
+    .split(/\r?\n/u)
+    .map((entry) => entry.trim())
+    .find((entry) => ['.cmd', '.bat'].includes(path.extname(entry).toLowerCase())) ?? null;
+}
+
+function quoteWindowsCmdArgument(argument) {
+  const value = String(argument);
+  if (!/[\s"]/u.test(value)) {
+    return value;
+  }
+
+  return `"${value.replace(/"/gu, '""')}"`;
+}
+
+function buildWindowsFlutterCommandLine(flutterBatPath, args) {
+  const flutterBinDirectory = path.dirname(flutterBatPath);
+  const bootstrapPath = [
+    'C:\\Windows\\System32',
+    'C:\\Windows',
+    'C:\\Windows\\System32\\WindowsPowerShell\\v1.0',
+    'C:\\Program Files\\Git\\cmd',
+    flutterBinDirectory,
+  ].join(';');
+
+  return `set CONDA_NO_PLUGINS=true&& set PATH=${bootstrapPath}&& ${[
+    'flutter',
+    ...args.map(quoteWindowsCmdArgument),
+  ].join(' ')}`;
+}
+
+function runCommand(label, command, args, cwd, options = {}) {
+  const optional = options.optional === true;
+  const windowsFlutterBatPath =
+    process.platform === 'win32' && command === 'flutter'
+      ? resolveWindowsBatCommandPath(command)
+      : null;
+  const commandToRun = windowsFlutterBatPath ? process.env.ComSpec ?? 'cmd.exe' : command;
+  const argsToRun = windowsFlutterBatPath
+    ? ['/d', '/s', '/c', buildWindowsFlutterCommandLine(windowsFlutterBatPath, args)]
+    : args;
+
+  console.log(`[sdkwork-mail-sdk] ${optional ? 'optional' : 'required'} step: ${label}`);
+  const result = spawnSync(commandToRun, argsToRun, {
+    cwd,
+    stdio: 'inherit',
+    shell: false,
+  });
+
+  if (result.error) {
+    if (optional && result.error.code === 'ENOENT') {
+      console.log(
+        `[sdkwork-mail-sdk] skipped optional step "${label}" because "${command}" is not available`,
+      );
+      return {
+        label,
+        status: 'skipped',
+        reason: `command "${command}" is not available`,
+      };
+    }
+
+    fail(`${label} failed to start: ${result.error.message}`);
+  }
+
+  if (result.signal) {
+    fail(`${label} terminated with signal ${result.signal}`);
+  }
+
+  if (typeof result.status === 'number' && result.status !== 0) {
+    fail(`${label} failed with exit code ${result.status}`);
+  }
+
+  return {
+    label,
+    status: 'passed',
+  };
+}
+
+function runRequiredNodeStep(label, args, cwd) {
+  return runCommand(label, process.execPath, args, cwd);
+}
+
+function runOptionalCommand(label, command, args, cwd) {
+  return runCommand(label, command, args, cwd, { optional: true });
+}
+
+function collectFilesRecursively(directory, matcher, bucket) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const entryPath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      collectFilesRecursively(entryPath, matcher, bucket);
+      continue;
+    }
+
+    if (matcher(entryPath)) {
+      bucket.push(entryPath);
+    }
+  }
+}
+
+function listSourceFiles(sourceRoot, extension) {
+  if (!existsSync(sourceRoot)) {
+    fail(`Source root is missing: ${sourceRoot}`);
+  }
+
+  const sourceFiles = [];
+  collectFilesRecursively(sourceRoot, (entryPath) => entryPath.endsWith(extension), sourceFiles);
+
+  if (sourceFiles.length === 0) {
+    fail(`Source root does not contain any ${extension} files: ${sourceRoot}`);
+  }
+
+  sourceFiles.sort();
+  return sourceFiles;
+}
+
+function buildJavaCompileStep(workspaceRoot) {
+  const javaRoot = path.join(workspaceRoot, 'sdkwork-mail-sdk-java');
+  const javaSourceRoot = path.join(javaRoot, 'src', 'main', 'java');
+  const javaTargetRoot = path.join(javaRoot, 'target', 'classes');
+  const sourceFiles = listSourceFiles(javaSourceRoot, '.java');
+
+  rmSync(javaTargetRoot, { recursive: true, force: true });
+  mkdirSync(javaTargetRoot, { recursive: true });
+
+  return {
+    label: 'java:javac',
+    command: 'javac',
+    args: ['-d', javaTargetRoot, ...sourceFiles],
+    cwd: javaRoot,
+  };
+}
+
+function buildKotlinCompileStep(workspaceRoot) {
+  const kotlinRoot = path.join(workspaceRoot, 'sdkwork-mail-sdk-kotlin');
+  const kotlinSourceRoot = path.join(kotlinRoot, 'src', 'main', 'kotlin');
+  const kotlinTargetRoot = path.join(kotlinRoot, 'build', 'classes');
+  const sourceFiles = listSourceFiles(kotlinSourceRoot, '.kt');
+
+  rmSync(kotlinTargetRoot, { recursive: true, force: true });
+  mkdirSync(kotlinTargetRoot, { recursive: true });
+
+  return {
+    label: 'kotlin:kotlinc',
+    command: 'kotlinc',
+    args: ['-d', kotlinTargetRoot, ...sourceFiles],
+    cwd: kotlinRoot,
+  };
+}
+
+function printSummary(requiredResults, optionalPassed, optionalSkipped) {
+  console.log('[sdkwork-mail-sdk] full regression summary');
+  console.log(
+    `[sdkwork-mail-sdk] required steps passed (${requiredResults.length}): ${requiredResults
+      .map((entry) => entry.label)
+      .join(', ')}`,
+  );
+
+  if (optionalPassed.length > 0) {
+    console.log(
+      `[sdkwork-mail-sdk] optional steps passed (${optionalPassed.length}): ${optionalPassed
+        .map((entry) => entry.label)
+        .join(', ')}`,
+    );
+  }
+
+  if (optionalSkipped.length > 0) {
+    console.log(
+      `[sdkwork-mail-sdk] optional steps skipped (${optionalSkipped.length}): ${optionalSkipped
+        .map((entry) => `${entry.label} [${entry.reason}]`)
+        .join(', ')}`,
+    );
+  }
+}
+
+function assertAssembly(workspaceRoot) {
+  const assemblyPath = path.join(workspaceRoot, '.sdkwork-assembly.json');
+  if (!existsSync(assemblyPath)) {
+    fail(`Mail assembly descriptor is missing: ${assemblyPath}`);
+  }
+
+  assertMailAssemblyWorkspaceBaseline(readJsonFile(assemblyPath));
+}
+
+export function runMailSdkSmoke(workspaceRoot) {
+  const requiredResults = [];
+  const optionalPassed = [];
+  const optionalSkipped = [];
+  const repoRoot = resolveMailSdkAppRootFromWorkspaceRoot(workspaceRoot);
+
+  assertAssembly(workspaceRoot);
+
+  requiredResults.push(
+    runRequiredNodeStep(
+      'root:materialize',
+      [path.join(workspaceRoot, 'bin', 'materialize-sdk.mjs')],
+      repoRoot,
+    ),
+  );
+  requiredResults.push(
+    runRequiredNodeStep(
+      'root:automation-tests',
+      [path.join(workspaceRoot, 'test', 'verify-sdk-automation.test.mjs')],
+      repoRoot,
+    ),
+  );
+  requiredResults.push(
+    runRequiredNodeStep(
+      'root:verify',
+      [path.join(workspaceRoot, 'bin', 'verify-sdk.mjs')],
+      repoRoot,
+    ),
+  );
+  requiredResults.push(
+    runRequiredNodeStep(
+      'typescript:test',
+      [path.join(workspaceRoot, 'sdkwork-mail-sdk-typescript', 'bin', 'package-task.mjs'), 'test'],
+      repoRoot,
+    ),
+  );
+  requiredResults.push(
+    runRequiredNodeStep(
+      'typescript:smoke',
+      [path.join(workspaceRoot, 'sdkwork-mail-sdk-typescript', 'bin', 'package-task.mjs'), 'smoke'],
+      repoRoot,
+    ),
+  );
+
+  const optionalSteps = [
+    {
+      label: 'python:compileall',
+      command: 'python',
+      args: ['-m', 'compileall', '-q', 'sdkwork-mail-sdk-python/sdkwork_mail_sdk'],
+      cwd: workspaceRoot,
+    },
+    {
+      label: 'flutter:analyze',
+      command: 'flutter',
+      args: ['analyze'],
+      cwd: path.join(workspaceRoot, 'sdkwork-mail-sdk-flutter'),
+    },
+    {
+      label: 'rust:cargo-check',
+      command: 'cargo',
+      args: ['check'],
+      cwd: path.join(workspaceRoot, 'sdkwork-mail-sdk-rust'),
+    },
+    {
+      label: 'go:go-build',
+      command: 'go',
+      args: ['build', './...'],
+      cwd: path.join(workspaceRoot, 'sdkwork-mail-sdk-go'),
+    },
+    {
+      label: 'csharp:dotnet-build',
+      command: 'dotnet',
+      args: ['build', 'src/SDKWork.Mail.Sdk/SDKWork.Mail.Sdk.csproj', '-nologo'],
+      cwd: path.join(workspaceRoot, 'sdkwork-mail-sdk-csharp'),
+    },
+    buildJavaCompileStep(workspaceRoot),
+    {
+      label: 'swift:swift-build',
+      command: 'swift',
+      args: ['build'],
+      cwd: path.join(workspaceRoot, 'sdkwork-mail-sdk-swift'),
+    },
+    buildKotlinCompileStep(workspaceRoot),
+  ];
+
+  for (const step of optionalSteps) {
+    const result = runOptionalCommand(step.label, step.command, step.args, step.cwd);
+    if (result.status === 'passed') {
+      optionalPassed.push(result);
+      continue;
+    }
+
+    optionalSkipped.push(result);
+  }
+
+  printSummary(requiredResults, optionalPassed, optionalSkipped);
+}
+
+const workspaceRoot = resolveMailSdkWorkspaceRoot(import.meta.url);
+const invokedPath = process.argv[1] ? pathToFileURL(path.resolve(process.argv[1])).href : null;
+const isCliEntry = invokedPath === import.meta.url;
+
+if (isCliEntry) {
+  try {
+    runMailSdkSmoke(workspaceRoot);
+  } catch (error) {
+    console.error(`[sdkwork-mail-sdk] ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  }
+}

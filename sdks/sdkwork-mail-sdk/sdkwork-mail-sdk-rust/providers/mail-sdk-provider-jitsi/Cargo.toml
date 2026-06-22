@@ -1,0 +1,21 @@
+[package]
+name = "Mail-sdk-provider-jitsi"
+version = "0.1.0"
+edition = "2021"
+description = "Reserved Rust provider package boundary for Jitsi Meet"
+license = "UNLICENSED"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[package.metadata.sdkwork-mail-provider]
+providerKey = "jitsi"
+pluginId = "Mail-jitsi"
+driverId = "sdkwork-mail-driver-jitsi"
+packageIdentity = "Mail-sdk-provider-jitsi"
+sourcePath = "src/lib.rs"
+sourceSymbol = "MailProviderJitsiPackageContract"
+rootPublic = false
+status = "future-runtime-bridge-only"
+runtimeBridgeStatus = "reserved"

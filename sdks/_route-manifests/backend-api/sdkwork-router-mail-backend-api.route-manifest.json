@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.route.manifest",
+  "packageName": "sdkwork-router-mail-backend-api",
+  "surface": "backend-api",
+  "owner": "sdkwork-mail",
+  "domain": "communication",
+  "capability": "mail",
+  "apiAuthority": "sdkwork-mail-backend-api",
+  "sdkFamily": "sdkwork-mail-backend-sdk",
+  "prefix": "/backend/v3/api",
+  "source": {
+    "crateRoot": "crates/sdkwork-router-mail-backend-api/src",
+    "crateImport": "sdkwork_router_mail_backend_api"
+  },
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/mail/provider_accounts",
+      "operationId": "mail.providerAccounts.list",
+      "tags": ["mailProviderAccounts"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "dual-token",
+        "required": true,
+        "permission": "mail.provider_accounts.read",
+        "tenantScope": "tenant",
+        "dataScope": "organization"
+      },
+      "handler": { "module": "crate::handlers", "name": "list_provider_accounts" },
+      "schemas": {
+        "request": null,
+        "response": "MailProviderAccountListResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/provider_webhooks/{provider}/events",
+      "operationId": "mail.providerWebhooks.events.receive",
+      "tags": ["mailProviderWebhooks"],
+      "requestContext": "WebRequestContext",
+      "apiSurface": "backend-api",
+      "auth": {
+        "mode": "public",
+        "required": false,
+        "permission": "mail.provider_webhooks.receive",
+        "tenantScope": "tenant",
+        "dataScope": "organization",
+        "providerWebhookSignature": true
+      },
+      "handler": { "module": "crate::handlers", "name": "receive_provider_webhook" },
+      "rateLimitTier": "openApiDefault",
+      "schemas": {
+        "request": "MailProviderWebhookEventRequest",
+        "response": "MailProviderWebhookEventResponse",
+        "problem": "ProblemDetail"
+      },
+      "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-backend-api" },
+      "source": {
+        "packageName": "sdkwork-router-mail-backend-api",
+        "file": "crates/sdkwork-router-mail-backend-api/src/paths.rs"
+      }
+    }
+  ]
+}

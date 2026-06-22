@@ -1,0 +1,22 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.sdkwork</groupId>
+  <artifactId>Mail-sdk-provider-zego</artifactId>
+  <version>0.1.0</version>
+  <name>com.sdkwork:Mail-sdk-provider-zego</name>
+  <description>Reserved Java provider package boundary for ZEGO Mail</description>
+
+  <properties>
+    <sdkwork.Mail.providerKey>zego</sdkwork.Mail.providerKey>
+    <sdkwork.Mail.pluginId>Mail-zego</sdkwork.Mail.pluginId>
+    <sdkwork.Mail.driverId>sdkwork-mail-driver-zego</sdkwork.Mail.driverId>
+    <sdkwork.Mail.packageIdentity>com.sdkwork:Mail-sdk-provider-zego</sdkwork.Mail.packageIdentity>
+    <sdkwork.Mail.sourcePath>src/main/java/com/sdkwork/Mail/provider/zego/MailProviderZegoPackageContract.java</sdkwork.Mail.sourcePath>
+    <sdkwork.Mail.sourceSymbol>MailProviderZegoPackageContract</sdkwork.Mail.sourceSymbol>
+    <sdkwork.Mail.rootPublic>false</sdkwork.Mail.rootPublic>
+    <sdkwork.Mail.status>future-runtime-bridge-only</sdkwork.Mail.status>
+    <sdkwork.Mail.runtimeBridgeStatus>reserved</sdkwork.Mail.runtimeBridgeStatus>
+  </properties>
+</project>

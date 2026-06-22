@@ -1,0 +1,76 @@
+name: Mail Governance
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      sdkwork_im_ref:
+        description: sdkwork-im commit/ref for migration boundary verification.
+        required: false
+        default: main
+      sdkwork_core_ref:
+        description: sdkwork-core commit/ref for migration boundary verification.
+        required: false
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: Mail-governance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify Workspace Governance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Prepare SDKWork source dependencies
+        env:
+          SDKWORK_RELEASE_TOKEN: ${{ secrets.SDKWORK_RELEASE_TOKEN || github.token }}
+          SDKWORK_IM_REF: ${{ github.event.inputs.sdkwork_im_ref || 'main' }}
+          SDKWORK_CORE_REF: ${{ github.event.inputs.sdkwork_core_ref || 'main' }}
+        run: pnpm run workflow:prepare-ci-dependencies
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust artifacts
+        uses: swatinem/rust-cache@v2
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: "3.24.0"
+
+      - name: Install workspace dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Flutter mobile dependencies
+        working-directory: apps/sdkwork-mail-flutter-mobile
+        run: flutter pub get
+
+      - name: Verify workspace governance
+        run: pnpm run verify

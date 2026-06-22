@@ -1,0 +1,21 @@
+[package]
+name = "sdkwork-communication-mail-repository-sqlx"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sdkwork-mail-database-host.workspace = true
+sdkwork-database-config.workspace = true
+sdkwork-database-repository.workspace = true
+sdkwork-database-sqlx.workspace = true
+sdkwork-communication-mail-service.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+uuid = { version = "1", features = ["v4"] }
+chrono = { version = "0.4" }
+sdkwork-utils-rust.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true

@@ -1,0 +1,31 @@
+{
+  "name": "@sdkwork/Mail-h5",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.app.json && vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json"
+  },
+  "dependencies": {
+    "@sdkwork/auth-runtime-pc-react": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router-dom": "^7.17.0",
+    "@sdkwork/Mail-h5-admin-core": "workspace:*",
+    "@sdkwork/Mail-h5-admin-shell": "workspace:*",
+    "@sdkwork/Mail-h5-core": "workspace:*",
+    "@sdkwork/Mail-h5-Mail": "workspace:*",
+    "@sdkwork/Mail-h5-shell": "workspace:*",
+    "@sdkwork/sdk-common": "^1.0.2",
+    "sdkwork-mail-app-sdk-generated-typescript": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

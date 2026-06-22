@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-mail-app-sdk",
+    "displayName": "SDKWork Mail App SDK",
+    "version": "0.1.0",
+    "type": "sdk-family",
+    "root": "sdkwork-mail/sdks/sdkwork-mail-app-sdk",
+    "domain": "communication",
+    "declaredDomain": "Mail",
+    "capability": "app-sdk",
+    "status": "standardizing",
+    "languages": [
+      "typescript",
+      "rust",
+      "java",
+      "python",
+      "go"
+    ],
+    "generated": true,
+    "private": true,
+    "manifests": [
+      ".sdkwork-assembly.json"
+    ]
+  },
+  "contracts": {
+    "publicExports": [],
+    "runtimeEntrypoints": [
+      "bin/generate-sdk.mjs"
+    ],
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "events": [],
+    "configKeys": [],
+    "ownedOperations": [
+      "mail.accounts.list",
+      "mail.folders.list",
+      "mail.messages.list",
+      "mail.messages.create",
+      "mail.messages.delete",
+      "mail.messages.retrieve",
+      "mail.messages.update",
+      "mail.threads.list"
+    ]
+  },
+  "verification": {
+    "commands": [
+      "node tools/mail_sdk_generate.mjs --check --family sdkwork-mail-app-sdk"
+    ]
+  }
+}

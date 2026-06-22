@@ -1,0 +1,12 @@
+{
+  "name": "@sdkwork/Mail-h5-Mail",
+  "private": true,
+  "version": "0.1.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "@sdkwork/Mail-h5-core": "workspace:*",
+    "react": "catalog:",
+    "sdkwork-mail-app-sdk-generated-typescript": "workspace:*"
+  }
+}

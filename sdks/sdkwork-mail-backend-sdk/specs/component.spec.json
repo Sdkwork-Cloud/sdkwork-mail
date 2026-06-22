@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-mail-backend-sdk",
+    "displayName": "SDKWork Mail Backend SDK",
+    "version": "0.1.0",
+    "type": "sdk-family",
+    "root": "sdkwork-mail/sdks/sdkwork-mail-backend-sdk",
+    "domain": "communication",
+    "declaredDomain": "Mail",
+    "capability": "backend-sdk",
+    "status": "standardizing",
+    "languages": [
+      "typescript",
+      "rust",
+      "java",
+      "python",
+      "go"
+    ],
+    "generated": true,
+    "private": true,
+    "manifests": [
+      ".sdkwork-assembly.json"
+    ]
+  },
+  "contracts": {
+    "publicExports": [],
+    "runtimeEntrypoints": [
+      "bin/generate-sdk.mjs"
+    ],
+    "sdkClients": [],
+    "sdkDependencies": [],
+    "events": [],
+    "configKeys": [],
+    "ownedOperations": [
+      "mail.providerAccounts.list",
+      "mail.providerWebhooks.events.receive"
+    ]
+  },
+  "verification": {
+    "commands": [
+      "node tools/mail_sdk_generate.mjs --check --family sdkwork-mail-backend-sdk"
+    ]
+  }
+}

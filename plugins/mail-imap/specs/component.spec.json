@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-mail-adapter-imap",
+    "displayName": "SDKWork Mail IMAP Adapter",
+    "version": "0.1.0",
+    "type": "plugin",
+    "domain": "communication",
+    "capability": "mail",
+    "status": "ACTIVE",
+    "languages": ["rust"],
+    "generated": false
+  }
+}

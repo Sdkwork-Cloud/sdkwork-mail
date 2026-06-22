@@ -1,0 +1,21 @@
+[package]
+name = "Mail-sdk-provider-aliyun"
+version = "0.1.0"
+edition = "2021"
+description = "Reserved Rust provider package boundary for Aliyun Mail"
+license = "UNLICENSED"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[package.metadata.sdkwork-mail-provider]
+providerKey = "aliyun"
+pluginId = "Mail-aliyun"
+driverId = "sdkwork-mail-driver-aliyun"
+packageIdentity = "Mail-sdk-provider-aliyun"
+sourcePath = "src/lib.rs"
+sourceSymbol = "MailProviderAliyunPackageContract"
+rootPublic = false
+status = "future-runtime-bridge-only"
+runtimeBridgeStatus = "reserved"

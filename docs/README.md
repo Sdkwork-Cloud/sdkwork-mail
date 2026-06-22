@@ -1,0 +1,35 @@
+# Mail Documentation
+
+## Purpose
+
+`docs/` stores maintained Mail documentation, plans, runbooks, architecture notes, and migration records.
+
+## Owner
+
+sdkwork-mail.
+
+## Key Documents
+
+- [Mail-im-boundary.md](Mail-im-boundary.md) — dependency direction and API ownership between `sdkwork-mail` and `sdkwork-im`.
+
+## Allowed Content
+
+- Architecture and migration notes.
+- Runbooks and developer guides.
+- Changelogs and standardization records.
+
+## Forbidden Content
+
+- API contract source files that belong in `apis/`.
+- Generated SDK transport output.
+- Secrets, runtime state, local overrides, or unreviewed scratch notes.
+
+## Related Specs
+
+- `../sdkwork-specs/SDKWORK_WORKSPACE_SPEC.md`
+- `../sdkwork-specs/DOCUMENTATION_SPEC.md`
+- `../sdkwork-specs/MIGRATION_SPEC.md`
+
+## Verification
+
+Run `node --test tests/Mail-workspace-standard.test.mjs`.

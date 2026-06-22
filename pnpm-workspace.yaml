@@ -1,0 +1,41 @@
+packages:
+  - "apps/*"
+  - "apps/*/packages/*"
+  - "../sdkwork-appbase/packages/common/iam/sdkwork-iam-contracts"
+  - "../sdkwork-appbase/packages/common/iam/sdkwork-iam-runtime"
+  - "../sdkwork-appbase/packages/common/iam/sdkwork-iam-sdk-ports"
+  - "../sdkwork-appbase/packages/common/iam/sdkwork-iam-service"
+  - "../sdkwork-appbase/packages/common/iam/sdkwork-iam-sdk-adapter"
+  - "../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap"
+  - "../sdkwork-appbase/packages/pc-react/foundation/sdkwork-appbase-pc-react"
+  - "../sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react"
+  - "../sdkwork-appbase/packages/pc-react/iam/sdkwork-auth-runtime-pc-react"
+  - "../sdkwork-appbase/packages/pc-react/iam/sdkwork-auth-pc-react"
+  - "../sdkwork-core/sdkwork-core-pc-react"
+  - "../sdkwork-ui/sdkwork-ui-pc-react"
+  - "../sdkwork-appbase/sdks/sdkwork-appbase-app-sdk/sdkwork-appbase-app-sdk-typescript/generated/server-openapi"
+  - "../sdkwork-appbase/sdks/sdkwork-appbase-backend-sdk/sdkwork-appbase-backend-sdk-typescript/generated/server-openapi"
+  - "../sdkwork-utils/packages/sdkwork-utils-typescript"
+  - "sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript"
+  - "sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/*"
+  - "sdks/sdkwork-mail-app-sdk/sdkwork-mail-app-sdk-typescript/generated/server-openapi"
+  - "sdks/sdkwork-mail-backend-sdk/sdkwork-mail-backend-sdk-typescript/generated/server-openapi"
+
+catalog:
+  "@tailwindcss/vite": ^4.1.14
+  "@types/react": ^19.2.14
+  "@types/react-dom": ^19.2.3
+  "@vitejs/plugin-react": ^6.0.1
+  "i18next": ^26.1.0
+  "jsdom": ^29.1.1
+  "lucide-react": ^1.7.0
+  "qrcode": ^1.5.4
+  "react": ^19.2.4
+  "react-dom": ^19.2.4
+  "react-hook-form": ^7.72.1
+  "react-i18next": ^17.0.7
+  "typescript": ^6.0.2
+  "tailwindcss": ^4.1.14
+  "vite": ^8.0.3
+  "vite-plugin-dts": ^4.5.4
+  "vitest": ^4.1.8

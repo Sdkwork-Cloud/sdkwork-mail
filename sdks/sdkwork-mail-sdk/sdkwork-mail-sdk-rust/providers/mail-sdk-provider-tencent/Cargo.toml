@@ -1,0 +1,21 @@
+[package]
+name = "Mail-sdk-provider-tencent"
+version = "0.1.0"
+edition = "2021"
+description = "Reserved Rust provider package boundary for Tencent Mail"
+license = "UNLICENSED"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[package.metadata.sdkwork-mail-provider]
+providerKey = "tencent"
+pluginId = "Mail-tencent"
+driverId = "sdkwork-mail-driver-tencent"
+packageIdentity = "Mail-sdk-provider-tencent"
+sourcePath = "src/lib.rs"
+sourceSymbol = "MailProviderTencentPackageContract"
+rootPublic = false
+status = "future-runtime-bridge-only"
+runtimeBridgeStatus = "reserved"

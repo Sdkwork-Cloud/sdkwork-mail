@@ -1,0 +1,238 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "SDKWork Mail Backend API",
+    "version": "1.0.0",
+    "description": "Operator mail API: transport provider accounts and sync administration.",
+    "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+    "x-sdkwork-sdk-family": "sdkwork-mail-backend-sdk",
+    "x-sdkwork-owner": "sdkwork-mail",
+    "x-sdkwork-domain": "communication",
+    "x-sdkwork-capability": "mail"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:18090"
+    }
+  ],
+  "tags": [
+    {
+      "name": "mailProviderAccounts"
+    },
+    {
+      "name": "mailProviderWebhooks"
+    }
+  ],
+  "security": [
+    {
+      "AuthToken": [],
+      "AccessToken": []
+    }
+  ],
+  "paths": {
+    "/backend/v3/api/mail/provider_accounts": {
+      "get": {
+        "tags": [
+          "mailProviderAccounts"
+        ],
+        "operationId": "mail.providerAccounts.list",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.provider_accounts.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailProviderAccountListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/backend/v3/api/mail/provider_webhooks/{provider}/events": {
+      "post": {
+        "tags": [
+          "mailProviderWebhooks"
+        ],
+        "operationId": "mail.providerWebhooks.events.receive",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-permission": "mail.provider_webhooks.receive",
+        "x-sdkwork-auth-mode": "anonymous",
+        "x-sdkwork-provider-webhook-signature": true,
+        "parameters": [
+          {
+            "name": "provider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MailProviderWebhookEventRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailProviderWebhookEventResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AuthToken": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Access-Token"
+      }
+    },
+    "schemas": {
+      "ProblemDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "MailProviderAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "providerKind": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          },
+          "useTls": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "MailProviderAccountListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailProviderAccount"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "MailProviderWebhookEventRequest": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "MailProviderWebhookEventResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          }
+        }
+      },
+      "MailProviderWebhookEvent": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        }
+      },
+      "MailProviderQueryJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "MailProviderQuerySnapshot": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/mail-inboxs/index",
+    "pages/mail-inbox-room/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "SDKWork Mail",
+    "navigationBarBackgroundColor": "#0f766e",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f8fafc"
+  }
+}

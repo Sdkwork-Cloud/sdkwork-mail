@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-mail-mp-core",
+    "displayName": "SDKWork Mail MP Core",
+    "version": "0.1.0",
+    "type": "mini-program-package",
+    "root": "sdkwork-mail/apps/sdkwork-mail-mini-program/packages/sdkwork-mail-mp-core",
+    "domain": "communication",
+    "declaredDomain": "communication",
+    "capability": "core",
+    "status": "ready",
+    "languages": ["typescript"],
+    "generated": false,
+    "private": true,
+    "manifests": ["package.json"]
+  },
+  "contracts": {
+    "publicExports": ["."],
+    "sdkClients": ["sdkwork-mail-app-sdk-generated-typescript"]
+  }
+}

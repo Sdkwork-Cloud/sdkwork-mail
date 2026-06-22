@@ -1,0 +1,12 @@
+{
+  "miniprogramRoot": "src/",
+  "projectname": "sdkwork-mail-mini-program",
+  "description": "SDKWork Mail WeChat Mini Program",
+  "appid": "touristappid",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "minified": true
+  },
+  "compileType": "miniprogram"
+}

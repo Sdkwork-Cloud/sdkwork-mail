@@ -1,0 +1,617 @@
+{
+  "openapi": "3.1.2",
+  "info": {
+    "title": "SDKWork Mail App API",
+    "version": "1.0.0",
+    "description": "User-facing mail API: accounts, folders, threads, messages.",
+    "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+    "x-sdkwork-sdk-family": "sdkwork-mail-app-sdk",
+    "x-sdkwork-owner": "sdkwork-mail",
+    "x-sdkwork-domain": "communication",
+    "x-sdkwork-capability": "mail"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:18090"
+    }
+  ],
+  "tags": [
+    {
+      "name": "mailAccounts"
+    },
+    {
+      "name": "mailFolders"
+    },
+    {
+      "name": "mailThreads"
+    },
+    {
+      "name": "mailMessages"
+    }
+  ],
+  "security": [
+    {
+      "AuthToken": [],
+      "AccessToken": []
+    }
+  ],
+  "paths": {
+    "/app/v3/api/mail/accounts": {
+      "get": {
+        "tags": [
+          "mailAccounts"
+        ],
+        "operationId": "mail.accounts.list",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.accounts.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailAccountListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/app/v3/api/mail/folders": {
+      "get": {
+        "tags": [
+          "mailFolders"
+        ],
+        "operationId": "mail.folders.list",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.folders.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailFolderListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/app/v3/api/mail/threads": {
+      "get": {
+        "tags": [
+          "mailThreads"
+        ],
+        "operationId": "mail.threads.list",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.threads.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailThreadListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/app/v3/api/mail/messages": {
+      "get": {
+        "tags": [
+          "mailMessages"
+        ],
+        "operationId": "mail.messages.list",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.messages.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "folderId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailMessageListResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "mailMessages"
+        ],
+        "operationId": "mail.messages.create",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.messages.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMailMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailMessageResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/app/v3/api/mail/messages/{messageId}": {
+      "get": {
+        "tags": [
+          "mailMessages"
+        ],
+        "operationId": "mail.messages.retrieve",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.messages.read",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailMessageResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "mailMessages"
+        ],
+        "operationId": "mail.messages.update",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.messages.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMailMessageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MailMessageResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "mailMessages"
+        ],
+        "operationId": "mail.messages.delete",
+        "x-sdkwork-owner": "sdkwork-mail",
+        "x-sdkwork-api-authority": "sdkwork-mail-app-api",
+        "x-sdkwork-source-route-crate": "sdkwork-router-mail-app-api",
+        "x-sdkwork-permission": "mail.messages.write",
+        "x-sdkwork-auth-mode": "dual-token",
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          }
+        },
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "AuthToken": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "AccessToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Access-Token"
+      }
+    },
+    "schemas": {
+      "ProblemDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "MailAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "emailAddress": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "providerKind": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "syncEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MailFolder": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "folderKind": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "unreadCount": {
+            "type": "integer"
+          },
+          "totalCount": {
+            "type": "integer"
+          }
+        }
+      },
+      "MailThread": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "folderId": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "snippet": {
+            "type": "string"
+          },
+          "messageCount": {
+            "type": "integer"
+          },
+          "unreadCount": {
+            "type": "integer"
+          },
+          "isStarred": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MailMessage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "folderId": {
+            "type": "string"
+          },
+          "threadId": {
+            "type": "string"
+          },
+          "fromEmail": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "snippet": {
+            "type": "string"
+          },
+          "bodyText": {
+            "type": "string"
+          },
+          "bodyHtml": {
+            "type": "string"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "isStarred": {
+            "type": "boolean"
+          },
+          "isDraft": {
+            "type": "boolean"
+          },
+          "hasAttachments": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateMailMessageRequest": {
+        "type": "object",
+        "required": [
+          "accountId",
+          "subject"
+        ],
+        "properties": {
+          "accountId": {
+            "type": "string"
+          },
+          "folderId": {
+            "type": "string"
+          },
+          "threadId": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "bodyText": {
+            "type": "string"
+          },
+          "bodyHtml": {
+            "type": "string"
+          },
+          "isDraft": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateMailMessageRequest": {
+        "type": "object",
+        "properties": {
+          "folderId": {
+            "type": "string"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "isStarred": {
+            "type": "boolean"
+          },
+          "isDraft": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MailAccountListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailAccount"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "MailFolderListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailFolder"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "MailThreadListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailThread"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "MailMessageListResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MailMessage"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "MailMessageResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/MailMessage"
+          }
+        }
+      }
+    }
+  }
+}

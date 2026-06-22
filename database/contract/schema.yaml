@@ -1,0 +1,49 @@
+schema_version: 1
+kind: sdkwork.database.schema
+module_id: mail
+contract_version: 1.0.0
+owner_team: mail-platform
+compliance_level: L2
+engines:
+  - postgres
+table_prefix: mail_
+tables:
+  - name: mail_account
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_folder
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_thread
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_message
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_message_recipient
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_attachment
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_label
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_message_label
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_provider_account
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_provider_credential
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_sync_state
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_outbox_event
+    lifecycle_status: active
+    owner: mail-platform
+  - name: mail_audit_log
+    lifecycle_status: active
+    owner: mail-platform

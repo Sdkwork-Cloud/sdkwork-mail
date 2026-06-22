@@ -1,0 +1,21 @@
+library mail_sdk;
+
+export 'src/mail_standard_contract.dart';
+export 'src/mail_errors.dart';
+export 'src/mail_types.dart';
+export 'src/mail_provider_metadata.dart';
+export 'src/mail_client.dart';
+export 'src/mail_driver.dart';
+export 'src/mail_runtime_surface.dart';
+export 'src/mail_runtime_immutability.dart';
+export 'src/mail_provider_catalog.dart';
+export 'src/mail_provider_package_catalog.dart';
+export 'src/mail_provider_activation_catalog.dart';
+export 'src/mail_capability_catalog.dart';
+export 'src/mail_provider_extension_catalog.dart';
+export 'src/mail_language_workspace_catalog.dart';
+export 'src/mail_provider_selection.dart';
+export 'src/mail_provider_package_loader.dart';
+export 'src/mail_provider_support.dart';
+export 'src/mail_driver_manager.dart';
+export 'src/mail_data_source.dart';

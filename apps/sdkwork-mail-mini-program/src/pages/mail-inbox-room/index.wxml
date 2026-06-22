@@ -1,0 +1,16 @@
+<view class="container">
+  <view wx:if="{{loading}}" class="hint">Loading message...</view>
+  <view wx:elif="{{error}}" class="error">{{error}}</view>
+  <block wx:else>
+    <view class="card">
+      <text class="title">{{message.subject}}</text>
+      <text class="meta">From: {{message.fromEmail}}</text>
+      <text class="meta">Read: {{message.isRead ? "yes" : "no"}}</text>
+    </view>
+
+    <view class="card">
+      <text class="section-title">Body</text>
+      <text class="credential-preview">{{message.bodyText || message.snippet || ""}}</text>
+    </view>
+  </block>
+</view>

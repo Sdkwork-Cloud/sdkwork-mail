@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.app.config",
+  "app": {
+    "id": "sdkwork-mail-pc",
+    "displayName": "SDKWork Mail PC",
+    "version": "0.1.0",
+    "runtime": {
+      "family": "pc",
+      "framework": "react",
+      "surface": "browser"
+    }
+  },
+  "runtime": {
+    "supportedDeploymentProfiles": [
+      "cloud"
+    ],
+    "defaultDeploymentProfile": "cloud"
+  }
+}

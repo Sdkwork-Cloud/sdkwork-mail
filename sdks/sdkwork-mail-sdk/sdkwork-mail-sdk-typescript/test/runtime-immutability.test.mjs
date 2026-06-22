@@ -1,0 +1,172 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {
+  createManagerWithProviderPackages,
+  loadSdk,
+} from './provider-test-helpers.mjs';
+
+test('capability sets are immutable runtime snapshots', async () => {
+  const { createCapabilitySet } = await loadSdk();
+
+  const required = ['session', 'join'];
+  const optional = ['screen-share'];
+  const capabilities = createCapabilitySet({
+    required,
+    optional,
+  });
+
+  required.push('publish');
+  optional.push('recording');
+
+  assert.equal(Object.isFrozen(capabilities), true);
+  assert.equal(Object.isFrozen(capabilities.required), true);
+  assert.equal(Object.isFrozen(capabilities.optional), true);
+  assert.deepEqual(capabilities.required, ['session', 'join']);
+  assert.deepEqual(capabilities.optional, ['screen-share']);
+  assert.throws(() => capabilities.required.push('publish'), TypeError);
+  assert.throws(() => {
+    capabilities.optional = [];
+  }, TypeError);
+});
+
+test('provider drivers snapshot metadata and expose immutable contracts', async () => {
+  const { createMailProviderDriver } = await loadSdk();
+
+  const metadata = {
+    providerKey: 'agora',
+    pluginId: 'Mail-agora',
+    driverId: 'sdkwork-mail-driver-agora',
+    displayName: 'Agora Mail',
+    defaultSelected: false,
+    urlSchemes: ['Mail:agora'],
+    requiredCapabilities: ['session', 'credential', 'provider.webhook', 'health', 'media.audio', 'media.video', 'live.broadcast', 'live.audience', 'provider.event-normalization'],
+    optionalCapabilities: ['screen-share', 'recording'],
+    extensionKeys: ['agora.native-client'],
+  };
+  const driver = createMailProviderDriver({
+    metadata,
+  });
+
+  metadata.urlSchemes.push('Mail:agora-drift');
+  metadata.requiredCapabilities.push('session');
+  metadata.extensionKeys.push('agora.native-client-drift');
+
+  assert.equal(Object.isFrozen(driver), true);
+  assert.equal(Object.isFrozen(driver.metadata), true);
+  assert.equal(Object.isFrozen(driver.metadata.urlSchemes), true);
+  assert.equal(Object.isFrozen(driver.metadata.requiredCapabilities), true);
+  assert.equal(Object.isFrozen(driver.metadata.extensionKeys), true);
+  assert.deepEqual(driver.metadata.urlSchemes, ['Mail:agora']);
+  assert.deepEqual(driver.metadata.requiredCapabilities, [
+    'session',
+    'credential',
+    'provider.webhook',
+    'health',
+    'media.audio',
+    'media.video',
+    'live.broadcast',
+    'live.audience',
+    'provider.event-normalization',
+  ]);
+  assert.deepEqual(driver.metadata.extensionKeys, ['agora.native-client']);
+  assert.throws(() => driver.metadata.urlSchemes.push('Mail:agora-bad'), TypeError);
+  assert.throws(() => {
+    driver.metadata = metadata;
+  }, TypeError);
+});
+
+test('driver-manager runtime descriptors are immutable snapshots', async () => {
+  const { sdk, manager } = await createManagerWithProviderPackages([
+    'volcengine',
+    'tencent',
+  ]);
+
+  const parsedUrl = sdk.parseMailProviderUrl('Mail:tencent://app/default');
+  const selection = manager.resolveSelection({
+    providerUrl: 'Mail:tencent://app/default',
+  });
+  const listedMetadata = manager.list();
+  const providerSupport = manager.describeProviderSupport('tencent');
+  const providerSupportList = manager.listProviderSupport();
+
+  assert.equal(Object.isFrozen(parsedUrl), true);
+  assert.equal(Object.isFrozen(selection), true);
+  assert.equal(Object.isFrozen(listedMetadata), true);
+  assert.equal(Object.isFrozen(providerSupport), true);
+  assert.equal(Object.isFrozen(providerSupportList), true);
+  assert.equal(Object.isFrozen(providerSupportList[0]), true);
+  assert.equal(Object.isFrozen(manager.getMetadata({ providerKey: 'tencent' })), true);
+  assert.throws(() => {
+    selection.providerKey = 'aliyun';
+  }, TypeError);
+  assert.throws(() => providerSupportList.push(providerSupport), TypeError);
+});
+
+test('client runtime surfaces are immutable while native sdk instances stay mutable', async () => {
+  const nativeClient = {
+    sdk: 'volcengine-web-native',
+    mutableFlag: false,
+  };
+  let observedContext;
+  const { sdk, manager } = await createManagerWithProviderPackages(['volcengine'], {
+    volcengine: {
+      nativeFactory: async () => nativeClient,
+      runtimeController: {
+        async join(options, context) {
+          observedContext = context;
+          context.nativeClient.mutableFlag = true;
+          return {
+            sessionId: options.sessionId,
+            roomId: options.roomId,
+            participantId: options.participantId,
+            providerKey: context.metadata.providerKey,
+            connectionState: 'joined',
+          };
+        },
+      },
+    },
+  });
+  const dataSource = new sdk.MailDataSource({
+    driverManager: manager,
+  });
+
+  const client = await dataSource.createClient();
+  const selection = dataSource.describeSelection();
+  const providerSupport = dataSource.describeProviderSupport();
+  const capabilityState = dataSource.describeCapability('session');
+  const negotiation = dataSource.negotiateCapabilities({
+    required: ['session'],
+    optional: ['data-channel'],
+  });
+
+  assert.equal(Object.isFrozen(client.metadata), true);
+  assert.equal(Object.isFrozen(client.capabilities), true);
+  assert.equal(Object.isFrozen(client.selection), true);
+  assert.equal(Object.isFrozen(selection), true);
+  assert.equal(Object.isFrozen(providerSupport), true);
+  assert.equal(Object.isFrozen(capabilityState), true);
+  assert.equal(Object.isFrozen(negotiation), true);
+  assert.equal(Object.isFrozen(negotiation.supportedRequired), true);
+  assert.equal(Object.isFrozen(negotiation.missingOptional), true);
+  assert.equal(Object.isFrozen(negotiation.missingBySurface), true);
+  assert.throws(() => {
+    client.metadata = null;
+  }, TypeError);
+  assert.throws(() => {
+    client.selection.providerKey = 'aliyun';
+  }, TypeError);
+
+  await client.join({
+    sessionId: 'session-1',
+    roomId: 'room-1',
+    participantId: 'local-user',
+  });
+
+  assert.ok(observedContext);
+  assert.equal(Object.isFrozen(observedContext), true);
+  assert.equal(Object.isFrozen(observedContext.metadata), true);
+  assert.equal(Object.isFrozen(observedContext.capabilities), true);
+  assert.equal(Object.isFrozen(observedContext.selection), true);
+  assert.equal(Object.isFrozen(observedContext.nativeClient), false);
+  assert.equal(nativeClient.mutableFlag, true);
+});

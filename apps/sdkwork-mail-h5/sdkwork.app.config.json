@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.app.config",
+  "app": {
+    "id": "sdkwork-mail-h5",
+    "displayName": "SDKWork Mail H5",
+    "version": "0.1.0",
+    "runtime": {
+      "family": "h5",
+      "framework": "react",
+      "surface": "mobile-browser"
+    }
+  },
+  "runtime": {
+    "supportedDeploymentProfiles": [
+      "cloud"
+    ],
+    "defaultDeploymentProfile": "cloud"
+  }
+}

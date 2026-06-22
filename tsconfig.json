@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "apps/**/*.ts",
+    "apps/**/*.tsx",
+    "sdks/**/*.ts",
+    "tests/**/*.mjs",
+    "vitest.config.ts",
+    "vitest.setup.ts"
+  ],
+  "exclude": [
+    "sdks/sdkwork-mail-app-sdk/**/generated/server-openapi/**",
+    "sdks/sdkwork-mail-backend-sdk/**/generated/server-openapi/**",
+    "apps/sdkwork-mail-pc/src/**",
+    "apps/sdkwork-mail-h5/src/**",
+    "apps/sdkwork-mail-h5/vite.config.ts",
+    "apps/sdkwork-mail-mini-program/src/**"
+  ]
+}

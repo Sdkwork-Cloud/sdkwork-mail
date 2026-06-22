@@ -1,0 +1,21 @@
+[package]
+name = "Mail-sdk-provider-volcengine"
+version = "0.1.0"
+edition = "2021"
+description = "Reserved Rust provider package boundary for Volcengine Mail"
+license = "UNLICENSED"
+publish = false
+
+[lib]
+path = "src/lib.rs"
+
+[package.metadata.sdkwork-mail-provider]
+providerKey = "volcengine"
+pluginId = "Mail-volcengine"
+driverId = "sdkwork-mail-driver-volcengine"
+packageIdentity = "Mail-sdk-provider-volcengine"
+sourcePath = "src/lib.rs"
+sourceSymbol = "MailProviderVolcenginePackageContract"
+rootPublic = false
+status = "future-runtime-bridge-only"
+runtimeBridgeStatus = "reserved"

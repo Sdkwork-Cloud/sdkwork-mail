@@ -1,0 +1,12 @@
+name: sdkwork_mail_flutter_mobile_admin_core
+description: SDKWork Mail Flutter Mobile Admin Core - Provider configuration management
+version: 0.1.0
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.2
