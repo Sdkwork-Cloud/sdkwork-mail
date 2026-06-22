@@ -4,8 +4,13 @@ import '../bootstrap/routes.dart';
 
 class AdminShell extends StatefulWidget {
   final Widget Function(AdminRoute route) builder;
+  final ValueChanged<AdminRoute>? onRouteChanged;
 
-  const AdminShell({super.key, required this.builder});
+  const AdminShell({
+    super.key,
+    required this.builder,
+    this.onRouteChanged,
+  });
 
   @override
   State<AdminShell> createState() => _AdminShellState();
@@ -13,6 +18,11 @@ class AdminShell extends StatefulWidget {
 
 class _AdminShellState extends State<AdminShell> {
   AdminRoute _route = AdminRoute.dashboard;
+
+  void _selectRoute(AdminRoute route) {
+    setState(() => _route = route);
+    widget.onRouteChanged?.call(route);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +47,7 @@ class _AdminShellState extends State<AdminShell> {
                 title: Text(route.label),
                 selected: _route == route,
                 onTap: () {
-                  setState(() => _route = route);
+                  _selectRoute(route);
                   Navigator.pop(context);
                 },
               ),

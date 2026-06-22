@@ -330,6 +330,7 @@ test("sdkwork-mail client surfaces use app-scoped IAM session storage keys", () 
   assert.match(h5IamSession, /sdkwork-mail-h5:session:v1/u);
   assert.match(mpSessionKey, /sdkwork-mail-mini-program:session:v1/u);
   assert.match(flutterSession, /sdkwork-mail-flutter-mobile:session:v1/u);
+  assert.match(flutterSession, /mail\.messages\.read mail\.messages\.write mail\.verification\.write mail\.transactional\.write/u);
   assert.match(read("apps/sdkwork-mail-pc/src/bootstrap/adminAuth.ts"), /sdkwork-mail-pc:admin-session:v1/u);
   assert.match(read("apps/sdkwork-mail-h5/src/bootstrap/adminAuth.ts"), /sdkwork-mail-h5:admin-session:v1/u);
 

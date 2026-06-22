@@ -1,0 +1,24 @@
+{
+  "provider": "smtp",
+  "displayName": "SMTP Outbound",
+  "description": "SMTP transport for transactional and verification mail delivery",
+  "accountFields": [
+    {"key": "name", "label": "Account Name", "type": "string", "required": true},
+    {"key": "host", "label": "SMTP Host", "type": "string", "required": true, "placeholder": "smtp.example.com"},
+    {"key": "port", "label": "SMTP Port", "type": "number", "required": true, "default": 587, "min": 1, "max": 65535},
+    {"key": "useTls", "label": "Use TLS", "type": "boolean", "default": true}
+  ],
+  "credentialRoles": [
+    {
+      "role": "smtp_auth",
+      "label": "SMTP Credentials",
+      "description": "Username and password or app password for SMTP authentication",
+      "fields": [
+        {"key": "username", "label": "Username", "type": "string", "required": true},
+        {"key": "passwordRef", "label": "Password", "type": "secret_ref", "required": true, "placeholder": "secret://mail/smtp/password"}
+      ]
+    }
+  ],
+  "optionalCapabilities": ["transactional.send", "verification.send"],
+  "requiredCapabilities": ["transport.smtp", "health"]
+}

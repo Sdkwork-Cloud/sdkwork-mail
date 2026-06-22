@@ -1,0 +1,24 @@
+{
+  "provider": "imap",
+  "displayName": "IMAP Sync",
+  "description": "IMAP transport for mailbox folder and message synchronization",
+  "accountFields": [
+    {"key": "name", "label": "Account Name", "type": "string", "required": true},
+    {"key": "host", "label": "IMAP Host", "type": "string", "required": true, "placeholder": "imap.example.com"},
+    {"key": "port", "label": "IMAP Port", "type": "number", "required": true, "default": 993, "min": 1, "max": 65535},
+    {"key": "useTls", "label": "Use TLS", "type": "boolean", "default": true}
+  ],
+  "credentialRoles": [
+    {
+      "role": "imap_auth",
+      "label": "IMAP Credentials",
+      "description": "Username and password or app password for IMAP authentication",
+      "fields": [
+        {"key": "username", "label": "Username", "type": "string", "required": true},
+        {"key": "passwordRef", "label": "Password", "type": "secret_ref", "required": true, "placeholder": "secret://mail/imap/password"}
+      ]
+    }
+  ],
+  "optionalCapabilities": ["folder.sync", "message.sync"],
+  "requiredCapabilities": ["transport.imap", "health"]
+}

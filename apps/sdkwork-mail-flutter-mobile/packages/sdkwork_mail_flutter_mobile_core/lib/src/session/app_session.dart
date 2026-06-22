@@ -41,7 +41,7 @@ class MailAppSession {
 }
 
 const defaultAppPermissionScope =
-    'Mail.media_session.read Mail.media_session.write';
+    'mail.messages.read mail.messages.write mail.verification.write mail.transactional.write';
 
 const defaultAppSession = MailAppSession(
   accessToken: 'dev-access-token',

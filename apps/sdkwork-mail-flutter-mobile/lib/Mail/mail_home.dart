@@ -5,7 +5,6 @@ import '../admin/admin_home.dart';
 import '../bootstrap/admin_auth.dart';
 import '../bootstrap/app_auth.dart';
 import '../bootstrap/app_services.dart';
-import '../bootstrap/environment.dart';
 import '../bootstrap/routes.dart';
 
 class MailHome extends StatefulWidget {
@@ -19,31 +18,22 @@ class MailHome extends StatefulWidget {
 
 class _MailHomeState extends State<MailHome> {
   late final MailAppServices _services = createAppServices(session: widget.session);
-  final _environment = resolveEnvironment();
 
-  AppRoute _route = AppRoute.MailInboxs;
-  String? _activeSessionId;
-  String _participantId = '';
-
+  AppRoute _route = AppRoute.inbox;
+  String? _activeMessageId;
   MailAdminSession? _adminSession = loadAdminSession();
 
-  @override
-  void initState() {
-    super.initState();
-    _participantId = widget.session.userId;
-  }
-
-  void _openSession(String sessionId) {
+  void _openMessage(String messageId) {
     setState(() {
-      _activeSessionId = sessionId;
-      _route = AppRoute.MailInboxRoom;
+      _activeMessageId = messageId;
+      _route = AppRoute.message;
     });
   }
 
-  void _backToSessions() {
+  void _backToInbox() {
     setState(() {
-      _activeSessionId = null;
-      _route = AppRoute.MailInboxs;
+      _activeMessageId = null;
+      _route = AppRoute.inbox;
     });
   }
 
@@ -64,39 +54,23 @@ class _MailHomeState extends State<MailHome> {
 
   Widget _buildBody() {
     switch (_route) {
-      case AppRoute.MailInboxs:
-        return MailInboxsPage(
+      case AppRoute.inbox:
+        return InboxPage(
           services: _services,
-          defaultMediaMode: _environment.defaultMediaMode,
-          onOpenSession: _openSession,
+          onOpenMessage: _openMessage,
         );
-      case AppRoute.MailInboxRoom:
-        final sessionId = _activeSessionId;
-        if (sessionId == null) {
-          return MailInboxsPage(
+      case AppRoute.message:
+        final messageId = _activeMessageId;
+        if (messageId == null) {
+          return InboxPage(
             services: _services,
-            defaultMediaMode: _environment.defaultMediaMode,
-            onOpenSession: _openSession,
+            onOpenMessage: _openMessage,
           );
         }
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextButton.icon(
-              onPressed: _backToSessions,
-              icon: const Icon(Icons.arrow_back),
-              label: const Text('Back to mail inboxs'),
-            ),
-            Expanded(
-              child: MailInboxRoomPage(
-                services: _services,
-                sessionId: sessionId,
-                participantId: _participantId,
-                displayName: widget.session.userId,
-                onParticipantIdChange: (value) => setState(() => _participantId = value),
-              ),
-            ),
-          ],
+        return MessagePage(
+          services: _services,
+          messageId: messageId,
+          onBack: _backToInbox,
         );
       case AppRoute.admin:
         return _buildAdminSection();
@@ -120,13 +94,18 @@ class _MailHomeState extends State<MailHome> {
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-            for (final route in [AppRoute.MailInboxs, AppRoute.admin])
+            for (final route in [AppRoute.inbox, AppRoute.admin])
               ListTile(
                 leading: Icon(route.icon),
                 title: Text(route.label),
-                selected: _route == route,
+                selected: _route == route || (_route == AppRoute.message && route == AppRoute.inbox),
                 onTap: () {
-                  setState(() => _route = route);
+                  setState(() {
+                    _route = route;
+                    if (route == AppRoute.inbox) {
+                      _activeMessageId = null;
+                    }
+                  });
                   Navigator.pop(context);
                 },
               ),

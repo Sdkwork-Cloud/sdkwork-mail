@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 enum AppRoute {
-  MailInboxs,
-  MailInboxRoom,
+  inbox,
+  message,
   admin,
 }
 
 extension AppRouteLabel on AppRoute {
   String get label {
     switch (this) {
-      case AppRoute.MailInboxs:
-        return 'mail inboxs';
-      case AppRoute.MailInboxRoom:
-        return 'mail inbox Room';
+      case AppRoute.inbox:
+        return 'Inbox';
+      case AppRoute.message:
+        return 'Message';
       case AppRoute.admin:
         return 'Admin';
     }
@@ -20,10 +20,10 @@ extension AppRouteLabel on AppRoute {
 
   String get path {
     switch (this) {
-      case AppRoute.MailInboxs:
-        return '#/Mail/mail-inboxs';
-      case AppRoute.MailInboxRoom:
-        return '#/Mail/mail-inboxs/:sessionId';
+      case AppRoute.inbox:
+        return '#/mail/inbox';
+      case AppRoute.message:
+        return '#/mail/messages/:messageId';
       case AppRoute.admin:
         return '#/admin';
     }
@@ -31,10 +31,10 @@ extension AppRouteLabel on AppRoute {
 
   IconData get icon {
     switch (this) {
-      case AppRoute.MailInboxs:
-        return Icons.meeting_room;
-      case AppRoute.MailInboxRoom:
-        return Icons.videocam;
+      case AppRoute.inbox:
+        return Icons.inbox;
+      case AppRoute.message:
+        return Icons.mail;
       case AppRoute.admin:
         return Icons.admin_panel_settings;
     }
@@ -43,14 +43,9 @@ extension AppRouteLabel on AppRoute {
 
 enum AdminRoute {
   dashboard,
-  accounts,
-  profiles,
-  routes,
-  providers,
-  wizard,
-  rooms,
-  webhooks,
-  queryJobs,
+  templates,
+  deliveries,
+  providerAccounts,
 }
 
 extension AdminRouteLabel on AdminRoute {
@@ -58,47 +53,38 @@ extension AdminRouteLabel on AdminRoute {
     switch (this) {
       case AdminRoute.dashboard:
         return 'Dashboard';
-      case AdminRoute.accounts:
-        return 'Provider Accounts';
-      case AdminRoute.profiles:
-        return 'Provider Profiles';
-      case AdminRoute.routes:
-        return 'Provider Routes';
-      case AdminRoute.providers:
-        return 'Providers';
-      case AdminRoute.wizard:
-        return 'Setup Wizard';
-      case AdminRoute.rooms:
-        return 'mail inboxs';
-      case AdminRoute.webhooks:
-        return 'Webhook Events';
-      case AdminRoute.queryJobs:
-        return 'Query Jobs';
+      case AdminRoute.templates:
+        return 'Templates';
+      case AdminRoute.deliveries:
+        return 'Delivery Audit';
+      case AdminRoute.providerAccounts:
+        return 'Transport Providers';
     }
   }
 
-  String get path => '#/admin/${name.replaceAll('_', '-')}';
+  String get path {
+    switch (this) {
+      case AdminRoute.dashboard:
+        return '#/admin/dashboard';
+      case AdminRoute.templates:
+        return '#/admin/templates';
+      case AdminRoute.deliveries:
+        return '#/admin/deliveries';
+      case AdminRoute.providerAccounts:
+        return '#/admin/provider-accounts';
+    }
+  }
 
   IconData get icon {
     switch (this) {
       case AdminRoute.dashboard:
         return Icons.dashboard;
-      case AdminRoute.accounts:
-        return Icons.account_circle;
-      case AdminRoute.profiles:
-        return Icons.settings;
-      case AdminRoute.routes:
-        return Icons.alt_route;
-      case AdminRoute.providers:
-        return Icons.extension;
-      case AdminRoute.wizard:
-        return Icons.auto_fix_high;
-      case AdminRoute.rooms:
-        return Icons.meeting_room;
-      case AdminRoute.webhooks:
-        return Icons.webhook;
-      case AdminRoute.queryJobs:
-        return Icons.query_stats;
+      case AdminRoute.templates:
+        return Icons.description;
+      case AdminRoute.deliveries:
+        return Icons.local_shipping;
+      case AdminRoute.providerAccounts:
+        return Icons.dns;
     }
   }
 }

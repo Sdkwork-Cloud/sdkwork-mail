@@ -3,20 +3,12 @@ class MailEnvironment {
   final String backendApiBaseUrl;
   final String platformApiGatewayHttpUrl;
   final String appbaseLoginUrl;
-  final String defaultMediaMode;
-  final String providerSelection;
-  final int maxParticipants;
-  final bool audioOnlyFallback;
 
   const MailEnvironment({
     required this.apiBaseUrl,
     required this.backendApiBaseUrl,
     required this.platformApiGatewayHttpUrl,
     required this.appbaseLoginUrl,
-    this.defaultMediaMode = 'video',
-    this.providerSelection = 'auto',
-    this.maxParticipants = 9,
-    this.audioOnlyFallback = true,
   });
 }
 

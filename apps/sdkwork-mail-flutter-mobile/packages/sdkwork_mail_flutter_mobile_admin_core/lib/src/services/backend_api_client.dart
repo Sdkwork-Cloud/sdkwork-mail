@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+const backendApiPrefix = '/backend/v3/api';
+
 class BackendApiClient {
   BackendApiClient({
     required this.baseUrl,
@@ -10,7 +12,7 @@ class BackendApiClient {
     this.tenantId,
     this.organizationId,
     this.userId,
-    this.permissionScope = 'Mail.*',
+    this.permissionScope = 'mail.*',
   });
 
   final String baseUrl;
@@ -26,28 +28,26 @@ class BackendApiClient {
         ? baseUrl.substring(0, baseUrl.length - 1)
         : baseUrl;
     final normalizedPath = path.startsWith('/') ? path : '/$path';
-    return Uri.parse('$normalizedBase$normalizedPath').replace(queryParameters: query);
+    final prefixedPath = normalizedPath.startsWith(backendApiPrefix)
+        ? normalizedPath
+        : '$backendApiPrefix$normalizedPath';
+    return Uri.parse('$normalizedBase$prefixedPath').replace(queryParameters: query);
   }
 
   Map<String, String> _headers({bool jsonBody = false}) {
-    final headers = <String, String>{
+    return {
       if (jsonBody) 'Content-Type': 'application/json',
-      if (accessToken != null && accessToken!.isNotEmpty)
-        'Access-Token': accessToken!,
-      if (authToken != null && authToken!.isNotEmpty)
-        'Authorization': 'Bearer $authToken',
-      if (tenantId != null && tenantId!.isNotEmpty)
-        'x-sdkwork-tenant-id': tenantId!,
+      if (accessToken != null && accessToken!.isNotEmpty) 'Access-Token': accessToken!,
+      if (authToken != null && authToken!.isNotEmpty) 'Authorization': 'Bearer $authToken',
+      if (tenantId != null && tenantId!.isNotEmpty) 'x-sdkwork-tenant-id': tenantId!,
       if (organizationId != null && organizationId!.isNotEmpty)
         'x-sdkwork-organization-id': organizationId!,
       if (userId != null && userId!.isNotEmpty) ...{
         'x-sdkwork-user-id': userId!,
         'x-sdkwork-actor-id': userId!,
       },
-      if (permissionScope.isNotEmpty)
-        'x-sdkwork-permission-scope': permissionScope,
+      if (permissionScope.isNotEmpty) 'x-sdkwork-permission-scope': permissionScope,
     };
-    return headers;
   }
 
   Future<Map<String, dynamic>> getJson(
@@ -58,34 +58,10 @@ class BackendApiClient {
     return _decodeEnvelope(response);
   }
 
-  Future<Map<String, dynamic>> postJson(
-    String path,
-    Map<String, dynamic> body,
-  ) async {
-    final response = await http.post(
-      _uri(path),
-      headers: _headers(jsonBody: true),
-      body: jsonEncode(body),
-    );
-    return _decodeEnvelope(response);
-  }
-
-  Future<Map<String, dynamic>> patchJson(
-    String path,
-    Map<String, dynamic> body,
-  ) async {
-    final response = await http.patch(
-      _uri(path),
-      headers: _headers(jsonBody: true),
-      body: jsonEncode(body),
-    );
-    return _decodeEnvelope(response);
-  }
-
   Map<String, dynamic> _decodeEnvelope(http.Response response) {
     final decoded = jsonDecode(response.body);
     if (decoded is! Map<String, dynamic>) {
-      throw StateError('Invalid Mail API response body');
+      throw StateError('Invalid Mail backend API response body');
     }
     if (response.statusCode >= 400) {
       final message = decoded['message']?.toString() ?? 'HTTP ${response.statusCode}';
@@ -98,6 +74,14 @@ class BackendApiClient {
     if (data is List<dynamic>) {
       return {'items': data};
     }
-    throw StateError('Invalid Mail API response: missing data field');
+    throw StateError('Invalid Mail backend API response: missing data field');
   }
+}
+
+String resolveBackendApiBaseUrl(String configuredBackendApiBaseUrl) {
+  final trimmed = configuredBackendApiBaseUrl.trim();
+  if (trimmed.endsWith(backendApiPrefix)) {
+    return trimmed.substring(0, trimmed.length - backendApiPrefix.length);
+  }
+  return trimmed;
 }
