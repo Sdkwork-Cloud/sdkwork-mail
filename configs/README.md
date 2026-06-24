@@ -12,7 +12,7 @@ sdkwork-mail.
 
 - Config schemas.
 - Development, test, staging, and production examples without secrets.
-- Topology profiles under `topology/` and cloud gateway bundles under `sdkwork-api-gateway.sdkwork-mail.*.toml`.
+- Topology profiles under `topology/` and cloud gateway bundles under `sdkwork-api-cloud-gateway.sdkwork-mail.*.toml`.
 - Provider config templates using placeholder values.
 
 ## Forbidden Content

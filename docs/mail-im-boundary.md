@@ -115,7 +115,7 @@ When aligning a sibling `sdkwork-im` checkout:
 2. Migrate `sdkwork-mail-core` usage to `sdkwork-communication-mail-service`.
 3. Remove `sdks/sdkwork-mail-sdk` from IM; consume `../../../sdkwork-mail/sdks/sdkwork-mail-sdk` through the shared workspace package layout only.
 4. Keep `CallService` on `@sdkwork/im-sdk` and `MailMediaService` on `@sdkwork/Mail-sdk`.
-5. Ensure gateway uses `services/sdkwork-im-gateway` and routes calls, not Mail app API.
+5. Ensure gateway uses `services/sdkwork-im-cloud-gateway` and routes calls, not Mail app API.
 
 ## Verification
 

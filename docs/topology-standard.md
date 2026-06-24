@@ -6,7 +6,7 @@ Platform standard: `../sdkwork-specs/APP_RUNTIME_TOPOLOGY_ADOPTION.md`
 
 ## Default dev profile
 
-`self-hosted.split-services.development` — start the Mail API server and a client renderer:
+`standalone.split-services.development` — start the Mail API server and a client renderer:
 
 ```bash
 pnpm dev
@@ -31,7 +31,7 @@ pnpm dev:server
 | Surface id | Plane | Service |
 | --- | --- | --- |
 | `application.public-ingress` | application | `sdkwork-mail-api-server` (`/app/v3/api/Mail/*`, `/backend/v3/api/Mail/*`) |
-| `platform.api-gateway` | platform | `sdkwork-api-gateway` (sibling repo, IAM and shared SDKs) |
+| `platform.api-gateway` | platform | `sdkwork-api-cloud-gateway` (sibling repo, IAM and shared SDKs) |
 
 Product OpenAPI SDKs use `application.public-ingress`. IAM and platform SDKs use `platform.api-gateway`.
 
@@ -50,12 +50,12 @@ Derived SDK base URLs in profile env:
 - `VITE_sdkwork_mail_*_APP_API_BASE_URL` → `{application}/app/v3/api`
 - `VITE_sdkwork_mail_*_BACKEND_API_BASE_URL` → `{application}/backend/v3/api`
 
-Cloud gateway config bundles: `configs/sdkwork-api-gateway.sdkwork-mail.{development,production}.toml`.
+Cloud gateway config bundles: `configs/sdkwork-api-cloud-gateway.sdkwork-mail.{development,production}.toml`.
 
 Packaging:
 
 ```bash
-pnpm gateway:bundle:cloud
+pnpm gateway:package:cloud
 pnpm gateway:matrix:cloud
 ```
 

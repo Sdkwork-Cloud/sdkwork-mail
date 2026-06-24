@@ -56,3 +56,10 @@ node --test tests/mail-workspace-standard.test.mjs
 node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .
 pnpm run verify
 ```
+
+## Documentation Canon
+
+- [docs/README.md](docs/README.md)
+- [docs/product/prd/PRD.md](docs/product/prd/PRD.md)
+- [docs/architecture/tech/TECH_ARCHITECTURE.md](docs/architecture/tech/TECH_ARCHITECTURE.md)
+

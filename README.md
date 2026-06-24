@@ -64,3 +64,10 @@ pnpm run verify
 ## Development Status
 
 The workspace skeleton, standards alignment, framework wiring, and client app surfaces are in place. Core domain APIs and database schema are being migrated from the initial contract skeleton toward full mail semantics (accounts, folders, threads, messages, attachments, IMAP/SMTP providers).
+
+## Documentation Canon
+
+- [docs/README.md](docs/README.md)
+- [docs/product/prd/PRD.md](docs/product/prd/PRD.md)
+- [docs/architecture/tech/TECH_ARCHITECTURE.md](docs/architecture/tech/TECH_ARCHITECTURE.md)
+
