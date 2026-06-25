@@ -11,13 +11,22 @@
     "declaredDomain": "communication",
     "capability": "admin-core",
     "status": "ready",
-    "languages": ["dart"],
+    "languages": [
+      "dart"
+    ],
     "generated": false,
     "private": true,
-    "manifests": ["pubspec.yaml"]
+    "manifests": [
+      "pubspec.yaml"
+    ]
   },
   "contracts": {
-    "publicExports": ["."],
-    "sdkClients": ["sdkwork-mail-backend-sdk"]
+    "publicExports": [
+      "."
+    ],
+    "sdkClients": [
+      "sdkwork-mail-backend-sdk"
+    ],
+    "dependencyComposition": "../../../specs/dependency.composition.json"
   }
 }

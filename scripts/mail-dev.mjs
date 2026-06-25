@@ -20,7 +20,9 @@ import {
   resolveSurfaceHttpUrl,
   shouldAutostartGateway,
   waitForHttpHealthy,
-} from './lib/Mail-topology.mjs';
+  IAM_APPLICATION_BOOTSTRAP_ENV,
+} from './lib/mail-topology.mjs';
+import { mergeRepoDevBootstrapAccessTokenEnv } from '../../sdkwork-iam/scripts/dev/create-dev-bootstrap-access-token-env.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -103,7 +105,7 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`Usage: node scripts/Mail-dev.mjs [options]
+  console.log(`Usage: node scripts/mail-dev.mjs [options]
 
 Topology-aware Mail dev entry. Loads configs/topology profile env via @sdkwork/app-topology.
 
@@ -277,9 +279,14 @@ async function main() {
   const profileId =
     resolveDevProfileId(settings.hosting, settings.serviceLayout) || DEFAULT_DEV_PROFILE_ID;
   const profileEnv = loadProfile(profileId);
-  const runtimeEnv = mergeRuntimeEnv(process.env, profileEnv, resolveIamDevEnv(process.env), {
-    sdkwork_mail_PROFILE_ID: profileId,
-    sdkwork_mail_DEV_MODE: '1',
+  const runtimeEnv = mergeRepoDevBootstrapAccessTokenEnv({
+    repoRoot: REPO_ROOT,
+    manifestPath: 'sdkwork.app.config.json',
+    appId: 'sdkwork-mail-pc',
+    env: mergeRuntimeEnv(process.env, profileEnv, resolveIamDevEnv(process.env), IAM_APPLICATION_BOOTSTRAP_ENV, {
+      sdkwork_mail_PROFILE_ID: profileId,
+      sdkwork_mail_DEV_MODE: '1',
+    }),
   });
 
   const processes = buildServerProcesses(profileId, runtimeEnv);

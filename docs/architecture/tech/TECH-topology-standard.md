@@ -34,9 +34,13 @@ pnpm dev:server
 | `application.public-ingress` | application | `sdkwork-mail-api-server` (`/app/v3/api/Mail/*`, `/backend/v3/api/Mail/*`) |
 | `platform.api-gateway` | platform | `sdkwork-api-cloud-gateway` (sibling repo, IAM and shared SDKs) |
 
-Product OpenAPI SDKs use `application.public-ingress`. IAM and platform SDKs use `platform.api-gateway`.
+Product OpenAPI SDKs use `application.public-ingress` on port `18090` in development. IAM and platform SDKs use `platform.api-gateway`.
 
-Loader: `scripts/lib/Mail-topology.mjs` → `@sdkwork/app-topology`.
+## IAM tenant application bootstrap
+
+Cloud split-services dev must inject `SDKWORK_APP_ROOT`, `SDKWORK_IAM_APP_ROOT`, and `SDKWORK_MAIL_APP_ROOT` so `sdkwork-iam-database-host` can register the tenant application when the platform gateway bootstraps IAM schema. The dev orchestrator merges `resolveIamDevEnv()` and `IAM_APPLICATION_BOOTSTRAP_ENV` from `scripts/lib/mail-topology.mjs`.
+
+Loader: `scripts/lib/mail-topology.mjs` → `@sdkwork/app-topology`.
 
 ## Client env keys
 
@@ -64,8 +68,8 @@ pnpm gateway:matrix:cloud
 
 ```bash
 pnpm test:topology-validate
-node --test tests/Mail-topology-contract.test.mjs
-node --test tests/Mail-topology-baggage.test.mjs
+node --test tests/mail-topology-contract.test.mjs
+node --test tests/mail-topology-baggage.test.mjs
 ```
 
 Framework validator:

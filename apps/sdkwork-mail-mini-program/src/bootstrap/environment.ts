@@ -7,7 +7,7 @@ export interface MailEnvironment {
 const RUNTIME_CONFIG_KEY = "sdkwork.Mail.runtime.config";
 
 const defaultEnvironment: MailEnvironment = {
-  apiBaseUrl: "http://127.0.0.1:18088/app/v3/api",
+  apiBaseUrl: "http://127.0.0.1:18090/app/v3/api",
   appbaseLoginUrl: "http://127.0.0.1:3900",
   defaultMediaMode: "video",
 };

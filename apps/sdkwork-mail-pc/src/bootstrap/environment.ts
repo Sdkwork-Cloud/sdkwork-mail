@@ -23,7 +23,7 @@ function deriveBackendApiBaseUrl(applicationPublicHttpUrl: string): string {
 export function resolveEnvironment(): MailEnvironment {
   const applicationPublicHttpUrl = normalizeBaseUrl(
     import.meta.env.VITE_sdkwork_mail_PC_APPLICATION_PUBLIC_HTTP_URL,
-    "http://127.0.0.1:18088",
+    "http://127.0.0.1:18090",
   );
 
   return {

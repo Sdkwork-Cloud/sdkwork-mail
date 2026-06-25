@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 3,
+  "kind": "sdkwork.app",
+  "app": {
+    "key": "sdkwork-mail",
+    "name": "SDKWork Mail",
+    "displayName": "SDKWork Mail",
+    "description": "SDKWork Mail application for inbox, compose, and mailbox administration.",
+    "vendor": "SDKWork",
+    "officialWebsiteUrl": "https://sdkwork.com/apps/sdkwork-mail",
+    "appType": "APP_REACT",
+    "versionSource": "package.json"
+  },
+  "backend": {
+    "profileKey": "backend-root-admin",
+    "ownerMode": "tenant",
+    "grantMode": "current",
+    "platform": "WEB",
+    "appId": "sdkwork-mail-pc",
+    "tenantId": "100001",
+    "organizationId": "0",
+    "accessTokenPermissionScope": [
+      "iam.users.read",
+      "iam.organizations.read",
+      "iam.roles.read",
+      "iam.permissions.read"
+    ]
+  },
+  "runtime": {
+    "family": "browser",
+    "framework": "react",
+    "runtimes": ["WEB"],
+    "deliveryModes": ["WEB_URL"],
+    "supportedDeploymentProfiles": ["cloud"],
+    "defaultDeploymentProfile": "cloud"
+  }
+}

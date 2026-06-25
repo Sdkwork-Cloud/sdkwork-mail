@@ -34,8 +34,8 @@ test('declares v2 topology spec and profile env files for sdkwork-mail', async (
     [0xef, 0xbb, 0xbf],
     'specs/topology.spec.json must not contain a UTF-8 BOM',
   );
-  assert.equal(await exists('scripts/lib/Mail-topology.mjs'), true);
-  assert.equal(await exists('scripts/Mail-dev.mjs'), true);
+  assert.equal(await exists('scripts/lib/mail-topology.mjs'), true);
+  assert.equal(await exists('scripts/mail-dev.mjs'), true);
   assert.equal(await exists('docs/topology-standard.md'), true);
   assert.equal(await exists('configs/topology/README.md'), true);
 
@@ -58,11 +58,15 @@ test('declares v2 topology spec and profile env files for sdkwork-mail', async (
     assert.equal(await exists(profilePath), true, `${profilePath} should exist`);
     const profileEnv = await read(profilePath);
     assert.match(profileEnv, /sdkwork_mail_PROFILE_ID=/);
-    assert.match(profileEnv, /sdkwork_mail_APPLICATION_PUBLIC_INGRESS_BIND=/);
-    assert.match(profileEnv, /VITE_sdkwork_mail_PC_APPLICATION_PUBLIC_HTTP_URL=/);
-    assert.match(profileEnv, /VITE_sdkwork_mail_PC_PLATFORM_API_GATEWAY_HTTP_URL=/);
-    assert.match(profileEnv, /VITE_sdkwork_mail_H5_APPLICATION_PUBLIC_HTTP_URL=/);
-    assert.match(profileEnv, /VITE_sdkwork_mail_H5_PLATFORM_API_GATEWAY_HTTP_URL=/);
+    assert.match(profileEnv, /SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND=127\.0\.0\.1:18090/);
+    assert.match(profileEnv, /sdkwork_mail_APPLICATION_PUBLIC_HTTP_URL=http:\/\/127\.0\.0\.1:18090/);
+    assert.match(profileEnv, /sdkwork_mail_PLATFORM_API_GATEWAY_HTTP_URL=/);
+    if (profileId.endsWith('.development')) {
+      assert.match(profileEnv, /VITE_sdkwork_mail_PC_APPLICATION_PUBLIC_HTTP_URL=http:\/\/127\.0\.0\.1:18090/);
+      assert.match(profileEnv, /VITE_sdkwork_mail_PC_PLATFORM_API_GATEWAY_HTTP_URL=/);
+      assert.match(profileEnv, /VITE_sdkwork_mail_H5_APPLICATION_PUBLIC_HTTP_URL=http:\/\/127\.0\.0\.1:18090/);
+      assert.match(profileEnv, /VITE_sdkwork_mail_H5_PLATFORM_API_GATEWAY_HTTP_URL=/);
+    }
   }
 });
 
@@ -72,20 +76,29 @@ test('root package.json wires @sdkwork/app-topology and standard dev scripts', a
   assert.match(packageJson.scripts.dev, /dev:browser:postgres:split-services:standalone/u);
   assert.match(
     packageJson.scripts['dev:browser:postgres:split-services:standalone'],
-    /scripts\/Mail-dev\.mjs/,
+    /scripts\/mail-dev\.mjs/,
   );
   assert.match(packageJson.scripts['dev:browser:postgres:split-services:cloud'], /--deployment-profile cloud/u);
   assert.match(packageJson.scripts['test:topology-validate'], /sdkwork-topology\.mjs validate/);
 });
 
-test('Mail dev orchestrator uses topology adapter helpers', async () => {
-  const devScript = await read('scripts/Mail-dev.mjs');
+test('mail topology adapter exports IAM application bootstrap env aliases', async () => {
+  const topologyAdapter = await read('scripts/lib/mail-topology.mjs');
+  assert.match(topologyAdapter, /export const IAM_APPLICATION_BOOTSTRAP_ENV/u);
+  assert.match(topologyAdapter, /SDKWORK_APP_ROOT/u);
+  assert.match(topologyAdapter, /SDKWORK_IAM_APP_ROOT/u);
+  assert.match(topologyAdapter, /SDKWORK_MAIL_APP_ROOT/u);
+});
+
+test('mail dev orchestrator uses topology adapter helpers', async () => {
+  const devScript = await read('scripts/mail-dev.mjs');
   assert.match(devScript, /loadProfile/);
   assert.match(devScript, /mergeRuntimeEnv/);
   assert.match(devScript, /listHealthSurfaces/);
   assert.match(devScript, /listOrchestrationProcesses/);
   assert.match(devScript, /resolveSurfaceHttpUrl/);
   assert.match(devScript, /resolveIamDevEnv/);
+  assert.match(devScript, /IAM_APPLICATION_BOOTSTRAP_ENV/);
   assert.match(devScript, /resolveCloudGatewayConfigPath/);
   assert.match(devScript, /shouldAutostartGateway/);
   assert.match(devScript, /--config/);
@@ -124,7 +137,7 @@ test('openapi default servers use topology application port', async () => {
   ]) {
     const openapi = JSON.parse(await read(openapiPath));
     const serverUrl = openapi.servers?.[0]?.url ?? '';
-    assert.match(serverUrl, /127\.0\.0\.1:18088/u, `${openapiPath} must use topology dev application port`);
+    assert.match(serverUrl, /127\.0\.0\.1:18090/u, `${openapiPath} must use topology dev application port`);
   }
 });
 
@@ -147,7 +160,7 @@ test('client runtime env examples route IAM through platform.api-gateway', async
       `${examplePath} must not point IAM login at application.public-ingress`,
     );
     if (examplePath.includes('development')) {
-      assert.match(example.Mail.apiBaseUrl, /127\.0\.0\.1:18088/);
+      assert.match(example.Mail.apiBaseUrl, /127\.0\.0\.1:18090/);
       assert.equal(example.appbase.loginUrl, 'http://127.0.0.1:3900');
     }
     if (examplePath.includes('production')) {
@@ -159,7 +172,7 @@ test('client runtime env examples route IAM through platform.api-gateway', async
 
 test('Mail api server reads topology bind env key', async () => {
   const mainSource = await read('crates/sdkwork-mail-api-server/src/main.rs');
-  assert.match(mainSource, /sdkwork_mail_APPLICATION_PUBLIC_INGRESS_BIND/);
+  assert.match(mainSource, /SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND/);
   assert.doesNotMatch(mainSource, /sdkwork_mail_API_BIND/);
 });
 

@@ -30,7 +30,7 @@ String _deriveBackendApiBaseUrl(String applicationPublicHttpUrl) {
 MailEnvironment resolveEnvironment() {
   const applicationPublicHttpUrl = String.fromEnvironment(
     'sdkwork_mail_APPLICATION_PUBLIC_HTTP_URL',
-    defaultValue: 'http://127.0.0.1:18088',
+    defaultValue: 'http://127.0.0.1:18090',
   );
 
   return MailEnvironment(

@@ -1,7 +1,7 @@
 {
   "Mail": {
-    "apiBaseUrl": "http://127.0.0.1:18088/app/v3/api",
-    "backendApiBaseUrl": "http://127.0.0.1:18088/backend/v3/api",
+    "apiBaseUrl": "http://127.0.0.1:18090/app/v3/api",
+    "backendApiBaseUrl": "http://127.0.0.1:18090/backend/v3/api",
     "defaultMediaMode": "video",
     "providerSelection": "auto",
     "mobile": {

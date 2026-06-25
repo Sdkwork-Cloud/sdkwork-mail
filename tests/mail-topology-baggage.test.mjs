@@ -25,14 +25,14 @@ const skipPathFragments = [
   '/node_modules/',
   '/generated/',
   '/.dart_tool/',
-  'Mail-topology-baggage.test.mjs',
-  'Mail-topology-contract.test.mjs',
+  'mail-topology-baggage.test.mjs',
+  'mail-topology-contract.test.mjs',
   'docs/topology-standard.md',
 ];
 
 const allowlistPathFragments = [
   'specs/topology.spec.json',
-  'scripts/Mail-dev.mjs',
+  'scripts/mail-dev.mjs',
 ];
 
 const bannedPatterns = [
@@ -134,10 +134,10 @@ assert.match(
   'package.json must expose dev:browser:postgres:split-services:standalone',
 );
 
-assert.ok(fs.existsSync(path.join(repoRoot, 'scripts/Mail-dev.mjs')), 'Mail-dev orchestrator required');
+assert.ok(fs.existsSync(path.join(repoRoot, 'scripts/mail-dev.mjs')), 'mail-dev orchestrator required');
 assert.ok(
-  fs.existsSync(path.join(repoRoot, 'scripts/lib/Mail-topology.mjs')),
-  'Mail topology adapter required',
+  fs.existsSync(path.join(repoRoot, 'scripts/lib/mail-topology.mjs')),
+  'mail topology adapter required',
 );
 assert.ok(fs.existsSync(path.join(repoRoot, 'docs/topology-standard.md')), 'topology-standard doc required');
 assert.ok(
@@ -145,16 +145,16 @@ assert.ok(
   'configs/topology/README.md required',
 );
 
-const runtimeExample = readText('configs/Mail-runtime.env.example');
+const runtimeExample = readText('configs/mail-runtime.env.example');
 assert.match(
   runtimeExample,
-  /sdkwork_mail_APPLICATION_PUBLIC_INGRESS_BIND/u,
-  'Mail-runtime.env.example must document topology bind env',
+  /SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND/u,
+  'mail-runtime.env.example must document topology bind env',
 );
 assert.doesNotMatch(
   runtimeExample,
   /sdkwork_mail_API_BIND/u,
-  'Mail-runtime.env.example must not use retired sdkwork_mail_API_BIND',
+  'mail-runtime.env.example must not use retired sdkwork_mail_API_BIND',
 );
 
-console.log('[Mail-topology-baggage] ok');
+console.log('[mail-topology-baggage] ok');

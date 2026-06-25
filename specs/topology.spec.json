@@ -217,7 +217,7 @@
     ]
   },
   "scripts": {
-    "MailDev": "scripts/Mail-dev.mjs",
+    "mailDev": "scripts/mail-dev.mjs",
     "gatewayCloudBundle": "scripts/gateway-cloud-bundle.mjs"
   },
   "retired": {

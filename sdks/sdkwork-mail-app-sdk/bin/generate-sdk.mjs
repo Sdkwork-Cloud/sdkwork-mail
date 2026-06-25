@@ -10,7 +10,7 @@ await runMailSdkGenerator({
   routeManifest:
     "sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json",
   sourceOpenapi: "apis/app-api/communication/sdkwork-mail-app-api.openapi.json",
-  defaultBaseUrl: "http://127.0.0.1:18088",
+  defaultBaseUrl: "http://127.0.0.1:18090",
   sdkDependencies: [
     {
       workspace: "sdkwork-mail-sdk",

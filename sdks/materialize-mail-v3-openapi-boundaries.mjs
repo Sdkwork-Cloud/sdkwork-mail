@@ -274,7 +274,7 @@ function buildOpenApi(source, routes) {
     },
     servers: [
       {
-        url: "http://127.0.0.1:18088",
+        url: "http://127.0.0.1:18090",
         description: "Local sdkwork-mail runtime",
       },
     ],

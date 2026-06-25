@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.dependency.composition",
+  "applicationCode": "mail",
+  "clientArchitecture": "mp",
+  "surfaces": [
+    {
+      "surface": "app",
+      "corePackage": "sdkwork-mail-mp-core",
+      "sdkClients": [],
+      "reusableModules": [],
+      "hostAdapters": [],
+      "dependencyApiExports": [],
+      "dependencyApiSurfaces": []
+    }
+  ],
+  "buildToolEntries": {
+    "pnpm": {
+      "workspacePackages": [
+        "sdkwork-mail-mp-core",
+        "@sdkwork/Mail-mp-core",
+        "@sdkwork/Mail-mp-host",
+        "@sdkwork/Mail-mp-Mail",
+        "@sdkwork/Mail-mp-shell"
+      ]
+    }
+  }
+}

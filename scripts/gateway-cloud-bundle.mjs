@@ -11,7 +11,7 @@ import {
   PLATFORM_CONFIG_BUNDLE_PROFILE,
   REPO_ROOT,
   mail_CLOUD_GATEWAY_CONFIGS,
-} from './lib/Mail-topology.mjs';
+} from './lib/mail-topology.mjs';
 
 const repoRoot = REPO_ROOT;
 const SUPPORTED_FORMAT = 'tar.gz';

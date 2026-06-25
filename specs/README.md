@@ -26,6 +26,6 @@ sdkwork-mail.
 
 ```powershell
 node ../sdkwork-app-topology/scripts/sdkwork-topology.mjs validate --root . --spec specs/topology.spec.json
-node --test tests/Mail-topology-contract.test.mjs
-node --test tests/Mail-topology-baggage.test.mjs
+node --test tests/mail-topology-contract.test.mjs
+node --test tests/mail-topology-baggage.test.mjs
 ```
