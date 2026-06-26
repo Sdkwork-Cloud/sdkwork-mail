@@ -9,8 +9,8 @@ use sdkwork_communication_mail_service::{
     build_verification_variables, generate_numeric_verification_code, hash_verification_code,
     json_to_string_map, normalize_email, utc_now_rfc3339_millis,
 };
-use sdkwork_router_mail_app_api::service::MailAppApiError;
-use sdkwork_router_mail_backend_api::service::MailBackendApiError;
+use sdkwork_routes_mail_app_api::service::MailAppApiError;
+use sdkwork_routes_mail_backend_api::service::MailBackendApiError;
 use serde_json::json;
 
 use crate::outbound::{render_template_bodies, resolve_from_email, send_outbound_mail};

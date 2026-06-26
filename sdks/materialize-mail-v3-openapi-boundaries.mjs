@@ -8,7 +8,7 @@ const MailRoot = resolve(__dirname, "..");
 
 const routeSources = [
   {
-    packageName: "sdkwork-router-mail-app-api",
+    packageName: "sdkwork-routes-mail-app-api",
     surface: "app-api",
     owner: "sdkwork-mail",
     domain: "Mail",
@@ -23,15 +23,15 @@ const routeSources = [
     apiContext: "AppRequestContext",
     sdkType: "app",
     authMode: "dual-token",
-    path: resolve(MailRoot, "crates/sdkwork-router-mail-app-api/src/paths.rs"),
+    path: resolve(MailRoot, "crates/sdkwork-routes-mail-app-api/src/paths.rs"),
     arrayName: "mail_APP_ROUTES",
     routeType: "MailAppRoute",
     manifestPath:
-      "sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json",
+      "sdks/_route-manifests/app-api/sdkwork-routes-mail-app-api.route-manifest.json",
     sourceOpenapiPath: "apis/app-api/communication/sdkwork-mail-app-api.openapi.json",
   },
   {
-    packageName: "sdkwork-router-mail-backend-api",
+    packageName: "sdkwork-routes-mail-backend-api",
     surface: "backend-api",
     owner: "sdkwork-mail",
     domain: "Mail",
@@ -46,11 +46,11 @@ const routeSources = [
     apiContext: "BackendRequestContext",
     sdkType: "backend",
     authMode: "dual-token",
-    path: resolve(MailRoot, "crates/sdkwork-router-mail-backend-api/src/paths.rs"),
+    path: resolve(MailRoot, "crates/sdkwork-routes-mail-backend-api/src/paths.rs"),
     arrayName: "mail_BACKEND_ROUTES",
     routeType: "MailBackendRoute",
     manifestPath:
-      "sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json",
+      "sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json",
     sourceOpenapiPath: "apis/backend-api/communication/sdkwork-mail-backend-api.openapi.json",
   },
 ];

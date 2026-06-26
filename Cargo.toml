@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/sdkwork-mail-gateway-assembly",
     "plugins/mail-imap",
     "plugins/mail-smtp",
     "crates/sdkwork-mail-database-host",
@@ -9,8 +10,8 @@ members = [
     "crates/sdkwork-communication-mail-service",
     "crates/sdkwork-mail-openapi",
     "crates/sdkwork-communication-mail-repository-sqlx",
-    "crates/sdkwork-router-mail-app-api",
-    "crates/sdkwork-router-mail-backend-api",
+    "crates/sdkwork-routes-mail-app-api",
+    "crates/sdkwork-routes-mail-backend-api",
     "crates/sdkwork-mail-service-host",
     "crates/sdkwork-mail-api-server",
 ]
@@ -41,8 +42,8 @@ sdkwork-communication-mail-repository-sqlx = { path = "crates/sdkwork-communicat
 sdkwork-mail-openapi = { path = "crates/sdkwork-mail-openapi" }
 sdkwork-mail-adapter-imap = { path = "plugins/mail-imap" }
 sdkwork-mail-adapter-smtp = { path = "plugins/mail-smtp" }
-sdkwork-router-mail-app-api = { path = "crates/sdkwork-router-mail-app-api" }
-sdkwork-router-mail-backend-api = { path = "crates/sdkwork-router-mail-backend-api" }
+sdkwork-routes-mail-app-api = { path = "crates/sdkwork-routes-mail-app-api" }
+sdkwork-routes-mail-backend-api = { path = "crates/sdkwork-routes-mail-backend-api" }
 sdkwork-mail-service-host = { path = "crates/sdkwork-mail-service-host" }
 sdkwork-mail-api-server = { path = "crates/sdkwork-mail-api-server" }
 sdkwork-drive-config = { path = "../sdkwork-drive/crates/sdkwork-drive-config" }

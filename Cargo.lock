@@ -2121,8 +2121,8 @@ dependencies = [
  "sdkwork-database-sqlx",
  "sdkwork-mail-adapter-smtp",
  "sdkwork-mail-service-host",
- "sdkwork-router-mail-app-api",
- "sdkwork-router-mail-backend-api",
+ "sdkwork-routes-mail-app-api",
+ "sdkwork-routes-mail-backend-api",
  "sdkwork-web-bootstrap",
  "tokio",
  "tracing",
@@ -2166,8 +2166,8 @@ dependencies = [
  "sdkwork-communication-mail-service",
  "sdkwork-mail-adapter-imap",
  "sdkwork-mail-adapter-smtp",
- "sdkwork-router-mail-app-api",
- "sdkwork-router-mail-backend-api",
+ "sdkwork-routes-mail-app-api",
+ "sdkwork-routes-mail-backend-api",
  "sdkwork-utils-rust",
  "serde",
  "serde_json",
@@ -2175,7 +2175,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-router-mail-app-api"
+name = "sdkwork-routes-mail-app-api"
 version = "0.1.0"
 dependencies = [
  "axum",
@@ -2194,7 +2194,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-router-mail-backend-api"
+name = "sdkwork-routes-mail-backend-api"
 version = "0.1.0"
 dependencies = [
  "axum",

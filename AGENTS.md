@@ -20,7 +20,7 @@ This repository is the SDKWork Mail authority workspace — a standalone email a
 
 | Framework | Usage |
 | --- | --- |
-| `sdkwork-web-framework` | All HTTP route crates (`sdkwork-router-mail-*-api`) via `web_bootstrap.rs`, `WebRequestContext`, IAM adapter |
+| `sdkwork-web-framework` | All HTTP route crates (`sdkwork-routes-mail-*-api`) via `web_bootstrap.rs`, `WebRequestContext`, IAM adapter |
 | `sdkwork-database` | Application-root `database/` module, lifecycle CLI (`db:*` scripts), repository bootstrap |
 | `sdkwork-utils` | Rust: `sdkwork-utils-rust` in service/plugins; TypeScript: `@sdkwork/utils` via app commons packages |
 | `sdkwork-appbase` | IAM login/session, generated appbase SDKs for PC/H5 clients |

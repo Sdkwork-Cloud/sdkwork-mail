@@ -12,3 +12,7 @@ pub use paths::{
 pub use routes::build_sdkwork_mail_backend_api_router;
 pub use service::*;
 pub use web_bootstrap::{wrap_router_with_web_framework, wrap_router_with_web_framework_from_env};
+
+pub fn gateway_mount(service: Arc<dyn MailBackendApiService>) -> Router {
+    build_sdkwork_mail_backend_api_router(service)
+}

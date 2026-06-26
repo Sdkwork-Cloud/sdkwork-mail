@@ -103,8 +103,8 @@
       "package.json#scripts.verify"
     ],
     "routeManifest": [
-      "sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json",
-      "sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json"
+      "sdks/_route-manifests/app-api/sdkwork-routes-mail-app-api.route-manifest.json",
+      "sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json"
     ],
     "sdkClients": [
       "sdks/sdkwork-mail-app-sdk",

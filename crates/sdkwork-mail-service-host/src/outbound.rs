@@ -3,7 +3,7 @@ use std::sync::Arc;
 use sdkwork_communication_mail_service::{
     MailOutboundMessage, MailTemplate, MailTransportError, MailTransportPort, render_template,
 };
-use sdkwork_router_mail_app_api::service::MailAppApiError;
+use sdkwork_routes_mail_app_api::service::MailAppApiError;
 
 pub fn render_template_bodies(
     template: &MailTemplate,

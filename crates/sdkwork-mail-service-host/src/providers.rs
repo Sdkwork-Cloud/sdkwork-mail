@@ -9,7 +9,7 @@ use sdkwork_mail_adapter_imap::{
     ImapMailSync, ImapTransportConfig, resolve_secret_ref as resolve_imap_secret,
 };
 use sdkwork_mail_adapter_smtp::{SmtpMailTransport, smtp_config_from_binding};
-use sdkwork_router_mail_backend_api::service::MailBackendApiError;
+use sdkwork_routes_mail_backend_api::service::MailBackendApiError;
 
 pub async fn sync_provider_account(
     persistence: Arc<dyn MailPersistencePort>,

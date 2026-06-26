@@ -6,9 +6,9 @@ await runMailSdkGenerator({
   authorityName: "sdkwork-mail-app-api",
   sdkType: "app",
   apiPrefix: "/app/v3/api",
-  sourceRouteCrate: "sdkwork-router-mail-app-api",
+  sourceRouteCrate: "sdkwork-routes-mail-app-api",
   routeManifest:
-    "sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json",
+    "sdks/_route-manifests/app-api/sdkwork-routes-mail-app-api.route-manifest.json",
   sourceOpenapi: "apis/app-api/communication/sdkwork-mail-app-api.openapi.json",
   defaultBaseUrl: "http://127.0.0.1:18090",
   sdkDependencies: [

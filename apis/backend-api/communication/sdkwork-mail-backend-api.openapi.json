@@ -47,7 +47,7 @@
         "operationId": "mail.providerAccounts.list",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.provider_accounts.read",
         "x-sdkwork-auth-mode": "dual-token",
         "responses": {
@@ -74,7 +74,7 @@
         "operationId": "mail.providerAccounts.create",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.provider_accounts.write",
         "x-sdkwork-auth-mode": "dual-token",
         "requestBody": {
@@ -104,7 +104,7 @@
         "operationId": "mail.providerAccounts.ping",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.provider_accounts.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -129,7 +129,7 @@
         "operationId": "mail.providerAccounts.sync",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.provider_accounts.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -164,7 +164,7 @@
         "operationId": "mail.providerWebhooks.events.receive",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.provider_webhooks.receive",
         "x-sdkwork-auth-mode": "anonymous",
         "x-sdkwork-provider-webhook-signature": true,
@@ -209,7 +209,7 @@
         "operationId": "mail.templates.list",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.templates.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -233,7 +233,7 @@
         "operationId": "mail.templates.create",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.templates.write",
         "x-sdkwork-auth-mode": "dual-token",
         "requestBody": {
@@ -263,7 +263,7 @@
         "operationId": "mail.templates.retrieve",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.templates.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -286,7 +286,7 @@
         "operationId": "mail.templates.update",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.templates.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -317,7 +317,7 @@
         "operationId": "mail.templates.delete",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.templates.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -335,7 +335,7 @@
         "operationId": "mail.transactionalDeliveries.list",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.transactional_deliveries.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -361,7 +361,7 @@
         "operationId": "mail.marketingConsents.list",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.marketing_consents.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
@@ -384,7 +384,7 @@
         "operationId": "mail.marketingConsents.grant",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.marketing_consents.write",
         "x-sdkwork-auth-mode": "dual-token",
         "requestBody": {
@@ -414,7 +414,7 @@
         "operationId": "mail.marketingConsents.revoke",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
-        "x-sdkwork-source-route-crate": "sdkwork-router-mail-backend-api",
+        "x-sdkwork-source-route-crate": "sdkwork-routes-mail-backend-api",
         "x-sdkwork-permission": "mail.marketing_consents.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [

@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use sdkwork_communication_mail_service::{MailPersistencePort, MailTransportPort};
 use sdkwork_mail_adapter_smtp::build_smtp_transport_from_binding;
-use sdkwork_router_mail_app_api::service::MailAppApiError;
+use sdkwork_routes_mail_app_api::service::MailAppApiError;
 
 pub struct ResolvedMailTransport {
     pub transport: Arc<dyn MailTransportPort>,

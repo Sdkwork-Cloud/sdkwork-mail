@@ -120,8 +120,8 @@ test("sdkwork-mail uses responsibility-specific Rust crate names", () => {
   for (const cratePath of [
     "crates/sdkwork-communication-mail-service/Cargo.toml",
     "crates/sdkwork-communication-mail-repository-sqlx/Cargo.toml",
-    "crates/sdkwork-router-mail-app-api/Cargo.toml",
-    "crates/sdkwork-router-mail-backend-api/Cargo.toml",
+    "crates/sdkwork-routes-mail-app-api/Cargo.toml",
+    "crates/sdkwork-routes-mail-backend-api/Cargo.toml",
     "crates/sdkwork-mail-service-host/Cargo.toml",
   ]) {
     assert.ok(exists(cratePath), `${cratePath} must exist`);
@@ -276,8 +276,8 @@ test("sdkwork-mail core Rust runtime crates declare component specs", () => {
   for (const crateDir of [
     "crates/sdkwork-communication-mail-service",
     "crates/sdkwork-communication-mail-repository-sqlx",
-    "crates/sdkwork-router-mail-app-api",
-    "crates/sdkwork-router-mail-backend-api",
+    "crates/sdkwork-routes-mail-app-api",
+    "crates/sdkwork-routes-mail-backend-api",
     "crates/sdkwork-mail-service-host",
     "crates/sdkwork-mail-api-server",
     "crates/sdkwork-mail-app-context",
@@ -316,11 +316,11 @@ test("sdkwork-mail integrates sdkwork-database framework for persistence bootstr
 });
 
 test("sdkwork-mail route crates do not keep legacy auth middleware modules", () => {
-  assert.equal(exists("crates/sdkwork-router-mail-app-api/src/middleware.rs"), false);
-  assert.equal(exists("crates/sdkwork-router-mail-backend-api/src/middleware.rs"), false);
+  assert.equal(exists("crates/sdkwork-routes-mail-app-api/src/middleware.rs"), false);
+  assert.equal(exists("crates/sdkwork-routes-mail-backend-api/src/middleware.rs"), false);
   for (const filePath of [
-    "crates/sdkwork-router-mail-app-api/src/web_bootstrap.rs",
-    "crates/sdkwork-router-mail-backend-api/src/web_bootstrap.rs",
+    "crates/sdkwork-routes-mail-app-api/src/web_bootstrap.rs",
+    "crates/sdkwork-routes-mail-backend-api/src/web_bootstrap.rs",
   ]) {
     const source = read(filePath);
     assert.doesNotMatch(source, /resolve_app_context/u, `${filePath} must inject AppContext from WebRequestContext`);
@@ -449,16 +449,16 @@ test("sdkwork-mail integrates sdkwork-web-framework for HTTP route crates", () =
   }
 
   for (const filePath of [
-    "crates/sdkwork-router-mail-app-api/src/web_bootstrap.rs",
-    "crates/sdkwork-router-mail-backend-api/src/web_bootstrap.rs",
-    "crates/sdkwork-router-mail-app-api/build.rs",
-    "crates/sdkwork-router-mail-backend-api/build.rs",
+    "crates/sdkwork-routes-mail-app-api/src/web_bootstrap.rs",
+    "crates/sdkwork-routes-mail-backend-api/src/web_bootstrap.rs",
+    "crates/sdkwork-routes-mail-app-api/build.rs",
+    "crates/sdkwork-routes-mail-backend-api/build.rs",
   ]) {
     assert.ok(exists(filePath), `${filePath} must exist`);
   }
 
-  const appRoutes = read("crates/sdkwork-router-mail-app-api/src/routes.rs");
-  const backendRoutes = read("crates/sdkwork-router-mail-backend-api/src/routes.rs");
+  const appRoutes = read("crates/sdkwork-routes-mail-app-api/src/routes.rs");
+  const backendRoutes = read("crates/sdkwork-routes-mail-backend-api/src/routes.rs");
   assert.doesNotMatch(appRoutes, /enforce_app_route_auth/u, "app-api routes must not keep custom auth middleware");
   assert.doesNotMatch(backendRoutes, /enforce_backend_route_auth/u, "backend-api routes must not keep custom auth middleware");
 });
@@ -483,8 +483,8 @@ test("sdkwork-mail integrates sdkwork-utils for shared Rust and TypeScript helpe
 
 test("sdkwork-mail route manifests declare WebRequestContext and apiSurface", () => {
   for (const manifestPath of [
-    "sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json",
-    "sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json",
+    "sdks/_route-manifests/app-api/sdkwork-routes-mail-app-api.route-manifest.json",
+    "sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json",
   ]) {
     const manifest = JSON.parse(read(manifestPath));
     assert.ok(Array.isArray(manifest.routes) && manifest.routes.length > 0, `${manifestPath} must declare routes`);
@@ -517,7 +517,7 @@ test("sdkwork-mail api-server wires database readiness when persistence pool is 
 
 test("sdkwork-mail provider webhook ingress declares framework rate-limit tier", () => {
   const backendManifest = JSON.parse(
-    read("sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json"),
+    read("sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json"),
   );
   const webhookRoute = backendManifest.routes.find(
     (route) => route.operationId === "mail.providerWebhooks.events.receive",
@@ -525,11 +525,11 @@ test("sdkwork-mail provider webhook ingress declares framework rate-limit tier",
   assert.ok(webhookRoute, "backend manifest must declare provider webhook receive route");
   assert.equal(webhookRoute.rateLimitTier, "openApiDefault");
 
-  const backendWebBootstrap = read("crates/sdkwork-router-mail-backend-api/src/web_bootstrap.rs");
+  const backendWebBootstrap = read("crates/sdkwork-routes-mail-backend-api/src/web_bootstrap.rs");
   assert.match(backendWebBootstrap, /RateLimitPolicy/u);
   assert.match(backendWebBootstrap, /enabled: true/u);
 
-  const backendBuild = read("crates/sdkwork-router-mail-backend-api/build.rs");
+  const backendBuild = read("crates/sdkwork-routes-mail-backend-api/build.rs");
   assert.match(backendBuild, /rateLimitTier/u);
   assert.match(backendBuild, /with_rate_limit_tier/u);
 });
@@ -547,6 +547,6 @@ test("sdkwork-mail manifests and tools use standard paths and route crate names"
     const source = read(filePath);
     assert.doesNotMatch(source, /generated[\\/]openapi/u, `${filePath} must not reference generated/openapi`);
     assert.doesNotMatch(source, /sdkwork-mail-core|sdkwork-mail-storage-sqlx|sdkwork-mail-product|sdkwork-routes-Mail-/u, `${filePath} must not reference legacy Rust crate names`);
-    assert.match(source, /sdkwork-router-mail-(app|backend)-api|sdkwork-communication-mail-(service|repository-sqlx)|apis[\\/](app-api|backend-api)[\\/]communication/u, `${filePath} must reference standard names or API paths`);
+    assert.match(source, /sdkwork-routes-mail-(app|backend)-api|sdkwork-communication-mail-(service|repository-sqlx)|apis[\\/](app-api|backend-api)[\\/]communication/u, `${filePath} must reference standard names or API paths`);
   }
 });

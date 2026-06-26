@@ -63,8 +63,8 @@ const components = [
     databaseTableRegistries: ["specs/database-table-registry.json"],
   },
   {
-    crateDir: "crates/sdkwork-router-mail-app-api",
-    name: "sdkwork-router-mail-app-api",
+    crateDir: "crates/sdkwork-routes-mail-app-api",
+    name: "sdkwork-routes-mail-app-api",
     displayName: "SDKWork Router Mail App API",
     type: "rust-crate",
     capability: "mail",
@@ -73,14 +73,14 @@ const components = [
       "build_sdkwork_mail_app_api_router",
       "wrap_router_with_web_framework_from_env",
     ],
-    verify: "cargo test -p sdkwork-router-mail-app-api",
+    verify: "cargo test -p sdkwork-routes-mail-app-api",
     routeManifest:
-      "sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json",
+      "sdks/_route-manifests/app-api/sdkwork-routes-mail-app-api.route-manifest.json",
     runtimeEntrypoints: ["Cargo.toml"],
   },
   {
-    crateDir: "crates/sdkwork-router-mail-backend-api",
-    name: "sdkwork-router-mail-backend-api",
+    crateDir: "crates/sdkwork-routes-mail-backend-api",
+    name: "sdkwork-routes-mail-backend-api",
     displayName: "SDKWork Router Mail Backend API",
     type: "rust-crate",
     capability: "mail",
@@ -89,9 +89,9 @@ const components = [
       "build_sdkwork_mail_backend_api_router",
       "wrap_router_with_web_framework_from_env",
     ],
-    verify: "cargo test -p sdkwork-router-mail-backend-api",
+    verify: "cargo test -p sdkwork-routes-mail-backend-api",
     routeManifest:
-      "sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json",
+      "sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json",
     runtimeEntrypoints: ["Cargo.toml"],
   },
   {

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "kind": "sdkwork.route.manifest",
-  "packageName": "sdkwork-router-mail-app-api",
+  "packageName": "sdkwork-routes-mail-app-api",
   "surface": "app-api",
   "owner": "sdkwork-mail",
   "domain": "communication",
@@ -10,8 +10,8 @@
   "sdkFamily": "sdkwork-mail-app-sdk",
   "prefix": "/app/v3/api",
   "source": {
-    "crateRoot": "crates/sdkwork-router-mail-app-api/src",
-    "crateImport": "sdkwork_router_mail_app_api"
+    "crateRoot": "crates/sdkwork-routes-mail-app-api/src",
+    "crateImport": "sdkwork_routes_mail_app_api"
   },
   "routes": [
     {
@@ -32,8 +32,8 @@
       "schemas": { "request": null, "response": "MailAccountListResponse", "problem": "ProblemDetail" },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -54,8 +54,8 @@
       "schemas": { "request": null, "response": "MailFolderListResponse", "problem": "ProblemDetail" },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -76,8 +76,8 @@
       "schemas": { "request": null, "response": "MailThreadListResponse", "problem": "ProblemDetail" },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -98,8 +98,8 @@
       "schemas": { "request": null, "response": "MailMessageListResponse", "problem": "ProblemDetail" },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -124,8 +124,8 @@
       },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -146,8 +146,8 @@
       "schemas": { "request": null, "response": "MailMessageResponse", "problem": "ProblemDetail" },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -172,8 +172,8 @@
       },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -194,8 +194,8 @@
       "schemas": { "request": null, "response": null, "problem": "ProblemDetail" },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -220,8 +220,8 @@
       },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -246,8 +246,8 @@
       },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     },
     {
@@ -272,8 +272,8 @@
       },
       "ownership": { "owner": "sdkwork-mail", "apiAuthority": "sdkwork-mail-app-api" },
       "source": {
-        "packageName": "sdkwork-router-mail-app-api",
-        "file": "crates/sdkwork-router-mail-app-api/src/paths.rs"
+        "packageName": "sdkwork-routes-mail-app-api",
+        "file": "crates/sdkwork-routes-mail-app-api/src/paths.rs"
       }
     }
   ]

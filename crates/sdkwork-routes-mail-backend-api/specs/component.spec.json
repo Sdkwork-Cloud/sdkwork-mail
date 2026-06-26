@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-router-mail-backend-api",
+    "name": "sdkwork-routes-mail-backend-api",
     "displayName": "SDKWork Router Mail Backend API",
     "version": "0.1.0",
     "type": "rust-crate",
-    "root": "sdkwork-mail/crates/sdkwork-router-mail-backend-api",
+    "root": "sdkwork-mail/crates/sdkwork-routes-mail-backend-api",
     "domain": "communication",
     "declaredDomain": null,
     "capability": "mail",
@@ -81,7 +81,7 @@
     "runtimeEntrypoints": [
       "Cargo.toml"
     ],
-    "routeManifest": "sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json",
+    "routeManifest": "sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json",
     "sdkClients": [],
     "sdkDependencies": [],
     "dependencyApiExports": [],
@@ -97,7 +97,7 @@
   },
   "verification": {
     "commands": [
-      "cargo test -p sdkwork-router-mail-backend-api"
+      "cargo test -p sdkwork-routes-mail-backend-api"
     ]
   },
   "metadata": {

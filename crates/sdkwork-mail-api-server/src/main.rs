@@ -17,12 +17,12 @@ async fn main() -> anyhow::Result<()> {
     let bootstrap = build_mail_api_bootstrap().await?;
     let service = bootstrap.service;
 
-    let app_router = sdkwork_router_mail_app_api::wrap_router_with_web_framework_from_env(
-        sdkwork_router_mail_app_api::build_sdkwork_mail_app_api_router(service.clone()),
+    let app_router = sdkwork_routes_mail_app_api::wrap_router_with_web_framework_from_env(
+        sdkwork_routes_mail_app_api::build_sdkwork_mail_app_api_router(service.clone()),
     )
     .await;
-    let backend_router = sdkwork_router_mail_backend_api::wrap_router_with_web_framework_from_env(
-        sdkwork_router_mail_backend_api::build_sdkwork_mail_backend_api_router(service),
+    let backend_router = sdkwork_routes_mail_backend_api::wrap_router_with_web_framework_from_env(
+        sdkwork_routes_mail_backend_api::build_sdkwork_mail_backend_api_router(service),
     )
     .await;
 

@@ -12,7 +12,7 @@ sdkwork-mail.
 
 - `sdkwork-communication-mail-service/` business service logic and service ports.
 - `sdkwork-communication-mail-repository-sqlx/` SQLx schema, row mapping, and repository implementation.
-- `sdkwork-router-mail-app-api/` and `sdkwork-router-mail-backend-api/` route adapters.
+- `sdkwork-routes-mail-app-api/` and `sdkwork-routes-mail-backend-api/` route adapters.
 - `sdkwork-mail-service-host/` in-process service container.
 - Supporting Mail registry, context, and OpenAPI helper crates.
 

@@ -11,10 +11,10 @@ use sdkwork_communication_mail_service::{
     UpdateMailMessageRequest, UpdateMailTemplateRequest, VerifyMailCodeRequest,
     VerifyMailCodeResult, apply_list_window,
 };
-use sdkwork_router_mail_app_api::service::{
+use sdkwork_routes_mail_app_api::service::{
     MailAppApiError, MailAppApiFuture, MailAppApiService, MailListData, MailListRequest,
 };
-use sdkwork_router_mail_backend_api::service::{
+use sdkwork_routes_mail_backend_api::service::{
     MailBackendApiError, MailBackendApiFuture, MailBackendApiService, MailBackendListData,
     MailBackendListRequest,
 };

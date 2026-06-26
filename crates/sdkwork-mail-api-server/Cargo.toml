@@ -9,15 +9,20 @@ name = "sdkwork-mail-api-server"
 path = "src/main.rs"
 
 [dependencies]
+sdkwork_mail_gateway_assembly = { package = "sdkwork-mail-gateway-assembly", path = "../sdkwork-mail-gateway-assembly" }
 anyhow = "1.0.98"
 axum.workspace = true
 sdkwork-communication-mail-repository-sqlx.workspace = true
 sdkwork-mail-adapter-smtp.workspace = true
-sdkwork-router-mail-app-api.workspace = true
-sdkwork-router-mail-backend-api.workspace = true
+sdkwork-routes-mail-app-api.workspace = true
+sdkwork-routes-mail-backend-api.workspace = true
 sdkwork-mail-service-host.workspace = true
 sdkwork-web-bootstrap.workspace = true
 sdkwork-database-sqlx.workspace = true
 tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
+
+[[bin]]
+name = "sdkwork-mail-standalone-gateway"
+path = "src/main.rs"

@@ -1,5 +1,5 @@
 [package]
-name = "sdkwork-router-mail-backend-api"
+name = "sdkwork-routes-mail-backend-api"
 version.workspace = true
 edition.workspace = true
 license.workspace = true

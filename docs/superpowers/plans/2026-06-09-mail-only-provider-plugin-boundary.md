@@ -87,9 +87,9 @@ Expected: pass after implementation.
 ### Task 3: Backend API And OpenAPI Materialization
 
 **Files:**
-- Modify: `crates/sdkwork-router-mail-backend-api/src/lib.rs`
+- Modify: `crates/sdkwork-routes-mail-backend-api/src/lib.rs`
 - Modify: `sdks/materialize-Mail-v3-openapi-boundaries.mjs`
-- Regenerate: `sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json`
+- Regenerate: `sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json`
 - Regenerate: `apis/backend-api/communication/sdkwork-mail-backend-api.openapi.json`
 - Regenerate: `sdks/sdkwork-mail-backend-sdk/openapi/sdkwork-mail-backend-api.openapi.json`
 - Regenerate: `sdks/sdkwork-mail-backend-sdk/openapi/sdkwork-mail-backend-api.sdkgen.json`

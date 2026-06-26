@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Local component contract for `sdkwork-router-mail-app-api`.
+Local component contract for `sdkwork-routes-mail-app-api`.
 
 ## Owner
 
@@ -11,5 +11,5 @@ sdkwork-mail.
 ## Verification
 
 ```powershell
-cargo test -p sdkwork-router-mail-app-api
+cargo test -p sdkwork-routes-mail-app-api
 ```

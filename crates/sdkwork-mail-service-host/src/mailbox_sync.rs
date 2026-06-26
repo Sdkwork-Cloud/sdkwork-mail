@@ -8,7 +8,7 @@ use sdkwork_communication_mail_service::{
 use sdkwork_mail_adapter_imap::{
     ImapMailSync, ImapTransportConfig, resolve_secret_ref as resolve_imap_secret,
 };
-use sdkwork_router_mail_backend_api::service::MailBackendApiError;
+use sdkwork_routes_mail_backend_api::service::MailBackendApiError;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
