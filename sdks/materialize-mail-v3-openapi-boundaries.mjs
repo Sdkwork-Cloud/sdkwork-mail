@@ -24,7 +24,7 @@ const routeSources = [
     sdkType: "app",
     authMode: "dual-token",
     path: resolve(MailRoot, "crates/sdkwork-routes-mail-app-api/src/paths.rs"),
-    arrayName: "mail_APP_ROUTES",
+    arrayName: "MAIL_APP_ROUTES",
     routeType: "MailAppRoute",
     manifestPath:
       "sdks/_route-manifests/app-api/sdkwork-routes-mail-app-api.route-manifest.json",
@@ -47,7 +47,7 @@ const routeSources = [
     sdkType: "backend",
     authMode: "dual-token",
     path: resolve(MailRoot, "crates/sdkwork-routes-mail-backend-api/src/paths.rs"),
-    arrayName: "mail_BACKEND_ROUTES",
+    arrayName: "MAIL_BACKEND_ROUTES",
     routeType: "MailBackendRoute",
     manifestPath:
       "sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json",

@@ -1,0 +1,60 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/app/v3/api/mail/accounts",
+      "operationId": "mail.accounts.list",
+      "tags": ["mailAccounts"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/mail/folders",
+      "operationId": "mail.folders.list",
+      "tags": ["mailFolders"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/mail/threads",
+      "operationId": "mail.threads.list",
+      "tags": ["mailThreads"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/mail/messages",
+      "operationId": "mail.messages.list",
+      "tags": ["mailMessages"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "POST",
+      "path": "/app/v3/api/mail/messages",
+      "operationId": "mail.messages.create",
+      "tags": ["mailMessages"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "GET",
+      "path": "/app/v3/api/mail/messages/{messageId}",
+      "operationId": "mail.messages.retrieve",
+      "tags": ["mailMessages"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "PATCH",
+      "path": "/app/v3/api/mail/messages/{messageId}",
+      "operationId": "mail.messages.update",
+      "tags": ["mailMessages"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "DELETE",
+      "path": "/app/v3/api/mail/messages/{messageId}",
+      "operationId": "mail.messages.delete",
+      "tags": ["mailMessages"],
+      "auth": { "mode": "dual-token" }
+    }
+  ]
+}

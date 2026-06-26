@@ -20,7 +20,7 @@ export const DEFAULT_ADMIN_SESSION: MailAdminSession = {
   accessToken: "dev-access-token",
   authToken: "dev-auth-token",
   tenantId: "default",
-  organizationId: "default",
+  organizationId: "0",
   userId: "admin",
 };
 

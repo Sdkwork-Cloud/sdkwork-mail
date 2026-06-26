@@ -10,7 +10,7 @@ export const DEFAULT_APP_SESSION: MailAppSession = {
   accessToken: "dev-access-token",
   authToken: "dev-auth-token",
   tenantId: "default",
-  organizationId: "default",
+  organizationId: "0",
   userId: "user",
 };
 

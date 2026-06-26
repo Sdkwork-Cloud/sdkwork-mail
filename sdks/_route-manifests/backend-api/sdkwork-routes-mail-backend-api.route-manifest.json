@@ -1,0 +1,26 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/backend/v3/api/mail/provider_accounts",
+      "operationId": "mail.providerAccounts.list",
+      "tags": ["mailProviderAccounts"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/provider_accounts/{account_id}/sync",
+      "operationId": "mail.providerAccounts.sync",
+      "tags": ["mailProviderAccounts"],
+      "auth": { "mode": "dual-token" }
+    },
+    {
+      "method": "POST",
+      "path": "/backend/v3/api/mail/provider_webhooks/{provider}/events",
+      "operationId": "mail.providerWebhooks.events.receive",
+      "tags": ["mailProviderWebhooks"],
+      "auth": { "mode": "dual-token" },
+      "rateLimitTier": "openApiDefault"
+    }
+  ]
+}
