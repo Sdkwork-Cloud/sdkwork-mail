@@ -1,11 +1,11 @@
 [package]
-name = "sdkwork-mail-api-server"
+name = "sdkwork-mail-standalone-gateway"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [[bin]]
-name = "sdkwork-mail-api-server"
+name = "sdkwork-mail-standalone-gateway"
 path = "src/main.rs"
 
 [dependencies]
@@ -14,8 +14,6 @@ anyhow = "1.0.98"
 axum.workspace = true
 sdkwork-communication-mail-repository-sqlx.workspace = true
 sdkwork-mail-adapter-smtp.workspace = true
-sdkwork-routes-mail-app-api.workspace = true
-sdkwork-routes-mail-backend-api.workspace = true
 sdkwork-mail-service-host.workspace = true
 sdkwork-web-bootstrap.workspace = true
 sdkwork-database-sqlx.workspace = true
@@ -23,6 +21,3 @@ tokio.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 
-[[bin]]
-name = "sdkwork-mail-standalone-gateway"
-path = "src/main.rs"

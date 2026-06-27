@@ -30,7 +30,7 @@ pnpm dev:server
 
 | Surface id | Plane | Service |
 | --- | --- | --- |
-| `application.public-ingress` | application | `sdkwork-mail-api-server` (`/app/v3/api/Mail/*`, `/backend/v3/api/Mail/*`) |
+| `application.public-ingress` | application | `sdkwork-mail-standalone-gateway` (`/app/v3/api/Mail/*`, `/backend/v3/api/Mail/*`) |
 | `platform.api-gateway` | platform | `sdkwork-api-cloud-gateway` (sibling repo, IAM and shared SDKs) |
 
 Product OpenAPI SDKs use `application.public-ingress` on port `18090` in development. IAM and platform SDKs use `platform.api-gateway`.

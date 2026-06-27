@@ -9,9 +9,9 @@ export interface MailAppSession {
 export const DEFAULT_APP_SESSION: MailAppSession = {
   accessToken: "dev-access-token",
   authToken: "dev-auth-token",
-  tenantId: "default",
+  tenantId: "100001",
   organizationId: "0",
-  userId: "user",
+  userId: "1",
 };
 
 export const DEFAULT_APP_PERMISSION_SCOPE = "mail.messages.read mail.messages.write mail.verification.write mail.transactional.write";

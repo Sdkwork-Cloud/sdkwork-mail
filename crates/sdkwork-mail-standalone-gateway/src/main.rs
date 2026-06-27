@@ -1,7 +1,7 @@
-use axum::Router;
-use sdkwork_web_bootstrap::{ServiceRouterConfig, service_router};
 use std::sync::Arc;
-use tracing::info;
+
+use sdkwork_mail_gateway_assembly::assemble_application_router_with_service;
+use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
 
 mod bootstrap;
 mod readiness;
@@ -15,40 +15,25 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let bootstrap = build_mail_api_bootstrap().await?;
-    let service = bootstrap.service;
-
-    let app_router = sdkwork_routes_mail_app_api::wrap_router_with_web_framework_from_env(
-        sdkwork_routes_mail_app_api::build_sdkwork_mail_app_api_router(service.clone()),
-    )
-    .await;
-    let backend_router = sdkwork_routes_mail_backend_api::wrap_router_with_web_framework_from_env(
-        sdkwork_routes_mail_backend_api::build_sdkwork_mail_backend_api_router(service),
-    )
-    .await;
+    let assembly = assemble_application_router_with_service(bootstrap.service).await;
 
     let service_router_config = if let Some(pool) = bootstrap.database_pool {
-        ServiceRouterConfig {
-            readiness: Some(Arc::new(MailDatabaseReadinessCheck::new(pool))),
-            metrics: None,
-        }
+        ServiceRouterConfig::default().with_readiness_check(Arc::new(MailDatabaseReadinessCheck::new(pool)))
     } else {
         ServiceRouterConfig::default().with_always_ready()
     };
 
-    let app = service_router(
-        Router::new().merge(app_router).merge(backend_router),
-        service_router_config,
-    );
+    let app = service_router(assembly.router, service_router_config);
 
     let bind_addr = std::env::var("SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND")
         .unwrap_or_else(|_| "127.0.0.1:18090".into());
     let listener = tokio::net::TcpListener::bind(bind_addr.as_str()).await?;
-    info!(%bind_addr, "sdkwork-mail-api-server listening");
+    tracing::info!(%bind_addr, "sdkwork-mail-standalone-gateway listening");
 
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
         .await?;
-    info!("sdkwork-mail-api-server stopped");
+    tracing::info!("sdkwork-mail-standalone-gateway stopped");
     Ok(())
 }
 

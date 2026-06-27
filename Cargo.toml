@@ -13,7 +13,7 @@ members = [
     "crates/sdkwork-routes-mail-app-api",
     "crates/sdkwork-routes-mail-backend-api",
     "crates/sdkwork-mail-service-host",
-    "crates/sdkwork-mail-api-server",
+    "crates/sdkwork-mail-standalone-gateway",
 ]
 
 [workspace.package]
@@ -45,7 +45,7 @@ sdkwork-mail-adapter-smtp = { path = "plugins/mail-smtp" }
 sdkwork-routes-mail-app-api = { path = "crates/sdkwork-routes-mail-app-api" }
 sdkwork-routes-mail-backend-api = { path = "crates/sdkwork-routes-mail-backend-api" }
 sdkwork-mail-service-host = { path = "crates/sdkwork-mail-service-host" }
-sdkwork-mail-api-server = { path = "crates/sdkwork-mail-api-server" }
+sdkwork-mail-standalone-gateway = { path = "crates/sdkwork-mail-standalone-gateway" }
 sdkwork-drive-config = { path = "../sdkwork-drive/crates/sdkwork-drive-config" }
 sdkwork-drive-storage-contract = { path = "../sdkwork-drive/crates/sdkwork-drive-storage-contract" }
 sdkwork-drive-storage-local = { path = "../sdkwork-drive/crates/sdkwork-drive-storage-local" }

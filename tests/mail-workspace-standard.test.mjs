@@ -279,7 +279,7 @@ test("sdkwork-mail core Rust runtime crates declare component specs", () => {
     "crates/sdkwork-routes-mail-app-api",
     "crates/sdkwork-routes-mail-backend-api",
     "crates/sdkwork-mail-service-host",
-    "crates/sdkwork-mail-api-server",
+    "crates/sdkwork-mail-standalone-gateway",
     "crates/sdkwork-mail-app-context",
     "crates/sdkwork-mail-openapi",
     "crates/sdkwork-mail-api-registry",
@@ -297,7 +297,7 @@ test("sdkwork-mail core Rust runtime crates declare component specs", () => {
 test("sdkwork-mail integrates sdkwork-database framework for persistence bootstrap", () => {
   const repositoryCargo = read("crates/sdkwork-communication-mail-repository-sqlx/Cargo.toml");
   const databaseModule = read("crates/sdkwork-communication-mail-repository-sqlx/src/database.rs");
-  const apiBootstrap = read("crates/sdkwork-mail-api-server/src/bootstrap.rs");
+  const apiBootstrap = read("crates/sdkwork-mail-standalone-gateway/src/bootstrap.rs");
 
   for (const dependency of [
     "sdkwork-database-config",
@@ -311,8 +311,8 @@ test("sdkwork-mail integrates sdkwork-database framework for persistence bootstr
   assert.match(databaseModule, /HealthChecker/u, "repository must expose sdkwork-database health checks");
   assert.match(databaseModule, /mail_database_env_values_explicitly_configured/u, "repository must keep pure Mail database env detection");
   assert.doesNotMatch(databaseModule, /persistence_from_legacy_database_url/u, "repository must not keep legacy direct sqlx pool bootstrap");
-  assert.match(apiBootstrap, /connect_mail_persistence_bootstrap_from_env/u, "api-server must bootstrap persistence through repository database module");
-  assert.doesNotMatch(apiBootstrap, /create_pool_from_env/u, "api-server must not duplicate sdkwork-database pool bootstrap");
+  assert.match(apiBootstrap, /connect_mail_persistence_bootstrap_from_env/u, "standalone-gateway must bootstrap persistence through repository database module");
+  assert.doesNotMatch(apiBootstrap, /create_pool_from_env/u, "standalone-gateway must not duplicate sdkwork-database pool bootstrap");
 });
 
 test("sdkwork-mail route crates do not keep legacy auth middleware modules", () => {
@@ -495,10 +495,10 @@ test("sdkwork-mail route manifests declare WebRequestContext and apiSurface", ()
   }
 });
 
-test("sdkwork-mail api-server wires database readiness when persistence pool is configured", () => {
-  const mainSource = read("crates/sdkwork-mail-api-server/src/main.rs");
-  const bootstrapSource = read("crates/sdkwork-mail-api-server/src/bootstrap.rs");
-  const readinessSource = read("crates/sdkwork-mail-api-server/src/readiness.rs");
+test("sdkwork-mail standalone-gateway wires database readiness when persistence pool is configured", () => {
+  const mainSource = read("crates/sdkwork-mail-standalone-gateway/src/main.rs");
+  const bootstrapSource = read("crates/sdkwork-mail-standalone-gateway/src/bootstrap.rs");
+  const readinessSource = read("crates/sdkwork-mail-standalone-gateway/src/readiness.rs");
   const databaseModule = read("crates/sdkwork-communication-mail-repository-sqlx/src/database.rs");
 
   assert.match(databaseModule, /connect_mail_persistence_bootstrap_from_env/u);

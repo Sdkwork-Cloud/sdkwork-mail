@@ -37,7 +37,7 @@ Standard SDKWork project-root dictionary (`SDKWORK_WORKSPACE_SPEC.md`):
 sdkwork-mail/
   apis/           # OpenAPI authorities under communication/
   apps/           # Runnable client roots (pc, h5, flutter, mini-program)
-  crates/         # Rust service, repository, router, api-server crates
+  crates/         # Rust service, repository, router, standalone-gateway crates
   database/       # sdkwork-database module (mail_ tables)
   sdks/           # SDK families and route manifests
   plugins/        # Mail transport/provider plugins

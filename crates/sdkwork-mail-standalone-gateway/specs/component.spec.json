@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-mail-api-server",
+    "name": "sdkwork-mail-standalone-gateway",
     "displayName": "SDKWork Mail API Server",
     "version": "0.1.0",
     "type": "rust-crate",
-    "root": "sdkwork-mail/crates/sdkwork-mail-api-server",
+    "root": "sdkwork-mail/crates/sdkwork-mail-standalone-gateway",
     "domain": "communication",
     "declaredDomain": null,
     "capability": "mail",
@@ -93,7 +93,7 @@
   },
   "verification": {
     "commands": [
-      "cargo test -p sdkwork-mail-api-server"
+      "cargo test -p sdkwork-mail-standalone-gateway"
     ]
   },
   "metadata": {

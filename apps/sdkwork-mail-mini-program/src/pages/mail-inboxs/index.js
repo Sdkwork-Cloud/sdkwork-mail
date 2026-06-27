@@ -8,7 +8,7 @@ const {
 
 Page({
   data: {
-    userId: "user",
+    userId: "1",
     accounts: [],
     folders: [],
     messages: [],
@@ -25,7 +25,7 @@ Page({
     }
     try {
       const session = JSON.parse(raw);
-      this.setData({ userId: session.userId || "user" });
+      this.setData({ userId: session.userId || "1" });
       bootstrapMailMiniProgram();
       this.loadInbox();
     } catch {

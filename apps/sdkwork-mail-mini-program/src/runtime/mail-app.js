@@ -167,9 +167,9 @@ function installWeixinFetch() {
 var DEFAULT_APP_SESSION = {
   accessToken: "dev-access-token",
   authToken: "dev-auth-token",
-  tenantId: "default",
+  tenantId: "100001",
   organizationId: "default",
-  userId: "user"
+  userId: "1"
 };
 var DEFAULT_APP_PERMISSION_SCOPE = "mail.messages.read mail.messages.write mail.verification.write mail.transactional.write";
 

@@ -171,7 +171,7 @@ test('client runtime env examples route IAM through platform.api-gateway', async
 });
 
 test('Mail api server reads topology bind env key', async () => {
-  const mainSource = await read('crates/sdkwork-mail-api-server/src/main.rs');
+  const mainSource = await read('crates/sdkwork-mail-standalone-gateway/src/main.rs');
   assert.match(mainSource, /SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND/);
   assert.doesNotMatch(mainSource, /sdkwork_mail_API_BIND/);
 });

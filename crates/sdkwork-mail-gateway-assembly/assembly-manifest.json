@@ -4,7 +4,7 @@
   "applicationCode": "mail",
   "packageName": "sdkwork-mail-gateway-assembly",
   "crateDir": "crates/sdkwork-mail-gateway-assembly",
-  "generatedAt": "2026-06-25T13:08:05.564Z",
+  "generatedAt": "2026-06-27T05:46:03.415Z",
   "routeCrates": [
     {
       "packageName": "sdkwork-routes-mail-app-api",

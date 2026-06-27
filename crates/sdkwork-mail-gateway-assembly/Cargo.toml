@@ -10,7 +10,11 @@ name = "sdkwork_mail_gateway_assembly"
 path = "src/lib.rs"
 
 [dependencies]
+anyhow = "1.0.98"
 axum.workspace = true
-tokio = { version = "1.48", features = ["macros", "rt-multi-thread"] }
+sdkwork-communication-mail-repository-sqlx.workspace = true
+sdkwork-mail-adapter-smtp.workspace = true
+sdkwork-mail-service-host.workspace = true
 sdkwork_routes_mail_app_api = { package = "sdkwork-routes-mail-app-api", path = "../sdkwork-routes-mail-app-api" }
 sdkwork_routes_mail_backend_api = { package = "sdkwork-routes-mail-backend-api", path = "../sdkwork-routes-mail-backend-api" }
+tokio = { version = "1.48", features = ["macros", "rt-multi-thread"] }

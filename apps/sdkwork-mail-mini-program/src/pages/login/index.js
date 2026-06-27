@@ -3,7 +3,7 @@ const { SESSION_STORAGE_KEY } = require("../../constants/sessionStorageKey");
 Page({
   data: {
     accessToken: "dev-access-token",
-    userId: "user",
+    userId: "1",
   },
   onAccessTokenInput(event) {
     this.setData({ accessToken: event.detail.value });
@@ -13,7 +13,7 @@ Page({
   },
   onSubmit() {
     const accessToken = String(this.data.accessToken || "").trim();
-    const userId = String(this.data.userId || "user").trim();
+    const userId = String(this.data.userId || "1").trim();
     if (!accessToken) {
       wx.showToast({ title: "Access token required", icon: "none" });
       return;
@@ -23,7 +23,7 @@ Page({
       JSON.stringify({
         accessToken,
         authToken: accessToken,
-        tenantId: "default",
+        tenantId: "100001",
         organizationId: "default",
         userId,
       }),

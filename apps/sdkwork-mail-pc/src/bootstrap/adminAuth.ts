@@ -19,9 +19,9 @@ export const DEFAULT_ADMIN_PERMISSION_SCOPE = "Mail.*";
 export const DEFAULT_ADMIN_SESSION: MailAdminSession = {
   accessToken: "dev-access-token",
   authToken: "dev-auth-token",
-  tenantId: "default",
+  tenantId: "100001",
   organizationId: "0",
-  userId: "admin",
+  userId: "1",
 };
 
 function parseStoredAdminSession(raw: string): MailAdminSession | null {
