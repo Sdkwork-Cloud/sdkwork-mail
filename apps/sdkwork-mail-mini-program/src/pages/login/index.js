@@ -28,6 +28,6 @@ Page({
         userId,
       }),
     );
-    wx.reLaunch({ url: "/pages/mail-inboxs/index" });
+    wx.reLaunch({ url: "/pages/inbox/index" });
   },
 });

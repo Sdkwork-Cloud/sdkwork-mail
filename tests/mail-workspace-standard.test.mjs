@@ -348,7 +348,7 @@ test("sdkwork-mail client surfaces use app-scoped IAM session storage keys", () 
 
   for (const filePath of [
     "apps/sdkwork-mail-mini-program/src/pages/login/index.js",
-    "apps/sdkwork-mail-mini-program/src/pages/mail-inboxs/index.js",
+    "apps/sdkwork-mail-mini-program/src/pages/inbox/index.js",
     "apps/sdkwork-mail-mini-program/src/pages/mail-message/index.js",
   ]) {
     const source = read(filePath);
@@ -390,6 +390,7 @@ test("sdkwork-mail PC app integrates appbase auth runtime factory", () => {
   );
   assert.match(read("pnpm-workspace.yaml"), /sdkwork-auth-runtime-pc-react/u);
   assert.match(read("pnpm-workspace.yaml"), /sdkwork-auth-pc-react/u);
+  assert.match(read("pnpm-workspace.yaml"), /sdkwork-iam-credential-entry/u);
 });
 
 test("sdkwork-mail H5 app integrates appbase auth runtime at bootstrap without auth-pc-react UI", () => {

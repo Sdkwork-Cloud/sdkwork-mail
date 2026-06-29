@@ -18,6 +18,12 @@ catalogs:
     '@vitejs/plugin-react':
       specifier: ^6.0.1
       version: 6.0.1
+    lucide-react:
+      specifier: ^1.7.0
+      version: 1.7.0
+    qrcode:
+      specifier: ^1.5.4
+      version: 1.5.4
     react:
       specifier: ^19.2.4
       version: 19.2.4
@@ -33,6 +39,9 @@ catalogs:
     vite:
       specifier: ^8.0.3
       version: 8.0.3
+    vite-plugin-dts:
+      specifier: ^4.5.4
+      version: 4.5.4
 
 importers:
 
@@ -150,6 +159,22 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
 
+  ../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry:
+    dependencies:
+      '@sdkwork/iam-app-sdk':
+        specifier: workspace:*
+        version: link:../../../../sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/generated/server-openapi
+      '@sdkwork/runtime-bootstrap':
+        specifier: workspace:*
+        version: link:../../../../../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap
+      '@sdkwork/sdk-common':
+        specifier: ^1.0.2
+        version: 1.0.3
+    devDependencies:
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   ../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-runtime:
     dependencies:
       '@sdkwork/iam-app-sdk':
@@ -169,7 +194,7 @@ importers:
         version: link:../sdkwork-iam-service
       '@sdkwork/runtime-bootstrap':
         specifier: workspace:*
-        version: link:../../foundation/sdkwork-runtime-bootstrap
+        version: link:../../../../../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap
       '@sdkwork/sdk-common':
         specifier: ^1.0.2
         version: 1.0.3
@@ -208,7 +233,7 @@ importers:
         version: link:../sdkwork-iam-sdk-ports
       '@sdkwork/runtime-bootstrap':
         specifier: workspace:*
-        version: link:../../foundation/sdkwork-runtime-bootstrap
+        version: link:../../../../../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap
     devDependencies:
       typescript:
         specifier: ^6.0.2
@@ -218,13 +243,16 @@ importers:
     dependencies:
       '@sdkwork/i18n-pc-react':
         specifier: workspace:*
-        version: link:../../foundation/sdkwork-i18n-pc-react
+        version: link:../../../../../sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react
+      '@sdkwork/iam-contracts':
+        specifier: workspace:*
+        version: link:../../../sdkwork-iam-common/packages/sdkwork-iam-contracts
       '@sdkwork/iam-sdk-adapter':
         specifier: workspace:*
-        version: link:../../../common/iam/sdkwork-iam-sdk-adapter
+        version: link:../../../sdkwork-iam-common/packages/sdkwork-iam-sdk-adapter
       '@sdkwork/runtime-bootstrap':
         specifier: workspace:*
-        version: link:../../../common/foundation/sdkwork-runtime-bootstrap
+        version: link:../../../../../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap
       '@sdkwork/utils':
         specifier: workspace:*
         version: link:../../../../../sdkwork-utils/packages/sdkwork-utils-typescript
@@ -249,10 +277,13 @@ importers:
         version: link:../../../../sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/generated/server-openapi
       '@sdkwork/iam-contracts':
         specifier: workspace:*
-        version: link:../../../common/iam/sdkwork-iam-contracts
+        version: link:../../../sdkwork-iam-common/packages/sdkwork-iam-contracts
+      '@sdkwork/iam-credential-entry':
+        specifier: workspace:*
+        version: link:../../../sdkwork-iam-common/packages/sdkwork-iam-credential-entry
       '@sdkwork/iam-runtime':
         specifier: workspace:*
-        version: link:../../../common/iam/sdkwork-iam-runtime
+        version: link:../../../sdkwork-iam-common/packages/sdkwork-iam-runtime
       '@sdkwork/sdk-common':
         specifier: ^1.0.2
         version: 1.0.3
@@ -737,73 +768,13 @@ importers:
 
   sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript: {}
 
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-agora:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-aliyun:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
   sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-imap:
     devDependencies:
       '@sdkwork/Mail-sdk':
         specifier: workspace:*
         version: link:../..
 
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-janus:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-jitsi:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-livekit:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-mediasoup:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
   sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-smtp:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-tencent:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-twilio:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-volcengine:
-    devDependencies:
-      '@sdkwork/Mail-sdk':
-        specifier: workspace:*
-        version: link:../..
-
-  sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-typescript/providers/mail-sdk-provider-zego:
     devDependencies:
       '@sdkwork/Mail-sdk':
         specifier: workspace:*

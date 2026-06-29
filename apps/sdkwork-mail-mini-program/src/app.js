@@ -14,6 +14,6 @@ App({
       wx.reLaunch({ url: "/pages/login/index" });
       return;
     }
-    wx.reLaunch({ url: "/pages/mail-inboxs/index" });
+    wx.reLaunch({ url: "/pages/inbox/index" });
   },
 });

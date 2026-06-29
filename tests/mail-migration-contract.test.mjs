@@ -197,3 +197,18 @@ test("sdkwork-mail migration contract rejects RTC methods in reserved mail-sdk s
     assert.doesNotMatch(source, /volcengine/u, relativePath);
   }
 });
+
+test("sdkwork-mail migration contract rejects legacy mail-inboxs surfaces in mini program", () => {
+  const miniProgramSources = [
+    readFileSync("apps/sdkwork-mail-mini-program/src/app.json", "utf8"),
+    readFileSync("apps/sdkwork-mail-mini-program/src/app.js", "utf8"),
+    readFileSync("apps/sdkwork-mail-mini-program/src/pages/login/index.js", "utf8"),
+    readFileSync(
+      "apps/sdkwork-mail-mini-program/packages/sdkwork-mail-mp-shell/src/mailRoutes.ts",
+      "utf8",
+    ),
+  ].join("\n");
+
+  assert.doesNotMatch(miniProgramSources, /mail-inboxs|mail inboxs/u);
+  assert.match(miniProgramSources, /\/pages\/inbox\/index|#\/mail\/inbox/u);
+});

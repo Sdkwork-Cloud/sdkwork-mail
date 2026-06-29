@@ -6,6 +6,7 @@ packages:
   - "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-sdk-ports"
   - "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-service"
   - "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-sdk-adapter"
+  - "../sdkwork-iam/apps/sdkwork-iam-common/packages/sdkwork-iam-credential-entry"
   - "../sdkwork-appbase/packages/common/foundation/sdkwork-runtime-bootstrap"
   - "../sdkwork-appbase/packages/pc-react/foundation/sdkwork-appbase-pc-react"
   - "../sdkwork-appbase/packages/pc-react/foundation/sdkwork-i18n-pc-react"

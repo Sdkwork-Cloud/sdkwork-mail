@@ -4,7 +4,5 @@ export interface AppRouteDefinition {
 }
 
 export function createMailAppRoutes(): AppRouteDefinition[] {
-  return [
-    { path: "#/Mail/mail-inboxs", label: "mail inboxs" },
-  ];
+  return [{ path: "#/mail/inbox", label: "Inbox" }];
 }
