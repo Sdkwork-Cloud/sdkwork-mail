@@ -19,10 +19,7 @@ impl DomainContextInjector for MailAppContextInjector {
     }
 }
 
-fn wrap_router_with_resolver(
-    resolver: IamWebRequestContextResolver,
-    router: Router,
-) -> Router {
+fn wrap_router_with_resolver(resolver: IamWebRequestContextResolver, router: Router) -> Router {
     let layer = build_web_framework_layer(
         resolver,
         HttpRouteManifest::new(MAIL_APP_HTTP_ROUTES),

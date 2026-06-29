@@ -2135,23 +2135,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sdkwork-mail-api-server"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "axum",
- "sdkwork-communication-mail-repository-sqlx",
- "sdkwork-database-sqlx",
- "sdkwork-mail-adapter-smtp",
- "sdkwork-mail-gateway-assembly",
- "sdkwork-mail-service-host",
- "sdkwork-web-bootstrap",
- "tokio",
- "tracing",
- "tracing-subscriber",
-]
-
-[[package]]
 name = "sdkwork-mail-app-context"
 version = "0.1.0"
 dependencies = [
@@ -2199,6 +2182,7 @@ dependencies = [
 name = "sdkwork-mail-service-host"
 version = "0.1.0"
 dependencies = [
+ "reqwest",
  "sdkwork-communication-mail-service",
  "sdkwork-mail-adapter-imap",
  "sdkwork-mail-adapter-smtp",
@@ -2207,7 +2191,25 @@ dependencies = [
  "sdkwork-utils-rust",
  "serde",
  "serde_json",
+ "tokio",
  "uuid",
+]
+
+[[package]]
+name = "sdkwork-mail-standalone-gateway"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "sdkwork-communication-mail-repository-sqlx",
+ "sdkwork-database-sqlx",
+ "sdkwork-mail-adapter-smtp",
+ "sdkwork-mail-gateway-assembly",
+ "sdkwork-mail-service-host",
+ "sdkwork-web-bootstrap",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -2219,6 +2221,7 @@ dependencies = [
  "sdkwork-communication-mail-service",
  "sdkwork-iam-web-adapter",
  "sdkwork-mail-app-context",
+ "sdkwork-routes-mail-common",
  "sdkwork-web-axum",
  "sdkwork-web-contract",
  "sdkwork-web-core",
@@ -2238,6 +2241,7 @@ dependencies = [
  "sdkwork-communication-mail-service",
  "sdkwork-iam-web-adapter",
  "sdkwork-mail-app-context",
+ "sdkwork-routes-mail-common",
  "sdkwork-web-axum",
  "sdkwork-web-contract",
  "sdkwork-web-core",
@@ -2246,6 +2250,16 @@ dependencies = [
  "tokio",
  "tower",
  "uuid",
+]
+
+[[package]]
+name = "sdkwork-routes-mail-common"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "sdkwork-utils-rust",
+ "sdkwork-web-core",
+ "serde",
 ]
 
 [[package]]
@@ -2316,7 +2330,9 @@ dependencies = [
  "getrandom 0.2.17",
  "hmac",
  "http",
+ "percent-encoding",
  "rsa",
+ "sdkwork-utils-rust",
  "sdkwork-web-contract",
  "serde",
  "serde_json",

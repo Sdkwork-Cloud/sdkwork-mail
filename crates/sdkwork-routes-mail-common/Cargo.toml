@@ -1,0 +1,11 @@
+[package]
+name = "sdkwork-routes-mail-common"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+axum.workspace = true
+serde.workspace = true
+sdkwork-utils-rust.workspace = true
+sdkwork-web-core.workspace = true

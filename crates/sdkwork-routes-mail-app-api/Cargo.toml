@@ -16,6 +16,7 @@ sdkwork-communication-mail-service.workspace = true
 sdkwork-web-axum.workspace = true
 sdkwork-web-contract.workspace = true
 sdkwork-web-core.workspace = true
+sdkwork-routes-mail-common.workspace = true
 
 [build-dependencies]
 serde = { workspace = true, features = ["derive"] }

@@ -1,7 +1,7 @@
 import { backendApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { MailTransactionalDeliveryListResponse } from '../types';
+import type { MailTransactionalDelivery } from '../types';
 
 
 export interface MailTransactionalDeliveriesMailTransactionalDeliveriesListParams {
@@ -17,12 +17,12 @@ export class MailTransactionalDeliveriesMailTransactionalDeliveriesApi {
   }
 
 
-async list(params?: MailTransactionalDeliveriesMailTransactionalDeliveriesListParams): Promise<MailTransactionalDeliveryListResponse> {
+async list(params?: MailTransactionalDeliveriesMailTransactionalDeliveriesListParams): Promise<Record<string, unknown>> {
     const query = buildQueryString([
       { name: 'businessKind', value: params?.businessKind, style: 'form', explode: true, allowReserved: false },
       { name: 'recipientEmail', value: params?.recipientEmail, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<MailTransactionalDeliveryListResponse>(appendQueryString(backendApiPath(`/mail/transactional_deliveries`), query));
+    return this.client.get<Record<string, unknown>>(appendQueryString(backendApiPath(`/mail/transactional_deliveries`), query));
   }
 }
 

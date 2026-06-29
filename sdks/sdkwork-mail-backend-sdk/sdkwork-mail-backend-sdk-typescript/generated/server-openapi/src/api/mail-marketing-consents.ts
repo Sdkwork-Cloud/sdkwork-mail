@@ -1,7 +1,7 @@
 import { backendApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { GrantMailMarketingConsentRequest, MailMarketingConsentListResponse, MailMarketingConsentResponse } from '../types';
+import type { GrantMailMarketingConsentRequest, MailMarketingConsent, MailMarketingConsentResponse } from '../types';
 
 
 export interface MailMarketingConsentsMailMarketingConsentsListParams {
@@ -16,11 +16,11 @@ export class MailMarketingConsentsMailMarketingConsentsApi {
   }
 
 
-async list(params?: MailMarketingConsentsMailMarketingConsentsListParams): Promise<MailMarketingConsentListResponse> {
+async list(params?: MailMarketingConsentsMailMarketingConsentsListParams): Promise<Record<string, unknown>> {
     const query = buildQueryString([
       { name: 'recipientEmail', value: params?.recipientEmail, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<MailMarketingConsentListResponse>(appendQueryString(backendApiPath(`/mail/marketing_consents`), query));
+    return this.client.get<Record<string, unknown>>(appendQueryString(backendApiPath(`/mail/marketing_consents`), query));
   }
 
 async grant(body: GrantMailMarketingConsentRequest): Promise<MailMarketingConsentResponse> {

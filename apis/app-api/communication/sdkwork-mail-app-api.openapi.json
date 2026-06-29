@@ -59,7 +59,60 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailAccountListResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailAccount"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -100,7 +153,60 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailFolderListResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailFolder"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -141,7 +247,60 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailThreadListResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailThread"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -182,7 +341,60 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailMessageListResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailMessage"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -221,7 +433,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailMessageResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailMessageResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -262,7 +497,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailMessageResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailMessageResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -311,7 +569,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailMessageResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailMessageResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -359,7 +640,9 @@
     },
     "/app/v3/api/mail/verification/send": {
       "post": {
-        "tags": ["mailVerification"],
+        "tags": [
+          "mailVerification"
+        ],
         "operationId": "mail.verification.send",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-app-api",
@@ -370,7 +653,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/SendMailVerificationRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/SendMailVerificationRequest"
+              }
             }
           }
         },
@@ -379,17 +664,49 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/SendMailVerificationResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/SendMailVerificationResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/app/v3/api/mail/verification/verify": {
       "post": {
-        "tags": ["mailVerification"],
+        "tags": [
+          "mailVerification"
+        ],
         "operationId": "mail.verification.verify",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-app-api",
@@ -400,7 +717,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/VerifyMailCodeRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/VerifyMailCodeRequest"
+              }
             }
           }
         },
@@ -409,17 +728,49 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/VerifyMailCodeResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/VerifyMailCodeResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/app/v3/api/mail/transactional/send": {
       "post": {
-        "tags": ["mailTransactional"],
+        "tags": [
+          "mailTransactional"
+        ],
         "operationId": "mail.transactional.send",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-app-api",
@@ -430,7 +781,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/SendTransactionalMailRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/SendTransactionalMailRequest"
+              }
             }
           }
         },
@@ -439,12 +792,42 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailTransactionalDeliveryResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailTransactionalDeliveryResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     }
   },
@@ -463,18 +846,46 @@
     "schemas": {
       "ProblemDetail": {
         "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "type",
+          "title",
+          "status",
+          "code",
+          "traceId"
+        ],
         "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          },
           "code": {
-            "type": "string"
+            "$ref": "#/components/schemas/SdkWorkPlatformErrorCode"
           },
-          "message": {
-            "type": "string"
+          "traceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Server-owned request correlation id."
           },
-          "requestId": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object"
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldError"
+            }
           }
         }
       },
@@ -624,6 +1035,40 @@
           },
           "isDraft": {
             "type": "boolean"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateMailAttachmentInput"
+            }
+          }
+        }
+      },
+      "CreateMailAttachmentInput": {
+        "type": "object",
+        "required": [
+          "driveNodeId",
+          "fileName",
+          "contentType",
+          "sizeBytes"
+        ],
+        "properties": {
+          "driveNodeId": {
+            "type": "string",
+            "description": "Drive node id produced by sdkwork-drive-app-sdk upload flow."
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "checksumSha256": {
+            "type": "string"
           }
         }
       },
@@ -710,73 +1155,354 @@
       },
       "SendMailVerificationRequest": {
         "type": "object",
-        "required": ["recipientEmail", "purpose"],
+        "required": [
+          "recipientEmail",
+          "purpose"
+        ],
         "properties": {
-          "recipientEmail": { "type": "string" },
-          "purpose": { "type": "string" },
-          "templateKey": { "type": "string" },
-          "locale": { "type": "string" },
-          "variables": { "type": "object" },
-          "correlationId": { "type": "string" }
+          "recipientEmail": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "templateKey": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "variables": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": "string"
+          }
         }
       },
       "SendMailVerificationResponse": {
         "type": "object",
         "properties": {
-          "challengeId": { "type": "string" },
-          "deliveryId": { "type": "string" },
-          "expiresAt": { "type": "string" },
-          "recipientEmail": { "type": "string" }
+          "challengeId": {
+            "type": "string"
+          },
+          "deliveryId": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string"
+          },
+          "recipientEmail": {
+            "type": "string"
+          }
         }
       },
       "VerifyMailCodeRequest": {
         "type": "object",
-        "required": ["recipientEmail", "purpose", "code"],
+        "required": [
+          "recipientEmail",
+          "purpose",
+          "code"
+        ],
         "properties": {
-          "recipientEmail": { "type": "string" },
-          "purpose": { "type": "string" },
-          "code": { "type": "string" },
-          "challengeId": { "type": "string" }
+          "recipientEmail": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "challengeId": {
+            "type": "string"
+          }
         }
       },
       "VerifyMailCodeResponse": {
         "type": "object",
         "properties": {
-          "verified": { "type": "boolean" },
-          "challengeId": { "type": "string" },
-          "consumedAt": { "type": "string" }
+          "verified": {
+            "type": "boolean"
+          },
+          "challengeId": {
+            "type": "string"
+          },
+          "consumedAt": {
+            "type": "string"
+          }
         }
       },
       "SendTransactionalMailRequest": {
         "type": "object",
-        "required": ["templateKey", "recipientEmail"],
+        "required": [
+          "templateKey",
+          "recipientEmail"
+        ],
         "properties": {
-          "templateKey": { "type": "string" },
-          "recipientEmail": { "type": "string" },
-          "locale": { "type": "string" },
-          "variables": { "type": "object" },
-          "correlationId": { "type": "string" },
-          "fromEmail": { "type": "string" }
+          "templateKey": {
+            "type": "string"
+          },
+          "recipientEmail": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "variables": {
+            "type": "object"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "fromEmail": {
+            "type": "string"
+          }
         }
       },
       "MailTransactionalDelivery": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "templateKey": { "type": "string" },
-          "businessKind": { "type": "string" },
-          "recipientEmail": { "type": "string" },
-          "subject": { "type": "string" },
-          "status": { "type": "string" },
-          "sentAt": { "type": "string" },
-          "createdAt": { "type": "string" }
+          "id": {
+            "type": "string"
+          },
+          "templateKey": {
+            "type": "string"
+          },
+          "businessKind": {
+            "type": "string"
+          },
+          "recipientEmail": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sentAt": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
         }
       },
       "MailTransactionalDeliveryResponse": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/MailTransactionalDelivery" }
+          "data": {
+            "$ref": "#/components/schemas/MailTransactionalDelivery"
+          }
         }
+      },
+      "SdkWorkApiResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "enum": [
+              0
+            ],
+            "default": 0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "data": {
+            "description": "Operation-specific payload typed per response schema."
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Server-owned request correlation id."
+          }
+        }
+      },
+      "SdkWorkResourceData": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item"
+        ],
+        "properties": {
+          "item": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Typed domain resource for the operation."
+          }
+        }
+      },
+      "SdkWorkPageData": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items",
+          "pageInfo"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "pageInfo": {
+            "$ref": "#/components/schemas/PageInfo"
+          }
+        }
+      },
+      "SdkWorkCommandData": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accepted"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "const": true
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "PageInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "offset",
+              "cursor"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "totalItems": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "totalPages": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SdkWorkPlatformErrorCode": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 40001,
+        "maximum": 79999,
+        "description": "Platform or domain error code per API_SPEC.md §15.3."
+      },
+      "FieldError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "message"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 40011,
+            "maximum": 40099
+          }
+        }
+      },
+      "SdkWorkResourceResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SdkWorkApiResponse"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SdkWorkResourceData"
+              }
+            }
+          }
+        ]
+      },
+      "SdkWorkListResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SdkWorkApiResponse"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SdkWorkPageData"
+              }
+            }
+          }
+        ]
+      },
+      "SdkWorkCommandResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SdkWorkApiResponse"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SdkWorkCommandData"
+              }
+            }
+          }
+        ]
       }
     }
   }

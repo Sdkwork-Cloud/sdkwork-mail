@@ -1,3 +1,3 @@
 # SDKWork Mail Mini Program
 
-WeChat mini program application root for SDKWork Mail user mail inboxs.
+WeChat mini program application root for SDKWork Mail mailbox browsing, compose/send, and folders.

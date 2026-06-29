@@ -1,7 +1,7 @@
 import { appApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { MailThreadListResponse } from '../types';
+import type { MailThread } from '../types';
 
 
 export interface MailThreadsMailThreadsListParams {
@@ -16,11 +16,11 @@ export class MailThreadsMailThreadsApi {
   }
 
 
-async list(params: MailThreadsMailThreadsListParams): Promise<MailThreadListResponse> {
+async list(params: MailThreadsMailThreadsListParams): Promise<Record<string, unknown>> {
     const query = buildQueryString([
       { name: 'folderId', value: params.folderId, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<MailThreadListResponse>(appendQueryString(appApiPath(`/mail/threads`), query));
+    return this.client.get<Record<string, unknown>>(appendQueryString(appApiPath(`/mail/threads`), query));
   }
 }
 

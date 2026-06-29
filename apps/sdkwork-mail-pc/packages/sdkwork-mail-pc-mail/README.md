@@ -1,27 +1,23 @@
-# sdkwork-mail-pc-Mail
+# sdkwork-mail-pc-mail
 
 ## Purpose
 
-Realtime audio, video, live mail inboxs, room state, and media controls.
+Mailbox UI for SDKWork Mail: folders, threads, message list/read/compose, verification mail, and Drive-backed attachments.
 
 ## Placement
 
 - Architecture: `pc-react`
 - App root: `apps/sdkwork-mail-pc`
 - Domain: `communication`
-- Capability: `Mail`
+- Capability: `mail`
 - Status: `ready`
 
 ## Depends on
 
 - `@sdkwork/ui-pc-react` for shared UI primitives and patterns
 - `@sdkwork/core-pc-react` for SDK runtime, env, and session integration
+- `@sdkwork/mail-app-sdk` for generated Mail HTTP client
 - Lower-level Mail workspace packages only
-
-## Extraction sources
-
-- `sdkwork-chat-pc-Mail`
-- `sdkwork-react-backend-Mail`
 
 ## Next implementation steps
 

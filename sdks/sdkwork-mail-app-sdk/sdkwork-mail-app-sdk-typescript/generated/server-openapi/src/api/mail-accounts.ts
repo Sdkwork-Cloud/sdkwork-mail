@@ -1,7 +1,7 @@
 import { appApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { MailAccountListResponse } from '../types';
+import type { MailAccount } from '../types';
 
 
 export class MailAccountsMailAccountsApi {
@@ -12,8 +12,8 @@ export class MailAccountsMailAccountsApi {
   }
 
 
-async list(): Promise<MailAccountListResponse> {
-    return this.client.get<MailAccountListResponse>(appApiPath(`/mail/accounts`));
+async list(): Promise<Record<string, unknown>> {
+    return this.client.get<Record<string, unknown>>(appApiPath(`/mail/accounts`));
   }
 }
 

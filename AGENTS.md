@@ -22,8 +22,10 @@ This repository is the SDKWork Mail authority workspace — a standalone email a
 | --- | --- |
 | `sdkwork-web-framework` | All HTTP route crates (`sdkwork-routes-mail-*-api`) via `web_bootstrap.rs`, `WebRequestContext`, IAM adapter |
 | `sdkwork-database` | Application-root `database/` module, lifecycle CLI (`db:*` scripts), repository bootstrap |
-| `sdkwork-utils` | Rust: `sdkwork-utils-rust` in service/plugins; TypeScript: `@sdkwork/utils` via app commons packages |
+| `sdkwork-utils` | Rust: `sdkwork-utils-rust` in service/plugins/route-common; TypeScript: `@sdkwork/utils` via PC/H5/mini-program cores |
 | `sdkwork-appbase` | IAM login/session, generated appbase SDKs for PC/H5 clients |
+| `sdkwork-drive` | Drive-backed attachments via `sdkwork-drive-app-sdk` (`driveNodeId`) and `MailDriveAttachmentPort` server validation |
+| `sdkwork-discovery` | intentionally **not** integrated (no RPC services yet) |
 
 ## Required Reading By Task
 
@@ -54,6 +56,8 @@ This repository is the SDKWork Mail authority workspace — a standalone email a
 ```powershell
 node --test tests/mail-workspace-standard.test.mjs
 node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .
+pnpm run api:materialize
+node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace .
 pnpm run verify
 ```
 

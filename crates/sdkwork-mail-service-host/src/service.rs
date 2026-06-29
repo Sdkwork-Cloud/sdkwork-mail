@@ -2,14 +2,14 @@ use std::sync::Arc;
 
 use sdkwork_communication_mail_service::{
     CreateMailMessageRequest, CreateMailProviderAccountRequest, CreateMailProviderAccountResult,
-    CreateMailTemplateRequest, GrantMailMarketingConsentRequest, MailAccount, MailFolder,
-    MailListWindowParams, MailMarketingConsent, MailMessage, MailPersistenceError,
-    MailPersistencePort, MailProviderAccount, MailProviderPingResult, MailProviderSyncResult,
-    MailTemplate, MailTemplateCategory, MailThread, MailTransactionalDelivery, MailTransportPort,
-    NoopMailPersistencePort, SendMailVerificationRequest, SendMailVerificationResult,
-    SendTransactionalMailRequest, SyncMailProviderAccountRequest, UnconfiguredMailTransport,
-    UpdateMailMessageRequest, UpdateMailTemplateRequest, VerifyMailCodeRequest,
-    VerifyMailCodeResult, apply_list_window,
+    CreateMailTemplateRequest, GrantMailMarketingConsentRequest, LocalMailDriveAttachmentPort,
+    MailAccount, MailDriveAttachmentPort, MailFolder, MailListWindowParams, MailMarketingConsent,
+    MailMessage, MailPersistenceError, MailPersistencePort, MailProviderAccount,
+    MailProviderPingResult, MailProviderSyncResult, MailTemplate, MailTemplateCategory, MailThread,
+    MailTransactionalDelivery, MailTransportPort, NoopMailPersistencePort,
+    SendMailVerificationRequest, SendMailVerificationResult, SendTransactionalMailRequest,
+    SyncMailProviderAccountRequest, UnconfiguredMailTransport, UpdateMailMessageRequest,
+    UpdateMailTemplateRequest, VerifyMailCodeRequest, VerifyMailCodeResult, apply_list_window,
 };
 use sdkwork_routes_mail_app_api::service::{
     MailAppApiError, MailAppApiFuture, MailAppApiService, MailListData, MailListRequest,
@@ -25,6 +25,7 @@ use crate::transactional;
 pub struct MailProductService {
     persistence: Arc<dyn MailPersistencePort>,
     transport: Arc<dyn MailTransportPort>,
+    drive_attachments: Arc<dyn MailDriveAttachmentPort>,
     default_from_email: Option<String>,
 }
 
@@ -33,6 +34,7 @@ impl MailProductService {
         Self {
             persistence: Arc::new(NoopMailPersistencePort),
             transport: Arc::new(UnconfiguredMailTransport),
+            drive_attachments: Arc::new(LocalMailDriveAttachmentPort),
             default_from_email: read_default_from_email(),
         }
     }
@@ -44,6 +46,14 @@ impl MailProductService {
 
     pub fn with_transport(mut self, transport: Arc<dyn MailTransportPort>) -> Self {
         self.transport = transport;
+        self
+    }
+
+    pub fn with_drive_attachment_port(
+        mut self,
+        drive_attachments: Arc<dyn MailDriveAttachmentPort>,
+    ) -> Self {
+        self.drive_attachments = drive_attachments;
         self
     }
 }
@@ -148,7 +158,12 @@ impl MailAppApiService for MailProductService {
         request: CreateMailMessageRequest,
     ) -> MailAppApiFuture<MailMessage> {
         let persistence = self.persistence.clone();
+        let drive_attachments = self.drive_attachments.clone();
         Box::pin(async move {
+            drive_attachments
+                .validate_attachments(&tenant_id, &owner_user_id, &request.attachments)
+                .await
+                .map_err(map_drive_attachment_error)?;
             persistence
                 .create_message(
                     &tenant_id,
@@ -557,6 +572,19 @@ fn map_persistence_error(error: MailPersistenceError) -> MailAppApiError {
         MailPersistenceError::NotFound(message) => MailAppApiError::NotFound(message),
         MailPersistenceError::Conflict(message) => MailAppApiError::Conflict(message),
         MailPersistenceError::Unavailable(message) => MailAppApiError::Unavailable(message),
+    }
+}
+
+fn map_drive_attachment_error(
+    error: sdkwork_communication_mail_service::MailDriveAttachmentError,
+) -> MailAppApiError {
+    match error {
+        sdkwork_communication_mail_service::MailDriveAttachmentError::Validation(message) => {
+            MailAppApiError::BadRequest(message)
+        }
+        sdkwork_communication_mail_service::MailDriveAttachmentError::Unavailable(message) => {
+            MailAppApiError::Unavailable(message)
+        }
     }
 }
 

@@ -56,7 +56,60 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailProviderAccountListResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailProviderAccount"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -70,7 +123,9 @@
         ]
       },
       "post": {
-        "tags": ["mailProviderAccounts"],
+        "tags": [
+          "mailProviderAccounts"
+        ],
         "operationId": "mail.providerAccounts.create",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -81,7 +136,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateMailProviderAccountRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/CreateMailProviderAccountRequest"
+              }
             }
           }
         },
@@ -90,17 +147,49 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/CreateMailProviderAccountResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/CreateMailProviderAccountResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/backend/v3/api/mail/provider_accounts/{accountId}/ping": {
       "post": {
-        "tags": ["mailProviderAccounts"],
+        "tags": [
+          "mailProviderAccounts"
+        ],
         "operationId": "mail.providerAccounts.ping",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -108,24 +197,63 @@
         "x-sdkwork-permission": "mail.provider_accounts.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "accountId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailProviderPingResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailProviderPingResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/backend/v3/api/mail/provider_accounts/{accountId}/sync": {
       "post": {
-        "tags": ["mailProviderAccounts"],
+        "tags": [
+          "mailProviderAccounts"
+        ],
         "operationId": "mail.providerAccounts.sync",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -133,13 +261,22 @@
         "x-sdkwork-permission": "mail.provider_accounts.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "accountId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "requestBody": {
           "required": false,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/SyncMailProviderAccountRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/SyncMailProviderAccountRequest"
+              }
             }
           }
         },
@@ -148,12 +285,42 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailProviderSyncResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailProviderSyncResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/backend/v3/api/mail/provider_webhooks/{provider}/events": {
@@ -194,7 +361,30 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MailProviderWebhookEventResponse"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailProviderWebhookEventResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -205,7 +395,9 @@
     },
     "/backend/v3/api/mail/templates": {
       "get": {
-        "tags": ["mailTemplates"],
+        "tags": [
+          "mailTemplates"
+        ],
         "operationId": "mail.templates.list",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -213,23 +405,97 @@
         "x-sdkwork-permission": "mail.templates.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "category", "in": "query", "schema": { "type": "string" } },
-          { "name": "purpose", "in": "query", "schema": { "type": "string" } }
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "purpose",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailTemplateListResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailTemplate"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       },
       "post": {
-        "tags": ["mailTemplates"],
+        "tags": [
+          "mailTemplates"
+        ],
         "operationId": "mail.templates.create",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -240,7 +506,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateMailTemplateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/CreateMailTemplateRequest"
+              }
             }
           }
         },
@@ -249,17 +517,49 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailTemplateResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailTemplateResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/backend/v3/api/mail/templates/{templateId}": {
       "get": {
-        "tags": ["mailTemplates"],
+        "tags": [
+          "mailTemplates"
+        ],
         "operationId": "mail.templates.retrieve",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -267,22 +567,61 @@
         "x-sdkwork-permission": "mail.templates.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "templateId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailTemplateResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailTemplateResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       },
       "patch": {
-        "tags": ["mailTemplates"],
+        "tags": [
+          "mailTemplates"
+        ],
         "operationId": "mail.templates.update",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -290,13 +629,22 @@
         "x-sdkwork-permission": "mail.templates.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "templateId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateMailTemplateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMailTemplateRequest"
+              }
             }
           }
         },
@@ -305,15 +653,47 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailTemplateResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailTemplateResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       },
       "delete": {
-        "tags": ["mailTemplates"],
+        "tags": [
+          "mailTemplates"
+        ],
         "operationId": "mail.templates.delete",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -321,17 +701,33 @@
         "x-sdkwork-permission": "mail.templates.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "templateId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "templateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
-          "204": { "description": "Deleted" }
+          "204": {
+            "description": "Deleted"
+          }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/backend/v3/api/mail/transactional_deliveries": {
       "get": {
-        "tags": ["mailTransactionalDeliveries"],
+        "tags": [
+          "mailTransactionalDeliveries"
+        ],
         "operationId": "mail.transactionalDeliveries.list",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -339,25 +735,99 @@
         "x-sdkwork-permission": "mail.transactional_deliveries.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "businessKind", "in": "query", "schema": { "type": "string" } },
-          { "name": "recipientEmail", "in": "query", "schema": { "type": "string" } }
+          {
+            "name": "businessKind",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recipientEmail",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailTransactionalDeliveryListResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailTransactionalDelivery"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/backend/v3/api/mail/marketing_consents": {
       "get": {
-        "tags": ["mailMarketingConsents"],
+        "tags": [
+          "mailMarketingConsents"
+        ],
         "operationId": "mail.marketingConsents.list",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -365,22 +835,90 @@
         "x-sdkwork-permission": "mail.marketing_consents.read",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "recipientEmail", "in": "query", "schema": { "type": "string" } }
+          {
+            "name": "recipientEmail",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailMarketingConsentListResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "items",
+                            "pageInfo"
+                          ],
+                          "properties": {
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/MailMarketingConsent"
+                              }
+                            },
+                            "pageInfo": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "required": [
+                                "mode",
+                                "hasMore"
+                              ],
+                              "properties": {
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "cursor"
+                                  ]
+                                },
+                                "nextCursor": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "hasMore": {
+                                  "type": "boolean"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       },
       "post": {
-        "tags": ["mailMarketingConsents"],
+        "tags": [
+          "mailMarketingConsents"
+        ],
         "operationId": "mail.marketingConsents.grant",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -391,7 +929,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/GrantMailMarketingConsentRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/GrantMailMarketingConsentRequest"
+              }
             }
           }
         },
@@ -400,17 +940,49 @@
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailMarketingConsentResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailMarketingConsentResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     },
     "/backend/v3/api/mail/marketing_consents/{consentId}/revoke": {
       "post": {
-        "tags": ["mailMarketingConsents"],
+        "tags": [
+          "mailMarketingConsents"
+        ],
         "operationId": "mail.marketingConsents.revoke",
         "x-sdkwork-owner": "sdkwork-mail",
         "x-sdkwork-api-authority": "sdkwork-mail-backend-api",
@@ -418,19 +990,56 @@
         "x-sdkwork-permission": "mail.marketing_consents.write",
         "x-sdkwork-auth-mode": "dual-token",
         "parameters": [
-          { "name": "consentId", "in": "path", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "consentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Success",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/MailMarketingConsentResponse" }
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/SdkWorkApiResponse"
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "data"
+                      ],
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "required": [
+                            "item"
+                          ],
+                          "properties": {
+                            "item": {
+                              "$ref": "#/components/schemas/MailMarketingConsentResponse"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               }
             }
           }
         },
-        "security": [{ "AuthToken": [], "AccessToken": [] }]
+        "security": [
+          {
+            "AuthToken": [],
+            "AccessToken": []
+          }
+        ]
       }
     }
   },
@@ -449,18 +1058,46 @@
     "schemas": {
       "ProblemDetail": {
         "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "type",
+          "title",
+          "status",
+          "code",
+          "traceId"
+        ],
         "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri-reference"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 599
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string"
+          },
           "code": {
-            "type": "string"
+            "$ref": "#/components/schemas/SdkWorkPlatformErrorCode"
           },
-          "message": {
-            "type": "string"
+          "traceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Server-owned request correlation id."
           },
-          "requestId": {
-            "type": "string"
-          },
-          "data": {
-            "type": "object"
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FieldError"
+            }
           }
         }
       },
@@ -506,87 +1143,168 @@
       },
       "CreateMailProviderCredentialInput": {
         "type": "object",
-        "required": ["username", "secretRef"],
+        "required": [
+          "username",
+          "secretRef"
+        ],
         "properties": {
-          "username": { "type": "string" },
-          "secretRef": { "type": "string" }
+          "username": {
+            "type": "string"
+          },
+          "secretRef": {
+            "type": "string"
+          }
         }
       },
       "CreateMailProviderAccountRequest": {
         "type": "object",
-        "required": ["providerKind", "name", "host", "port", "useTls"],
+        "required": [
+          "providerKind",
+          "name",
+          "host",
+          "port",
+          "useTls"
+        ],
         "properties": {
-          "providerKind": { "type": "string" },
-          "name": { "type": "string" },
-          "host": { "type": "string" },
-          "port": { "type": "integer" },
-          "useTls": { "type": "boolean" },
-          "credential": { "$ref": "#/components/schemas/CreateMailProviderCredentialInput" }
+          "providerKind": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          },
+          "useTls": {
+            "type": "boolean"
+          },
+          "credential": {
+            "$ref": "#/components/schemas/CreateMailProviderCredentialInput"
+          }
         }
       },
       "MailProviderCredential": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "providerAccountId": { "type": "string" },
-          "username": { "type": "string" },
-          "secretRef": { "type": "string" },
-          "status": { "type": "string" }
+          "id": {
+            "type": "string"
+          },
+          "providerAccountId": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "secretRef": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
         }
       },
       "CreateMailProviderAccountResult": {
         "type": "object",
         "properties": {
-          "account": { "$ref": "#/components/schemas/MailProviderAccount" },
-          "credential": { "$ref": "#/components/schemas/MailProviderCredential" }
+          "account": {
+            "$ref": "#/components/schemas/MailProviderAccount"
+          },
+          "credential": {
+            "$ref": "#/components/schemas/MailProviderCredential"
+          }
         }
       },
       "CreateMailProviderAccountResponse": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/CreateMailProviderAccountResult" }
+          "data": {
+            "$ref": "#/components/schemas/CreateMailProviderAccountResult"
+          }
         }
       },
       "MailProviderPingResult": {
         "type": "object",
         "properties": {
-          "providerKind": { "type": "string" },
-          "accountId": { "type": "string" },
-          "ok": { "type": "boolean" },
-          "message": { "type": "string" }
+          "providerKind": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
         }
       },
       "MailProviderPingResponse": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/MailProviderPingResult" }
+          "data": {
+            "$ref": "#/components/schemas/MailProviderPingResult"
+          }
         }
       },
       "SyncMailProviderAccountRequest": {
         "type": "object",
         "properties": {
-          "mailbox": { "type": "string" },
-          "sinceUid": { "type": "integer", "minimum": 0 },
-          "limit": { "type": "integer", "minimum": 1, "maximum": 200 }
+          "mailbox": {
+            "type": "string"
+          },
+          "sinceUid": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
         }
       },
       "MailProviderSyncResult": {
         "type": "object",
         "properties": {
-          "providerKind": { "type": "string" },
-          "providerAccountId": { "type": "string" },
-          "mailAccountId": { "type": "string" },
-          "folderId": { "type": "string" },
-          "syncedCount": { "type": "integer", "minimum": 0 },
-          "highestUid": { "type": "integer", "minimum": 0 },
-          "uidValidity": { "type": "integer", "minimum": 0 },
-          "message": { "type": "string" }
+          "providerKind": {
+            "type": "string"
+          },
+          "providerAccountId": {
+            "type": "string"
+          },
+          "mailAccountId": {
+            "type": "string"
+          },
+          "folderId": {
+            "type": "string"
+          },
+          "syncedCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "highestUid": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "uidValidity": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "message": {
+            "type": "string"
+          }
         }
       },
       "MailProviderSyncResponse": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/MailProviderSyncResult" }
+          "data": {
+            "$ref": "#/components/schemas/MailProviderSyncResult"
+          }
         }
       },
       "MailProviderWebhookEventRequest": {
@@ -600,9 +1318,6 @@
             "type": "string"
           },
           "message": {
-            "type": "string"
-          },
-          "requestId": {
             "type": "string"
           }
         }
@@ -624,46 +1339,110 @@
       "MailTemplate": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "templateKey": { "type": "string" },
-          "name": { "type": "string" },
-          "category": { "type": "string" },
-          "purpose": { "type": "string" },
-          "locale": { "type": "string" },
-          "subjectTemplate": { "type": "string" },
-          "bodyHtmlTemplate": { "type": "string" },
-          "bodyTextTemplate": { "type": "string" },
-          "status": { "type": "string" }
+          "id": {
+            "type": "string"
+          },
+          "templateKey": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "subjectTemplate": {
+            "type": "string"
+          },
+          "bodyHtmlTemplate": {
+            "type": "string"
+          },
+          "bodyTextTemplate": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
         }
       },
       "CreateMailTemplateRequest": {
         "type": "object",
-        "required": ["templateKey", "name", "category", "purpose", "subjectTemplate"],
+        "required": [
+          "templateKey",
+          "name",
+          "category",
+          "purpose",
+          "subjectTemplate"
+        ],
         "properties": {
-          "templateKey": { "type": "string" },
-          "name": { "type": "string" },
-          "category": { "type": "string" },
-          "purpose": { "type": "string" },
-          "locale": { "type": "string" },
-          "subjectTemplate": { "type": "string" },
-          "bodyHtmlTemplate": { "type": "string" },
-          "bodyTextTemplate": { "type": "string" },
-          "variableSchema": { "type": "object" },
-          "metadata": { "type": "object" }
+          "templateKey": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "subjectTemplate": {
+            "type": "string"
+          },
+          "bodyHtmlTemplate": {
+            "type": "string"
+          },
+          "bodyTextTemplate": {
+            "type": "string"
+          },
+          "variableSchema": {
+            "type": "object"
+          },
+          "metadata": {
+            "type": "object"
+          }
         }
       },
       "UpdateMailTemplateRequest": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "category": { "type": "string" },
-          "purpose": { "type": "string" },
-          "subjectTemplate": { "type": "string" },
-          "bodyHtmlTemplate": { "type": "string" },
-          "bodyTextTemplate": { "type": "string" },
-          "variableSchema": { "type": "object" },
-          "status": { "type": "string" },
-          "metadata": { "type": "object" }
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "subjectTemplate": {
+            "type": "string"
+          },
+          "bodyHtmlTemplate": {
+            "type": "string"
+          },
+          "bodyTextTemplate": {
+            "type": "string"
+          },
+          "variableSchema": {
+            "type": "object"
+          },
+          "status": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
         }
       },
       "MailTemplateListResponse": {
@@ -671,28 +1450,50 @@
         "properties": {
           "items": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/MailTemplate" }
+            "items": {
+              "$ref": "#/components/schemas/MailTemplate"
+            }
           },
-          "nextCursor": { "type": "string" }
+          "nextCursor": {
+            "type": "string"
+          }
         }
       },
       "MailTemplateResponse": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/MailTemplate" }
+          "data": {
+            "$ref": "#/components/schemas/MailTemplate"
+          }
         }
       },
       "MailTransactionalDelivery": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "templateKey": { "type": "string" },
-          "businessKind": { "type": "string" },
-          "recipientEmail": { "type": "string" },
-          "subject": { "type": "string" },
-          "status": { "type": "string" },
-          "sentAt": { "type": "string" },
-          "createdAt": { "type": "string" }
+          "id": {
+            "type": "string"
+          },
+          "templateKey": {
+            "type": "string"
+          },
+          "businessKind": {
+            "type": "string"
+          },
+          "recipientEmail": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "sentAt": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          }
         }
       },
       "MailTransactionalDeliveryListResponse": {
@@ -700,29 +1501,53 @@
         "properties": {
           "items": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/MailTransactionalDelivery" }
+            "items": {
+              "$ref": "#/components/schemas/MailTransactionalDelivery"
+            }
           },
-          "nextCursor": { "type": "string" }
+          "nextCursor": {
+            "type": "string"
+          }
         }
       },
       "MailMarketingConsent": {
         "type": "object",
         "properties": {
-          "id": { "type": "string" },
-          "recipientEmail": { "type": "string" },
-          "status": { "type": "string" },
-          "consentSource": { "type": "string" },
-          "grantedAt": { "type": "string" },
-          "revokedAt": { "type": "string" }
+          "id": {
+            "type": "string"
+          },
+          "recipientEmail": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "consentSource": {
+            "type": "string"
+          },
+          "grantedAt": {
+            "type": "string"
+          },
+          "revokedAt": {
+            "type": "string"
+          }
         }
       },
       "GrantMailMarketingConsentRequest": {
         "type": "object",
-        "required": ["recipientEmail"],
+        "required": [
+          "recipientEmail"
+        ],
         "properties": {
-          "recipientEmail": { "type": "string" },
-          "consentSource": { "type": "string" },
-          "metadata": { "type": "object" }
+          "recipientEmail": {
+            "type": "string"
+          },
+          "consentSource": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
         }
       },
       "MailMarketingConsentListResponse": {
@@ -730,16 +1555,229 @@
         "properties": {
           "items": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/MailMarketingConsent" }
+            "items": {
+              "$ref": "#/components/schemas/MailMarketingConsent"
+            }
           },
-          "nextCursor": { "type": "string" }
+          "nextCursor": {
+            "type": "string"
+          }
         }
       },
       "MailMarketingConsentResponse": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/MailMarketingConsent" }
+          "data": {
+            "$ref": "#/components/schemas/MailMarketingConsent"
+          }
         }
+      },
+      "SdkWorkApiResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "data",
+          "traceId"
+        ],
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "enum": [
+              0
+            ],
+            "default": 0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "data": {
+            "description": "Operation-specific payload typed per response schema."
+          },
+          "traceId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Server-owned request correlation id."
+          }
+        }
+      },
+      "SdkWorkResourceData": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "item"
+        ],
+        "properties": {
+          "item": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Typed domain resource for the operation."
+          }
+        }
+      },
+      "SdkWorkPageData": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items",
+          "pageInfo"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "pageInfo": {
+            "$ref": "#/components/schemas/PageInfo"
+          }
+        }
+      },
+      "SdkWorkCommandData": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "accepted"
+        ],
+        "properties": {
+          "accepted": {
+            "type": "boolean",
+            "const": true
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "PageInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "offset",
+              "cursor"
+            ]
+          },
+          "page": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "pageSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          },
+          "totalItems": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "totalPages": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "hasMore": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SdkWorkPlatformErrorCode": {
+        "type": "integer",
+        "format": "int32",
+        "minimum": 40001,
+        "maximum": 79999,
+        "description": "Platform or domain error code per API_SPEC.md §15.3."
+      },
+      "FieldError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "message"
+        ],
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 40011,
+            "maximum": 40099
+          }
+        }
+      },
+      "SdkWorkResourceResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SdkWorkApiResponse"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SdkWorkResourceData"
+              }
+            }
+          }
+        ]
+      },
+      "SdkWorkListResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SdkWorkApiResponse"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SdkWorkPageData"
+              }
+            }
+          }
+        ]
+      },
+      "SdkWorkCommandResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SdkWorkApiResponse"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "$ref": "#/components/schemas/SdkWorkCommandData"
+              }
+            }
+          }
+        ]
       }
     }
   }

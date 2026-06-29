@@ -178,6 +178,16 @@ pub struct MailSmtpTransportBinding {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct CreateMailAttachmentInput {
+    pub drive_node_id: String,
+    pub file_name: String,
+    pub content_type: String,
+    pub size_bytes: u64,
+    pub checksum_sha256: Option<String>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateMailMessageRequest {
     pub account_id: String,
     pub folder_id: Option<String>,
@@ -191,6 +201,8 @@ pub struct CreateMailMessageRequest {
     pub cc: Vec<MailMessageRecipient>,
     pub bcc: Vec<MailMessageRecipient>,
     pub is_draft: bool,
+    #[serde(default)]
+    pub attachments: Vec<CreateMailAttachmentInput>,
     pub metadata: JsonValue,
 }
 

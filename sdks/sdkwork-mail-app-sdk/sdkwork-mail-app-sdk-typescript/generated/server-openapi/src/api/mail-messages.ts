@@ -1,7 +1,7 @@
 import { appApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { CreateMailMessageRequest, MailMessageListResponse, MailMessageResponse, UpdateMailMessageRequest } from '../types';
+import type { CreateMailMessageRequest, MailMessage, MailMessageResponse, UpdateMailMessageRequest } from '../types';
 
 
 export interface MailMessagesMailMessagesListParams {
@@ -16,11 +16,11 @@ export class MailMessagesMailMessagesApi {
   }
 
 
-async list(params: MailMessagesMailMessagesListParams): Promise<MailMessageListResponse> {
+async list(params: MailMessagesMailMessagesListParams): Promise<Record<string, unknown>> {
     const query = buildQueryString([
       { name: 'folderId', value: params.folderId, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<MailMessageListResponse>(appendQueryString(appApiPath(`/mail/messages`), query));
+    return this.client.get<Record<string, unknown>>(appendQueryString(appApiPath(`/mail/messages`), query));
   }
 
 async create(body: CreateMailMessageRequest): Promise<MailMessageResponse> {

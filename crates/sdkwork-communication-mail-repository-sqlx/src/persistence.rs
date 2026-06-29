@@ -1,16 +1,17 @@
 use chrono::NaiveDateTime;
 use sdkwork_communication_mail_service::{
-    ActiveVerificationChallenge, CreateMailMessageRequest, CreateMailProviderAccountRequest,
-    CreateMailProviderAccountResult, CreateMailProviderCredentialInput, CreateMailTemplateRequest,
-    EnsureMailAccountRequest, GrantMailMarketingConsentRequest, IngestInboundMailMessageRequest,
-    MailAccount, MailAccountStatus, MailAttachment, MailFolder, MailFolderKind,
-    MailMarketingConsent, MailMarketingConsentStatus, MailMessage, MailMessageRecipient,
-    MailPersistenceError, MailPersistenceFuture, MailPersistencePort, MailPersistenceResult,
-    MailProviderAccount, MailProviderAccountStatus, MailProviderCredential,
-    MailProviderCredentialStatus, MailRecipientKind, MailSmtpTransportBinding, MailSyncState,
-    MailTemplate, MailTemplateCategory, MailTemplateStatus, MailThread, MailTransactionalDelivery,
-    MailTransactionalDeliveryStatus, MailVerificationPurpose, UpdateMailMessageRequest,
-    UpdateMailTemplateRequest, utc_now_rfc3339_millis,
+    ActiveVerificationChallenge, CreateMailAttachmentInput, CreateMailMessageRequest,
+    CreateMailProviderAccountRequest, CreateMailProviderAccountResult,
+    CreateMailProviderCredentialInput, CreateMailTemplateRequest, EnsureMailAccountRequest,
+    GrantMailMarketingConsentRequest, IngestInboundMailMessageRequest, MailAccount,
+    MailAccountStatus, MailAttachment, MailFolder, MailFolderKind, MailMarketingConsent,
+    MailMarketingConsentStatus, MailMessage, MailMessageRecipient, MailPersistenceError,
+    MailPersistenceFuture, MailPersistencePort, MailPersistenceResult, MailProviderAccount,
+    MailProviderAccountStatus, MailProviderCredential, MailProviderCredentialStatus,
+    MailRecipientKind, MailSmtpTransportBinding, MailSyncState, MailTemplate, MailTemplateCategory,
+    MailTemplateStatus, MailThread, MailTransactionalDelivery, MailTransactionalDeliveryStatus,
+    MailVerificationPurpose, UpdateMailMessageRequest, UpdateMailTemplateRequest,
+    utc_now_rfc3339_millis,
 };
 use sdkwork_utils_rust::{is_blank, sha256_hash};
 use serde_json::json;
@@ -228,6 +229,8 @@ impl MailPersistencePort for MailPostgresPersistencePort {
                 .unwrap_or_else(|| owner_user_id.to_owned());
             let from_name = request.from_name.clone();
 
+            let has_attachments = !request.attachments.is_empty();
+
             sqlx::query(
                 r#"
                 INSERT INTO mail_message (
@@ -238,7 +241,7 @@ impl MailPersistencePort for MailPostgresPersistencePort {
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7,
                     $8, $9, $10, $11, $12, $13, FALSE, FALSE,
-                    $14, FALSE, $15, $16, $17, $18,
+                    $14, $15, $16, $17, $18, $19,
                     NOW(), NOW(), 0
                 )
                 "#,
@@ -257,6 +260,7 @@ impl MailPersistencePort for MailPostgresPersistencePort {
             .bind(&request.body_text)
             .bind(&request.body_html)
             .bind(request.is_draft)
+            .bind(has_attachments)
             .bind(if request.is_draft {
                 None::<String>
             } else {
@@ -276,6 +280,17 @@ impl MailPersistencePort for MailPostgresPersistencePort {
                     organization_id,
                     &message_id,
                     recipient,
+                )
+                .await?;
+            }
+
+            for attachment in request.attachments {
+                insert_attachment(
+                    &self.pool,
+                    tenant_id,
+                    organization_id,
+                    &message_id,
+                    attachment,
                 )
                 .await?;
             }
@@ -1924,6 +1939,37 @@ async fn load_attachments(
         .into_iter()
         .map(AttachmentRow::into_attachment)
         .collect())
+}
+
+async fn insert_attachment(
+    pool: &PgPool,
+    tenant_id: &str,
+    organization_id: &str,
+    message_id: &str,
+    attachment: CreateMailAttachmentInput,
+) -> MailPersistenceResult<()> {
+    sqlx::query(
+        r#"
+        INSERT INTO mail_attachment (
+            id, uuid, tenant_id, organization_id, message_id, file_name, content_type,
+            size_bytes, drive_node_id, checksum_sha256, created_at, updated_at, version
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW(), 0)
+        "#,
+    )
+    .bind(next_id())
+    .bind(Uuid::new_v4().to_string())
+    .bind(parse_id(tenant_id))
+    .bind(parse_id(organization_id))
+    .bind(message_id)
+    .bind(attachment.file_name)
+    .bind(attachment.content_type)
+    .bind(attachment.size_bytes as i64)
+    .bind(Some(attachment.drive_node_id))
+    .bind(attachment.checksum_sha256)
+    .execute(pool)
+    .await
+    .map_err(map_sqlx_error)?;
+    Ok(())
 }
 
 async fn insert_recipient(

@@ -479,6 +479,7 @@ test("sdkwork-mail integrates sdkwork-utils for shared Rust and TypeScript helpe
   assert.match(read("pnpm-workspace.yaml"), /sdkwork-utils-typescript/u);
   assert.match(read("apps/sdkwork-mail-pc/packages/sdkwork-mail-pc-commons/package.json"), /@sdkwork\/utils/u);
   assert.match(read("apps/sdkwork-mail-h5/packages/sdkwork-mail-h5-commons/package.json"), /@sdkwork\/utils/u);
+  assert.match(read("apps/sdkwork-mail-mini-program/packages/sdkwork-mail-mp-core/package.json"), /@sdkwork\/utils/u);
 });
 
 test("sdkwork-mail route manifests declare WebRequestContext and apiSurface", () => {
@@ -493,6 +494,19 @@ test("sdkwork-mail route manifests declare WebRequestContext and apiSurface", ()
       assert.ok(route.apiSurface, `${manifestPath} route ${route.operationId} must declare apiSurface`);
     }
   }
+});
+
+test("sdkwork-mail service host wires drive attachment port from env", () => {
+  const bootstrapSource = read("crates/sdkwork-mail-standalone-gateway/src/bootstrap.rs");
+  const portSource = read("crates/sdkwork-mail-service-host/src/drive_attachment_port.rs");
+  const serviceHostLib = read("crates/sdkwork-mail-service-host/src/lib.rs");
+
+  assert.match(bootstrapSource, /build_mail_drive_attachment_port_from_env/u);
+  assert.match(bootstrapSource, /with_drive_attachment_port/u);
+  assert.match(serviceHostLib, /build_mail_drive_attachment_port_from_env/u);
+  assert.match(portSource, /SDKWORK_DRIVE_FACADE_URL/u);
+  assert.match(portSource, /MailDriveAttachmentPort/u);
+  assert.match(portSource, /LocalMailDriveAttachmentPort/u);
 });
 
 test("sdkwork-mail standalone-gateway wires database readiness when persistence pool is configured", () => {
@@ -534,11 +548,31 @@ test("sdkwork-mail provider webhook ingress declares framework rate-limit tier",
   assert.match(backendBuild, /with_rate_limit_tier/u);
 });
 
+test("sdkwork-mail HTTP handlers use SdkWorkApiResponse envelope mapping", () => {
+  for (const filePath of [
+    "crates/sdkwork-routes-mail-app-api/src/handlers.rs",
+    "crates/sdkwork-routes-mail-backend-api/src/handlers.rs",
+    "crates/sdkwork-routes-mail-common/src/response.rs",
+  ]) {
+    const source = read(filePath);
+    assert.match(source, /SdkWorkApiResponse|finish_api_json/u, `${filePath} must use standard API response helpers`);
+    assert.doesNotMatch(source, /MailApiEnvelope/u, `${filePath} must not keep legacy MailApiEnvelope`);
+    assert.doesNotMatch(source, /request_id/u, `${filePath} must not emit legacy requestId/request_id fields`);
+  }
+});
+
+test("sdkwork-mail declares OpenAPI envelope materialization tool", () => {
+  assert.ok(exists("tools/materialize-mail-openapi-envelope.mjs"));
+  const packageJson = JSON.parse(read("package.json"));
+  assert.match(packageJson.scripts?.["api:materialize"], /materialize-mail-openapi-envelope/u);
+  assert.match(packageJson.scripts?.verify, /test:contract:api-envelope/u);
+});
+
 test("sdkwork-mail manifests and tools use standard paths and route crate names", () => {
   for (const filePath of [
     "Cargo.toml",
     "tools/mail_sdk_generate.mjs",
-    "sdks/materialize-Mail-v3-openapi-boundaries.mjs",
+    "tools/materialize-mail-openapi-envelope.mjs",
     "sdks/sdkwork-mail-app-sdk/sdk-manifest.json",
     "sdks/sdkwork-mail-backend-sdk/sdk-manifest.json",
     "sdks/sdkwork-mail-app-sdk/.sdkwork-assembly.json",

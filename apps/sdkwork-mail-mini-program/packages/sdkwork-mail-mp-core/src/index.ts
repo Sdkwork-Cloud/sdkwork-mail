@@ -18,4 +18,5 @@ export {
   createMailAppSdkClient,
   type CreateMailAppSdkClientOptions,
 } from "./sdk/createAppSdkClient";
+export { isBlank, trim, truncate } from "@sdkwork/utils";
 export type { MailAppSdkClient, MailAppSdkPort } from "./sdk/appSdkPort";

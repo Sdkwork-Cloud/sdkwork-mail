@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "kind": "sdkwork.component.spec",
+  "component": {
+    "name": "sdkwork-routes-mail-common",
+    "displayName": "SDKWork Mail Route Common",
+    "version": "0.1.0",
+    "type": "rust-crate",
+    "root": "sdkwork-mail",
+    "domain": "communication",
+    "capability": "mail",
+    "status": "ACTIVE",
+    "languages": ["rust"],
+    "generated": false,
+    "private": true,
+    "manifests": ["Cargo.toml"]
+  },
+  "contracts": {
+    "publicExports": ["crates/sdkwork-routes-mail-common/src/response.rs"]
+  },
+  "verification": {
+    "commands": ["cargo check -p sdkwork-routes-mail-common"]
+  }
+}

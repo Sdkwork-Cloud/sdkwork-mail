@@ -1,3 +1,5 @@
+import type { CreateMailAttachmentInput } from './create-mail-attachment-input';
+
 export interface CreateMailMessageRequest {
   accountId: string;
   folderId?: string;
@@ -6,4 +8,5 @@ export interface CreateMailMessageRequest {
   bodyText?: string;
   bodyHtml?: string;
   isDraft?: boolean;
+  attachments?: CreateMailAttachmentInput[];
 }

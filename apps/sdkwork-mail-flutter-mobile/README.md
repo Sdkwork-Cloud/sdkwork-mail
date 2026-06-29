@@ -1,6 +1,6 @@
 # SDKWork Mail Flutter Mobile Application
 
-Flutter mobile application for SDKWork Mail. Native iOS and Android experience for rooms, mail inboxs, and participant management.
+Flutter mobile application for SDKWork Mail. Native iOS and Android experience for mailbox browsing, compose/send, folders, and threads.
 
 ## Architecture
 

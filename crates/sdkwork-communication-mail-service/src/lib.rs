@@ -1,5 +1,6 @@
 //! SDKWork Mail domain service — accounts, folders, threads, messages, attachments.
 
+pub mod drive_attachment;
 pub mod error;
 pub mod list_window;
 pub mod models;
@@ -8,6 +9,10 @@ pub mod sync;
 pub mod transactional;
 pub mod transport;
 
+pub use drive_attachment::{
+    LocalMailDriveAttachmentPort, MailDriveAttachmentError, MailDriveAttachmentFuture,
+    MailDriveAttachmentPort, validate_mail_attachment_fields,
+};
 pub use error::{MailResult, MailServiceError};
 pub use list_window::{
     DEFAULT_LIST_PAGE_SIZE, MAX_LIST_PAGE_SIZE, MailListWindow, MailListWindowError,

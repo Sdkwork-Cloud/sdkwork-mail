@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use sdkwork_mail_gateway_assembly::assemble_application_router_with_service;
-use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
+use sdkwork_web_bootstrap::{ServiceRouterConfig, service_router};
 
 mod bootstrap;
 mod readiness;
@@ -18,7 +18,8 @@ async fn main() -> anyhow::Result<()> {
     let assembly = assemble_application_router_with_service(bootstrap.service).await;
 
     let service_router_config = if let Some(pool) = bootstrap.database_pool {
-        ServiceRouterConfig::default().with_readiness_check(Arc::new(MailDatabaseReadinessCheck::new(pool)))
+        ServiceRouterConfig::default()
+            .with_readiness_check(Arc::new(MailDatabaseReadinessCheck::new(pool)))
     } else {
         ServiceRouterConfig::default().with_always_ready()
     };

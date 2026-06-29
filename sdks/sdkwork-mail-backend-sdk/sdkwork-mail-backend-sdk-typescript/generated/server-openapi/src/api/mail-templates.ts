@@ -1,7 +1,7 @@
 import { backendApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { CreateMailTemplateRequest, MailTemplateListResponse, MailTemplateResponse, UpdateMailTemplateRequest } from '../types';
+import type { CreateMailTemplateRequest, MailTemplate, MailTemplateResponse, UpdateMailTemplateRequest } from '../types';
 
 
 export interface MailTemplatesMailTemplatesListParams {
@@ -17,12 +17,12 @@ export class MailTemplatesMailTemplatesApi {
   }
 
 
-async list(params?: MailTemplatesMailTemplatesListParams): Promise<MailTemplateListResponse> {
+async list(params?: MailTemplatesMailTemplatesListParams): Promise<Record<string, unknown>> {
     const query = buildQueryString([
       { name: 'category', value: params?.category, style: 'form', explode: true, allowReserved: false },
       { name: 'purpose', value: params?.purpose, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<MailTemplateListResponse>(appendQueryString(backendApiPath(`/mail/templates`), query));
+    return this.client.get<Record<string, unknown>>(appendQueryString(backendApiPath(`/mail/templates`), query));
   }
 
 async create(body: CreateMailTemplateRequest): Promise<MailTemplateResponse> {

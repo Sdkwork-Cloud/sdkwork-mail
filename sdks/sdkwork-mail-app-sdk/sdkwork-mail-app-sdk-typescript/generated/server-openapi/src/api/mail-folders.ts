@@ -1,7 +1,7 @@
 import { appApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { MailFolderListResponse } from '../types';
+import type { MailFolder } from '../types';
 
 
 export interface MailFoldersMailFoldersListParams {
@@ -16,11 +16,11 @@ export class MailFoldersMailFoldersApi {
   }
 
 
-async list(params: MailFoldersMailFoldersListParams): Promise<MailFolderListResponse> {
+async list(params: MailFoldersMailFoldersListParams): Promise<Record<string, unknown>> {
     const query = buildQueryString([
       { name: 'accountId', value: params.accountId, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<MailFolderListResponse>(appendQueryString(appApiPath(`/mail/folders`), query));
+    return this.client.get<Record<string, unknown>>(appendQueryString(appApiPath(`/mail/folders`), query));
   }
 }
 

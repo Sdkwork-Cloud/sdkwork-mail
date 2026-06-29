@@ -1,7 +1,7 @@
 import { backendApiPath } from './paths';
 import type { HttpClient } from '../http/client';
 
-import type { CreateMailProviderAccountRequest, CreateMailProviderAccountResponse, MailProviderAccountListResponse, MailProviderPingResponse, MailProviderSyncResponse, SyncMailProviderAccountRequest } from '../types';
+import type { CreateMailProviderAccountRequest, CreateMailProviderAccountResponse, MailProviderAccount, MailProviderPingResponse, MailProviderSyncResponse, SyncMailProviderAccountRequest } from '../types';
 
 
 export class MailProviderAccountsMailProviderAccountsApi {
@@ -12,8 +12,8 @@ export class MailProviderAccountsMailProviderAccountsApi {
   }
 
 
-async list(): Promise<MailProviderAccountListResponse> {
-    return this.client.get<MailProviderAccountListResponse>(backendApiPath(`/mail/provider_accounts`));
+async list(): Promise<Record<string, unknown>> {
+    return this.client.get<Record<string, unknown>>(backendApiPath(`/mail/provider_accounts`));
   }
 
 async create(body: CreateMailProviderAccountRequest): Promise<CreateMailProviderAccountResponse> {

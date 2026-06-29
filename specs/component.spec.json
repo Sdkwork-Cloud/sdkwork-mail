@@ -166,7 +166,7 @@
       "pnpm run test:workspace-standard",
       "pnpm run test:contract:migration",
       "pnpm run api:materialize",
-      "pnpm run api:materialize:check",
+      "pnpm run test:contract:api-envelope",
       "pnpm run sdk:check",
       "pnpm run test:contract:database",
       "pnpm run test:topology-validate",

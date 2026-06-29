@@ -1,7 +1,7 @@
 -- SDKWork Mail database baseline (communication/mail capability).
 -- Tenant-isolated mailbox: accounts, folders, threads, messages, attachments, labels, transport providers.
 
-CREATE TABLE mail_account (
+CREATE TABLE IF NOT EXISTS mail_account (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -23,10 +23,10 @@ CREATE TABLE mail_account (
     CONSTRAINT uk_mail_account_tenant_email UNIQUE (tenant_id, organization_id, email_address)
 );
 
-CREATE INDEX idx_mail_account_tenant_owner_status
+CREATE INDEX IF NOT EXISTS idx_mail_account_tenant_owner_status
     ON mail_account (tenant_id, organization_id, owner_user_id, status, updated_at);
 
-CREATE TABLE mail_folder (
+CREATE TABLE IF NOT EXISTS mail_folder (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -47,10 +47,10 @@ CREATE TABLE mail_folder (
     CONSTRAINT uk_mail_folder_account_kind_name UNIQUE (account_id, folder_kind, name)
 );
 
-CREATE INDEX idx_mail_folder_account_kind
+CREATE INDEX IF NOT EXISTS idx_mail_folder_account_kind
     ON mail_folder (tenant_id, organization_id, account_id, folder_kind, sort_order);
 
-CREATE TABLE mail_thread (
+CREATE TABLE IF NOT EXISTS mail_thread (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -72,10 +72,10 @@ CREATE TABLE mail_thread (
     CONSTRAINT uk_mail_thread_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_thread_folder_last_message
+CREATE INDEX IF NOT EXISTS idx_mail_thread_folder_last_message
     ON mail_thread (tenant_id, organization_id, folder_id, last_message_at DESC);
 
-CREATE TABLE mail_message (
+CREATE TABLE IF NOT EXISTS mail_message (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -107,13 +107,13 @@ CREATE TABLE mail_message (
     CONSTRAINT uk_mail_message_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_message_folder_received
+CREATE INDEX IF NOT EXISTS idx_mail_message_folder_received
     ON mail_message (tenant_id, organization_id, folder_id, received_at DESC);
 
-CREATE INDEX idx_mail_message_thread_received
+CREATE INDEX IF NOT EXISTS idx_mail_message_thread_received
     ON mail_message (tenant_id, organization_id, thread_id, received_at DESC);
 
-CREATE TABLE mail_message_recipient (
+CREATE TABLE IF NOT EXISTS mail_message_recipient (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -127,10 +127,10 @@ CREATE TABLE mail_message_recipient (
     CONSTRAINT uk_mail_message_recipient_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_message_recipient_message
+CREATE INDEX IF NOT EXISTS idx_mail_message_recipient_message
     ON mail_message_recipient (message_id, recipient_kind);
 
-CREATE TABLE mail_attachment (
+CREATE TABLE IF NOT EXISTS mail_attachment (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -150,10 +150,10 @@ CREATE TABLE mail_attachment (
     CONSTRAINT uk_mail_attachment_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_attachment_message
+CREATE INDEX IF NOT EXISTS idx_mail_attachment_message
     ON mail_attachment (tenant_id, organization_id, message_id);
 
-CREATE TABLE mail_label (
+CREATE TABLE IF NOT EXISTS mail_label (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -170,7 +170,7 @@ CREATE TABLE mail_label (
     CONSTRAINT uk_mail_label_account_name UNIQUE (account_id, name)
 );
 
-CREATE TABLE mail_message_label (
+CREATE TABLE IF NOT EXISTS mail_message_label (
     id BIGINT NOT NULL,
     message_id VARCHAR(64) NOT NULL,
     label_id VARCHAR(64) NOT NULL,
@@ -179,7 +179,7 @@ CREATE TABLE mail_message_label (
     CONSTRAINT uk_mail_message_label_pair UNIQUE (message_id, label_id)
 );
 
-CREATE TABLE mail_provider_account (
+CREATE TABLE IF NOT EXISTS mail_provider_account (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -198,10 +198,10 @@ CREATE TABLE mail_provider_account (
     CONSTRAINT uk_mail_provider_account_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_provider_account_tenant_status
+CREATE INDEX IF NOT EXISTS idx_mail_provider_account_tenant_status
     ON mail_provider_account (tenant_id, organization_id, provider_kind, status);
 
-CREATE TABLE mail_provider_credential (
+CREATE TABLE IF NOT EXISTS mail_provider_credential (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -218,7 +218,7 @@ CREATE TABLE mail_provider_credential (
     CONSTRAINT uk_mail_provider_credential_uuid UNIQUE (uuid)
 );
 
-CREATE TABLE mail_sync_state (
+CREATE TABLE IF NOT EXISTS mail_sync_state (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -237,10 +237,10 @@ CREATE TABLE mail_sync_state (
     CONSTRAINT uk_mail_sync_state_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_sync_state_account_folder
+CREATE INDEX IF NOT EXISTS idx_mail_sync_state_account_folder
     ON mail_sync_state (tenant_id, organization_id, account_id, folder_id);
 
-CREATE TABLE mail_outbox_event (
+CREATE TABLE IF NOT EXISTS mail_outbox_event (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -259,10 +259,10 @@ CREATE TABLE mail_outbox_event (
     CONSTRAINT uk_mail_outbox_event_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_outbox_event_status_scheduled
+CREATE INDEX IF NOT EXISTS idx_mail_outbox_event_status_scheduled
     ON mail_outbox_event (tenant_id, organization_id, status, scheduled_at);
 
-CREATE TABLE mail_audit_log (
+CREATE TABLE IF NOT EXISTS mail_audit_log (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -277,12 +277,12 @@ CREATE TABLE mail_audit_log (
     CONSTRAINT uk_mail_audit_log_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_audit_log_tenant_created
+CREATE INDEX IF NOT EXISTS idx_mail_audit_log_tenant_created
     ON mail_audit_log (tenant_id, organization_id, created_at DESC);
 
 -- Transactional / marketing mail: templates, verification challenges, delivery audit.
 
-CREATE TABLE mail_template (
+CREATE TABLE IF NOT EXISTS mail_template (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -307,10 +307,10 @@ CREATE TABLE mail_template (
     CONSTRAINT uk_mail_template_tenant_key_locale UNIQUE (tenant_id, organization_id, template_key, locale)
 );
 
-CREATE INDEX idx_mail_template_tenant_purpose
+CREATE INDEX IF NOT EXISTS idx_mail_template_tenant_purpose
     ON mail_template (tenant_id, organization_id, purpose, status);
 
-CREATE TABLE mail_verification_challenge (
+CREATE TABLE IF NOT EXISTS mail_verification_challenge (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -331,10 +331,10 @@ CREATE TABLE mail_verification_challenge (
     CONSTRAINT uk_mail_verification_challenge_uuid UNIQUE (uuid)
 );
 
-CREATE INDEX idx_mail_verification_challenge_lookup
+CREATE INDEX IF NOT EXISTS idx_mail_verification_challenge_lookup
     ON mail_verification_challenge (tenant_id, organization_id, recipient_email, purpose, consumed_at, expires_at DESC);
 
-CREATE TABLE mail_transactional_delivery (
+CREATE TABLE IF NOT EXISTS mail_transactional_delivery (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -358,14 +358,14 @@ CREATE TABLE mail_transactional_delivery (
     CONSTRAINT uk_mail_transactional_delivery_uuid UNIQUE (uuid)
 );
 
-CREATE UNIQUE INDEX uk_mail_transactional_delivery_correlation
+CREATE UNIQUE INDEX IF NOT EXISTS uk_mail_transactional_delivery_correlation
     ON mail_transactional_delivery (tenant_id, organization_id, correlation_id)
     WHERE correlation_id IS NOT NULL;
 
-CREATE INDEX idx_mail_transactional_delivery_tenant_created
+CREATE INDEX IF NOT EXISTS idx_mail_transactional_delivery_tenant_created
     ON mail_transactional_delivery (tenant_id, organization_id, business_kind, created_at DESC);
 
-CREATE TABLE mail_marketing_consent (
+CREATE TABLE IF NOT EXISTS mail_marketing_consent (
     id BIGINT NOT NULL,
     uuid VARCHAR(64) NOT NULL,
     tenant_id BIGINT NOT NULL,
@@ -384,5 +384,5 @@ CREATE TABLE mail_marketing_consent (
     CONSTRAINT uk_mail_marketing_consent_recipient UNIQUE (tenant_id, organization_id, recipient_email)
 );
 
-CREATE INDEX idx_mail_marketing_consent_lookup
+CREATE INDEX IF NOT EXISTS idx_mail_marketing_consent_lookup
     ON mail_marketing_consent (tenant_id, organization_id, recipient_email, status);
