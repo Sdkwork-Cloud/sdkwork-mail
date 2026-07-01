@@ -30,7 +30,7 @@ sdkwork-mail.
 ## Verification
 
 ```powershell
-node --test tests/Mail-workspace-standard.test.mjs
+Run `pnpm run verify` from the repository root.
 pnpm run test:topology-validate
 pnpm run gateway:matrix:cloud
 ```

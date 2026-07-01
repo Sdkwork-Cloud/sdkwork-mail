@@ -1,4 +1,5 @@
 # SDKWork Mail
+repository-kind: application
 
 `sdkwork-mail` is the standalone SDKWork Mail authority — a professional email application aligned with industry-grade clients (Gmail, Foxmail, Outlook).
 
@@ -63,13 +64,10 @@ Root-level `packages/` is **not** used. App packages live under `apps/<app-root>
 
 ```powershell
 pnpm install
-node --test tests/mail-workspace-standard.test.mjs
-node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .
-pnpm run api:materialize
-node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace .
-cargo check --workspace
 pnpm run verify
 ```
+
+`pnpm run verify` covers workspace standards, migration contracts, database framework, API envelope, SDK generation, TypeScript typecheck, Rust compile/format, topology v2, and app composition alignment.
 
 ## Documentation Canon
 

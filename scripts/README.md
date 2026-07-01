@@ -29,4 +29,4 @@ sdkwork-mail.
 
 ## Verification
 
-Run `node --test tests/Mail-workspace-standard.test.mjs`.
+Run `pnpm run verify` from the repository root.

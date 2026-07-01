@@ -562,6 +562,23 @@ test("sdkwork-mail HTTP handlers use SdkWorkApiResponse envelope mapping", () =>
   }
 });
 
+test("sdkwork-mail route manifests use canonical sdkwork-routes-mail names only", () => {
+  for (const manifestPath of [
+    "sdks/_route-manifests/app-api/sdkwork-routes-mail-app-api.route-manifest.json",
+    "sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json",
+  ]) {
+    assert.ok(exists(manifestPath), `${manifestPath} must exist`);
+  }
+  assert.ok(
+    !exists("sdks/_route-manifests/app-api/sdkwork-router-mail-app-api.route-manifest.json"),
+    "duplicate sdkwork-router-mail-app-api manifest must not remain",
+  );
+  assert.ok(
+    !exists("sdks/_route-manifests/backend-api/sdkwork-router-mail-backend-api.route-manifest.json"),
+    "duplicate sdkwork-router-mail-backend-api manifest must not remain",
+  );
+});
+
 test("sdkwork-mail declares OpenAPI envelope materialization tool", () => {
   assert.ok(exists("tools/materialize-mail-openapi-envelope.mjs"));
   const packageJson = JSON.parse(read("package.json"));

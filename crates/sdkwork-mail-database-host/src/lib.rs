@@ -1,11 +1,14 @@
 use std::path::PathBuf;
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 
 use sdkwork_database_config::DatabaseConfig;
 use sdkwork_database_lifecycle::{LifecycleOrchestrator, lifecycle_options_from_env};
 use sdkwork_database_spi::{DatabaseAssetProvider, DatabaseManifest, DefaultDatabaseModule};
-use sdkwork_database_sqlx::{DatabasePool, create_pool_from_config};
+use sdkwork_database_sqlx::{create_pool_from_config, DatabasePool};
 
+static MAIL_DATABASE_HOST: OnceLock<Arc<MailDatabaseHost>> = OnceLock::new();
+
+#[derive(Clone)]
 pub struct MailDatabaseHost {
     pool: DatabasePool,
     module: Arc<DefaultDatabaseModule>,
@@ -19,6 +22,16 @@ impl MailDatabaseHost {
     pub fn module(&self) -> Arc<DefaultDatabaseModule> {
         self.module.clone()
     }
+}
+
+pub fn installed_mail_database_host() -> Option<Arc<MailDatabaseHost>> {
+    MAIL_DATABASE_HOST.get().cloned()
+}
+
+pub fn ensure_mail_database_host_installed(host: MailDatabaseHost) -> Arc<MailDatabaseHost> {
+    MAIL_DATABASE_HOST
+        .get_or_init(|| Arc::new(host))
+        .clone()
 }
 
 pub async fn bootstrap_mail_database(pool: DatabasePool) -> Result<MailDatabaseHost, String> {
@@ -45,10 +58,14 @@ pub async fn bootstrap_mail_database(pool: DatabasePool) -> Result<MailDatabaseH
             .map_err(|error| format!("Mail database migrate failed: {error}"))?;
     }
 
-    Ok(MailDatabaseHost { pool, module })
+    Ok(ensure_mail_database_host_installed(MailDatabaseHost { pool, module }).as_ref().clone())
 }
 
 pub async fn bootstrap_mail_database_from_env() -> Result<MailDatabaseHost, String> {
+    if let Some(host) = installed_mail_database_host() {
+        return Ok(host.as_ref().clone());
+    }
+
     let _ = dotenvy::dotenv();
     let config = DatabaseConfig::from_env("MAIL")
         .map_err(|error| format!("read Mail database config failed: {error}"))?;

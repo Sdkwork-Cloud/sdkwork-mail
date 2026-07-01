@@ -46,6 +46,18 @@ pub async fn connect_mail_persistence_bootstrap_from_env()
         return Ok(None);
     }
 
+    if let Some(host) = sdkwork_mail_database_host::installed_mail_database_host() {
+        let pool = host.pool().clone();
+        let pg_pool = pool.as_postgres().ok_or_else(|| {
+            PoolError::DatabaseConfig("mail persistence requires a PostgreSQL pool".to_string())
+        })?;
+        let persistence = Arc::new(MailPostgresPersistencePort::new(pg_pool.clone()));
+        return Ok(Some(MailPersistenceBootstrap {
+            persistence,
+            pool: Some(pool),
+        }));
+    }
+
     let Some(pool) = create_pool_from_env("MAIL").await? else {
         return Ok(None);
     };

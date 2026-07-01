@@ -168,7 +168,7 @@ var DEFAULT_APP_SESSION = {
   accessToken: "dev-access-token",
   authToken: "dev-auth-token",
   tenantId: "100001",
-  organizationId: "default",
+  organizationId: "0",
   userId: "1"
 };
 var DEFAULT_APP_PERMISSION_SCOPE = "mail.messages.read mail.messages.write mail.verification.write mail.transactional.write";
@@ -805,21 +805,21 @@ var StringUtils;
     return !isEmpty(value);
   }
   _StringUtils.isNotEmpty = isNotEmpty;
-  function isBlank(value) {
+  function isBlank2(value) {
     if (isEmpty(value)) return true;
     if (typeof value !== "string") return false;
     return value.trim().length === 0;
   }
-  _StringUtils.isBlank = isBlank;
+  _StringUtils.isBlank = isBlank2;
   function isNotBlank(value) {
-    return !isBlank(value);
+    return !isBlank2(value);
   }
   _StringUtils.isNotBlank = isNotBlank;
-  function trim(value) {
+  function trim2(value) {
     var _a;
     return (_a = value == null ? void 0 : value.trim()) != null ? _a : "";
   }
-  _StringUtils.trim = trim;
+  _StringUtils.trim = trim2;
   function trimStart(value) {
     var _a;
     return (_a = value == null ? void 0 : value.trimStart()) != null ? _a : "";
@@ -875,11 +875,11 @@ var StringUtils;
     return snakeCase(value).toUpperCase();
   }
   _StringUtils.constantCase = constantCase;
-  function truncate(value, length, suffix = "...") {
+  function truncate2(value, length, suffix = "...") {
     if (isEmpty(value) || value.length <= length) return value != null ? value : "";
     return value.slice(0, length - suffix.length) + suffix;
   }
-  _StringUtils.truncate = truncate;
+  _StringUtils.truncate = truncate2;
   function truncateWords(value, wordCount2, suffix = "...") {
     if (isEmpty(value)) return "";
     const words2 = value.split(/\s+/);
@@ -1399,7 +1399,7 @@ var StringUtils;
   }
   _StringUtils.truncateMiddle = truncateMiddle;
   function ellipsis(value, maxLength) {
-    return truncate(value, maxLength, "...");
+    return truncate2(value, maxLength, "...");
   }
   _StringUtils.ellipsis = ellipsis;
   function ellipsisMiddle(value, maxLength) {
@@ -1627,7 +1627,7 @@ var StringUtils;
 // ../../node_modules/.pnpm/@sdkwork+sdk-common@1.0.3/node_modules/@sdkwork/sdk-common/dist/utils/encoding.js
 var Encoding;
 (function(_Encoding) {
-  function base64Encode(input) {
+  function base64Encode2(input) {
     var _a, _b, _c;
     let bytes;
     if (typeof input === "string") bytes = new TextEncoder().encode(input);
@@ -1647,8 +1647,8 @@ var Encoding;
     }
     return result;
   }
-  _Encoding.base64Encode = base64Encode;
-  function base64Decode(input) {
+  _Encoding.base64Encode = base64Encode2;
+  function base64Decode2(input) {
     var _a, _b, _c, _d;
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     input = input.replace(/[^A-Za-z0-9+/]/g, "");
@@ -1667,18 +1667,18 @@ var Encoding;
     }
     return result;
   }
-  _Encoding.base64Decode = base64Decode;
-  function base64UrlEncode(input) {
-    return base64Encode(input).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+  _Encoding.base64Decode = base64Decode2;
+  function base64UrlEncode2(input) {
+    return base64Encode2(input).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
   }
-  _Encoding.base64UrlEncode = base64UrlEncode;
-  function base64UrlDecode(input) {
+  _Encoding.base64UrlEncode = base64UrlEncode2;
+  function base64UrlDecode2(input) {
     input = input.replace(/-/g, "+").replace(/_/g, "/");
     const pad = input.length % 4;
     if (pad) input += "=".repeat(4 - pad);
-    return base64Decode(input);
+    return base64Decode2(input);
   }
-  _Encoding.base64UrlDecode = base64UrlDecode;
+  _Encoding.base64UrlDecode = base64UrlDecode2;
   function base64ToBytes(base64) {
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
@@ -1701,17 +1701,17 @@ var Encoding;
     return new TextDecoder().decode(input);
   }
   _Encoding.utf8Decode = utf8Decode;
-  function hexEncode(input) {
+  function hexEncode2(input) {
     const bytes = typeof input === "string" ? utf8Encode(input) : input;
     return Array.from(bytes).map((byte) => byte.toString(16).padStart(2, "0")).join("");
   }
-  _Encoding.hexEncode = hexEncode;
-  function hexDecode(input) {
+  _Encoding.hexEncode = hexEncode2;
+  function hexDecode2(input) {
     const bytes = new Uint8Array(input.length / 2);
     for (let i = 0; i < input.length; i += 2) bytes[i / 2] = parseInt(input.substr(i, 2), 16);
     return utf8Decode(bytes);
   }
-  _Encoding.hexDecode = hexDecode;
+  _Encoding.hexDecode = hexDecode2;
   function hexToBytes(hex) {
     const bytes = new Uint8Array(hex.length / 2);
     for (let i = 0; i < hex.length; i += 2) bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
@@ -2696,6 +2696,7 @@ var HttpClient = class _HttpClient extends BaseHttpClient {
     ].forEach((key) => {
       delete headers[key];
     });
+    this.applyCredentialEntryBootstrapAccessToken(headers);
     return headers;
   }
   buildRequestBody(body, contentType) {
@@ -2832,6 +2833,15 @@ var HttpClient = class _HttpClient extends BaseHttpClient {
     }
     this.getInternalAuthConfig().tokenManager = manager;
   }
+  applyCredentialEntryBootstrapAccessToken(headers) {
+    var _a;
+    const authConfig = this.getInternalAuthConfig();
+    const tokenManager = authConfig.tokenManager;
+    const accessToken = (_a = tokenManager == null ? void 0 : tokenManager.getAccessToken) == null ? void 0 : _a.call(tokenManager);
+    if (typeof accessToken === "string" && accessToken.length > 0) {
+      headers[_HttpClient.ACCESS_TOKEN_HEADER] = accessToken;
+    }
+  }
   applySdkworkAuthHeaders(headers) {
     var _a;
     const authConfig = this.getInternalAuthConfig();
@@ -2845,6 +2855,30 @@ var HttpClient = class _HttpClient extends BaseHttpClient {
       [_HttpClient.ACCESS_TOKEN_HEADER]: accessToken
     };
   }
+  unwrapSdkworkV3Payload(payload) {
+    if (!_HttpClient.SDKWORK_V3_UNWRAP || payload == null || typeof payload !== "object") {
+      return payload;
+    }
+    const record = payload;
+    if (record.code !== 0 || !("data" in record)) {
+      return payload;
+    }
+    const data = record.data;
+    if (!data || typeof data !== "object") {
+      return data;
+    }
+    const envelopeData = data;
+    if ("items" in envelopeData && "pageInfo" in envelopeData) {
+      return data;
+    }
+    if ("accepted" in envelopeData) {
+      return data;
+    }
+    if ("item" in envelopeData) {
+      return envelopeData.item;
+    }
+    return data;
+  }
   async request(path, options = {}) {
     const execute = this.execute;
     if (typeof execute !== "function") {
@@ -2852,7 +2886,7 @@ var HttpClient = class _HttpClient extends BaseHttpClient {
     }
     const { body, headers, contentType, method = "GET", skipAuth, ...rest } = options;
     const requestHeaders = skipAuth ? headers : this.applySdkworkAuthHeaders(headers);
-    return withRetry(() => execute.call(this, {
+    const payload = await withRetry(() => execute.call(this, {
       url: path,
       method,
       ...rest,
@@ -2860,6 +2894,7 @@ var HttpClient = class _HttpClient extends BaseHttpClient {
       body: this.buildRequestBody(body, contentType),
       headers: this.buildRequestHeaders(requestHeaders, body == null ? void 0 : contentType)
     }), { maxRetries: 3 });
+    return this.unwrapSdkworkV3Payload(payload);
   }
   async *streamJson(path, options = {}) {
     const stream = BaseHttpClient.prototype.stream;
@@ -2902,6 +2937,7 @@ var HttpClient = class _HttpClient extends BaseHttpClient {
   }
 };
 HttpClient.ACCESS_TOKEN_HEADER = "Access-Token";
+HttpClient.SDKWORK_V3_UNWRAP = true;
 function createHttpClient(config) {
   return new HttpClient(config);
 }
@@ -3375,6 +3411,55 @@ function encodeQueryValue(value, allowReserved) {
   }
   return encoded.replace(/%3A/gi, ":").replace(/%2F/gi, "/").replace(/%3F/gi, "?").replace(/%23/gi, "#").replace(/%5B/gi, "[").replace(/%5D/gi, "]").replace(/%40/gi, "@").replace(/%21/gi, "!").replace(/%24/gi, "$").replace(/%26/gi, "&").replace(/%27/gi, "'").replace(/%28/gi, "(").replace(/%29/gi, ")").replace(/%2A/gi, "*").replace(/%2B/gi, "+").replace(/%2C/gi, ",").replace(/%3B/gi, ";").replace(/%3D/gi, "=");
 }
+var MailVerificationMailVerificationApi = class {
+  constructor(client) {
+    this.client = client;
+  }
+  async send(body) {
+    return this.client.post(appApiPath(`/mail/verification/send`), body, void 0, void 0, "application/json");
+  }
+  async verify(body) {
+    return this.client.post(appApiPath(`/mail/verification/verify`), body, void 0, void 0, "application/json");
+  }
+};
+var MailVerificationMailApi = class {
+  constructor(client) {
+    this.client = client;
+    this.verification = new MailVerificationMailVerificationApi(client);
+  }
+};
+var MailVerificationApi = class {
+  constructor(client) {
+    this.client = client;
+    this.mail = new MailVerificationMailApi(client);
+  }
+};
+function createMailVerificationApi(client) {
+  return new MailVerificationApi(client);
+}
+var MailTransactionalMailTransactionalApi = class {
+  constructor(client) {
+    this.client = client;
+  }
+  async send(body) {
+    return this.client.post(appApiPath(`/mail/transactional/send`), body, void 0, void 0, "application/json");
+  }
+};
+var MailTransactionalMailApi = class {
+  constructor(client) {
+    this.client = client;
+    this.transactional = new MailTransactionalMailTransactionalApi(client);
+  }
+};
+var MailTransactionalApi = class {
+  constructor(client) {
+    this.client = client;
+    this.mail = new MailTransactionalMailApi(client);
+  }
+};
+function createMailTransactionalApi(client) {
+  return new MailTransactionalApi(client);
+}
 var SdkworkAppClient = class {
   constructor(config) {
     this.httpClient = createHttpClient(config);
@@ -3382,6 +3467,8 @@ var SdkworkAppClient = class {
     this.mailFolders = createMailFoldersApi(this.httpClient);
     this.mailThreads = createMailThreadsApi(this.httpClient);
     this.mailMessages = createMailMessagesApi(this.httpClient);
+    this.mailVerification = createMailVerificationApi(this.httpClient);
+    this.mailTransactional = createMailTransactionalApi(this.httpClient);
   }
   setAuthToken(token) {
     this.httpClient.setAuthToken(token);
@@ -3430,6 +3517,77 @@ function createMailAppSdkClient({
     platform
   });
 }
+
+// ../../../sdkwork-utils/packages/sdkwork-utils-typescript/dist/runtime/binary.js
+var textEncoder = new TextEncoder();
+
+// ../../../sdkwork-utils/packages/sdkwork-utils-typescript/dist/runtime/sha256.js
+var K = new Uint32Array([
+  1116352408,
+  1899447441,
+  3049323471,
+  3921009573,
+  961987163,
+  1508970993,
+  2453635748,
+  2870763221,
+  3624381080,
+  310598401,
+  607225278,
+  1426881987,
+  1925078388,
+  2162078206,
+  2614888103,
+  3248222580,
+  3835390401,
+  4022224774,
+  264347078,
+  604807628,
+  770255983,
+  1249150122,
+  1555081692,
+  1996064986,
+  2554220882,
+  2821834349,
+  2952996808,
+  3210313671,
+  3336571891,
+  3584528711,
+  113926993,
+  338241895,
+  666307205,
+  773529912,
+  1294757372,
+  1396182291,
+  1695183700,
+  1986661051,
+  2177026350,
+  2456956037,
+  2730485921,
+  2820302411,
+  3259730800,
+  3345764771,
+  3516065817,
+  3600352804,
+  4094571909,
+  275423344,
+  430227734,
+  506948616,
+  659060556,
+  883997877,
+  958139571,
+  1322822218,
+  1537002063,
+  1747873779,
+  1955562222,
+  2024104815,
+  2227730452,
+  2361852424,
+  2428436474,
+  2756734187,
+  3204031479,
+  3329325298
+]);
 
 // src/bootstrap/tokenManager.ts
 var activeTokenManager = null;

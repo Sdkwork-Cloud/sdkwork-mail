@@ -12,7 +12,7 @@
     "dev:flutter-android": "node scripts/mail-dev.mjs --deployment-profile standalone --service-layout split-services --target flutter",
     "dev:server": "node scripts/mail-dev.mjs --deployment-profile standalone --service-layout split-services --target server",
     "build": "pnpm --dir apps/sdkwork-mail-pc build && cargo build --workspace",
-    "check": "pnpm run test:workspace-standard && pnpm run test:contract:database && pnpm run typecheck && cargo check --workspace",
+    "check": "pnpm run check:app-composition && pnpm run test:workspace-standard && pnpm run test:contract:database && pnpm run typecheck && cargo check --workspace",
     "clean": "node -e \"const fs=require('fs'); for (const dir of ['dist','target']) { try { fs.rmSync(dir,{recursive:true,force:true}); } catch {} }\"",
     "test:contract:migration": "node --test tests/mail-migration-contract.test.mjs",
     "api:materialize": "node tools/materialize-mail-openapi-envelope.mjs",
@@ -39,9 +39,9 @@
     "gateway:matrix:cloud": "node ../sdkwork-app-topology/scripts/sdkwork-topology.mjs print-matrix --root . --spec specs/topology.spec.json --profile platform-config-bundle",
     "gateway:matrix": "node ../sdkwork-app-topology/scripts/sdkwork-topology.mjs print-matrix --root . --spec specs/topology.spec.json --profile all",
     "typecheck": "tsc --noEmit",
-    "verify": "pnpm run test:workspace-standard && pnpm run test:contract:migration && pnpm run test:contract:database && pnpm run api:materialize && pnpm run test:contract:api-envelope && pnpm run sdk:check && pnpm run sdk:build && pnpm run typecheck && cargo check --workspace && pnpm run test:rust-fmt",
+    "verify": "pnpm run test:workspace-standard && pnpm run test:contract:migration && pnpm run test:contract:database && pnpm run api:materialize && pnpm run test:contract:api-envelope && pnpm run sdk:check && pnpm run sdk:build && pnpm run typecheck && cargo check --workspace && pnpm run test:rust-fmt && pnpm run test:topology-contract && pnpm run test:topology-validate && pnpm run test:topology-baggage && pnpm run check:app-composition",
     "test:contract:api-envelope": "node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace .",
-    "db:materialize:contract": "node tools/materialize_mail_database_contract.mjs",
+    "db:materialize:contract": "node ../sdkwork-specs/tools/materialize-database-contract-from-baseline.mjs --root . --baseline database/ddl/baseline/postgres/0001_mail_baseline.sql --module-id mail --owner mail-platform --prefixes mail_ --engines postgres",
     "db:validate": "node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .",
     "db:plan": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . plan",
     "db:init": "cargo run --manifest-path ../sdkwork-database/Cargo.toml -p sdkwork-database-cli -- --app-root . init",
@@ -54,10 +54,11 @@
     "test:contract:database": "node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .",
     "topology:plan": "node ../sdkwork-app-topology/scripts/sdkwork-topology.mjs plan --root . --spec specs/topology.spec.json",
     "gateway:assembly:materialize": "node scripts/gateway/assembly-materialize.mjs",
-    "gateway:assembly:validate": "node scripts/gateway/assembly-validate.mjs"
+    "gateway:assembly:validate": "node scripts/gateway/assembly-validate.mjs",
+    "check:app-composition": "node ../sdkwork-specs/tools/verify-repo.mjs --root ."
   },
   "dependencies": {
-    "@sdkwork/app-topology": "file:../sdkwork-app-topology"
+    "@sdkwork/app-topology": "workspace:*"
   },
   "devDependencies": {
     "@sdkwork/utils": "workspace:*",

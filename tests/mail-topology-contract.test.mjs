@@ -72,7 +72,11 @@ test('declares v2 topology spec and profile env files for sdkwork-mail', async (
 
 test('root package.json wires @sdkwork/app-topology and standard dev scripts', async () => {
   const packageJson = await readJson('package.json');
-  assert.equal(packageJson.dependencies['@sdkwork/app-topology'], 'file:../sdkwork-app-topology');
+  const topologyDep = packageJson.dependencies['@sdkwork/app-topology'];
+  assert.ok(
+    topologyDep === 'workspace:*' || topologyDep === 'file:../sdkwork-app-topology',
+    '@sdkwork/app-topology must use workspace:* or file:../sdkwork-app-topology',
+  );
   assert.match(packageJson.scripts.dev, /dev:browser:postgres:split-services:standalone/u);
   assert.match(
     packageJson.scripts['dev:browser:postgres:split-services:standalone'],

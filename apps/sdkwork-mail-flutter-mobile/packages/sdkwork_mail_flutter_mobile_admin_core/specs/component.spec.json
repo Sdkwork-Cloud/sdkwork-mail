@@ -26,7 +26,6 @@
     ],
     "sdkClients": [
       "sdkwork-mail-backend-sdk"
-    ],
-    "dependencyComposition": "../../../specs/dependency.composition.json"
+    ]
   }
 }

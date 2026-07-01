@@ -28,4 +28,4 @@ sdkwork-mail.
 
 ## Verification
 
-Run `node --test tests/Mail-workspace-standard.test.mjs` and `pnpm run test:contract:migration`.
+Run `pnpm run verify` from the repository root. Narrow checks: `pnpm run test:workspace-standard` and `pnpm run test:contract:migration`.

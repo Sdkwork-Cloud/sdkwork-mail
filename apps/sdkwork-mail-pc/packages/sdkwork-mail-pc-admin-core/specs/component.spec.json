@@ -27,6 +27,12 @@
     "sdkClients": [
       "sdkwork-mail-backend-sdk-generated-typescript"
     ],
-    "dependencyComposition": "../../../specs/dependency.composition.json"
+    "sdkDependencies": [
+      {
+        "workspace": "sdkwork-mail-backend-sdk",
+        "surface": "backend-api",
+        "credentialMode": "authenticated-backend-admin"
+      }
+    ]
   }
 }

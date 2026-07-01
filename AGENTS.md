@@ -54,12 +54,11 @@ This repository is the SDKWork Mail authority workspace — a standalone email a
 ## Verification
 
 ```powershell
-node --test tests/mail-workspace-standard.test.mjs
-node ../sdkwork-specs/tools/check-database-framework-standard.mjs --root .
-pnpm run api:materialize
-node ../sdkwork-specs/tools/check-api-response-envelope.mjs --workspace .
+pnpm install
 pnpm run verify
 ```
+
+`pnpm run verify` is the canonical gate for sdkwork-specs alignment in this repository.
 
 ## Documentation Canon
 

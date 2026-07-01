@@ -31,6 +31,6 @@ sdkwork-mail.
 
 ## Verification
 
-Run `cargo fmt --all --check`, `cargo test --workspace`, `node --test tests/Mail-workspace-standard.test.mjs`, and `pnpm run api:materialize:check`.
+Run `pnpm run verify` from the repository root.
 
 Rust crate `specs/component.spec.json` files are materialized from `tools/materialize-Mail-rust-component-specs.mjs`.
