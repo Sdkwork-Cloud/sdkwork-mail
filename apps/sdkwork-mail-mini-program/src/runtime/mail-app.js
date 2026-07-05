@@ -2651,7 +2651,7 @@ var BaseHttpClient = class {
   }
 };
 
-// ../../sdks/sdkwork-mail-app-sdk/sdkwork-mail-app-sdk-typescript/generated/server-openapi/dist/index.js
+// ../../sdks/sdkwork-mail-app-sdk/sdkwork-mail-app-sdk-typescript/src/index.ts
 var HttpClient = class _HttpClient extends BaseHttpClient {
   constructor(config) {
     super(config);

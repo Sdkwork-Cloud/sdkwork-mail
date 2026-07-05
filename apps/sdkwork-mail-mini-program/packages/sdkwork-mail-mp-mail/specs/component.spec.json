@@ -18,6 +18,6 @@
   },
   "contracts": {
     "publicExports": ["."],
-    "sdkClients": ["sdkwork-mail-app-sdk-generated-typescript"]
+    "sdkClients": ["@sdkwork/mail-app-sdk"]
   }
 }

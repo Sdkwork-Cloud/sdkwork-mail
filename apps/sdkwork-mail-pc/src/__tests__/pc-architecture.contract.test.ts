@@ -80,12 +80,12 @@ describe("Mail pc architecture contract", () => {
     const coreSource = readAll(coreRoot);
     const adminCoreSource = readAll(adminCoreRoot);
 
-    expect(coreSource).toContain("sdkwork-mail-app-sdk-generated-typescript");
+    expect(coreSource).toContain("@sdkwork/mail-app-sdk");
     expect(coreSource).toContain("readMailIamSessionTokens");
     expect(coreSource).toContain("getMailAppSdkClient");
     expect(coreSource).not.toContain("@sdkwork/auth-pc-react");
     expect(coreSource).not.toContain("@sdkwork/auth-runtime-pc-react");
-    expect(adminCoreSource).toContain("sdkwork-mail-backend-sdk-generated-typescript");
+    expect(adminCoreSource).toContain("@sdkwork/mail-backend-sdk");
     expect(coreSource).not.toMatch(forbiddenRawHttpPattern());
     expect(adminCoreSource).not.toMatch(forbiddenRawHttpPattern());
   });

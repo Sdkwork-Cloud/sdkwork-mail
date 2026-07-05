@@ -12,74 +12,34 @@
   "mode": "apply",
   "hasChanges": true,
   "hasDestructiveChanges": false,
-  "changeFingerprint": "629bb8053cb83f368504413b2c8985bd5194df6e0979ed3d46cef9d36ad500dd",
+  "changeFingerprint": "5ccee630d9bbf122169c238569dd2b8cbba56bc1122b6819b1d56d34ebbe6f32",
   "changeImpact": {
     "schemaVersion": 1,
     "areas": [
-      "api-surface",
-      "models",
-      "runtime"
+      "build-metadata"
     ],
     "details": [
       {
-        "area": "api-surface",
+        "area": "build-metadata",
         "paths": [
-          "src/api/mail-marketing-consents.ts",
-          "src/api/mail-provider-accounts.ts",
-          "src/api/mail-templates.ts",
-          "src/api/mail-transactional-deliveries.ts",
-          "src/http/client.ts"
-        ]
-      },
-      {
-        "area": "models",
-        "paths": [
-          "src/types/field-error.ts",
-          "src/types/index.ts",
-          "src/types/mail-marketing-consents-grant-response.ts",
-          "src/types/mail-marketing-consents-list-response.ts",
-          "src/types/mail-marketing-consents-revoke-response.ts",
-          "src/types/mail-provider-accounts-create-response.ts",
-          "src/types/mail-provider-accounts-list-response.ts",
-          "src/types/mail-provider-accounts-ping-response.ts",
-          "src/types/mail-provider-accounts-sync-response.ts",
-          "src/types/mail-provider-webhook-event-response.ts",
-          "src/types/mail-provider-webhooks-events-receive-response202.ts",
-          "src/types/mail-templates-create-response.ts",
-          "src/types/mail-templates-list-response.ts",
-          "src/types/mail-templates-retrieve-response.ts",
-          "src/types/mail-templates-update-response.ts",
-          "src/types/mail-transactional-deliveries-list-response.ts",
-          "src/types/page-info.ts",
-          "src/types/problem-detail.ts",
-          "src/types/sdk-work-api-response.ts",
-          "src/types/sdk-work-command-data.ts",
-          "src/types/sdk-work-command-response.ts",
-          "src/types/sdk-work-list-response.ts",
-          "src/types/sdk-work-page-data.ts",
-          "src/types/sdk-work-platform-error-code.ts",
-          "src/types/sdk-work-resource-data.ts",
-          "src/types/sdk-work-resource-response.ts"
-        ]
-      },
-      {
-        "area": "runtime",
-        "paths": [
-          "src/http/client.ts"
+          "package.json",
+          "sdkwork-sdk.json"
         ]
       }
     ],
     "requiresVerification": true,
-    "summary": "Detected impact areas: api-surface, models, runtime. Verification is required."
+    "summary": "Detected impact areas: build-metadata. Verification is required."
   },
   "executionDecision": {
     "schemaVersion": 1,
-    "riskLevel": "medium",
+    "riskLevel": "high",
     "nextAction": "verify",
     "requiresManualReview": false,
     "applyRequiresExpectedFingerprint": false,
     "summary": "Changes have been applied. Run the required verification plan now.",
     "reasons": [
+      "backed-up-generated-files",
+      "manual-review-required",
       "verification-required"
     ]
   },
@@ -91,7 +51,7 @@
         "id": "verify-check",
         "title": "Unified package check",
         "required": true,
-        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models, runtime.",
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: build-metadata.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -109,7 +69,7 @@
         "id": "verify-build",
         "title": "Unified package build",
         "required": true,
-        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: api-surface, models, runtime.",
+        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: build-metadata.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -128,13 +88,13 @@
   "verificationPlan": {
     "shouldRun": true,
     "runPhase": "now",
-    "summary": "Detected impact areas: api-surface, models, runtime. Verification is required. Run the required verification commands now against the generated SDK output.",
+    "summary": "Detected impact areas: build-metadata. Verification is required. Run the required verification commands now against the generated SDK output.",
     "steps": [
       {
         "id": "check",
         "title": "Unified package check",
         "required": true,
-        "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models, runtime.",
+        "rationale": "Validate the generated package with the unified publish helper. Triggered by: build-metadata.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -152,7 +112,7 @@
         "id": "build",
         "title": "Unified package build",
         "required": true,
-        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: api-surface, models, runtime.",
+        "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: build-metadata.",
         "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
         "command": "node",
         "args": [
@@ -191,47 +151,17 @@
   "syncSummary": {
     "dryRun": false,
     "controlPlaneEnabled": true,
-    "writtenFiles": 31,
+    "writtenFiles": 2,
     "skippedScaffoldFiles": 2,
-    "skippedUnchangedGeneratedFiles": 45,
+    "skippedUnchangedGeneratedFiles": 74,
     "deletedGeneratedFiles": 0,
     "changeSummaryPath": ".sdkwork/sdkwork-generator-changes.json",
-    "changeFingerprint": "629bb8053cb83f368504413b2c8985bd5194df6e0979ed3d46cef9d36ad500dd",
+    "changeFingerprint": "5ccee630d9bbf122169c238569dd2b8cbba56bc1122b6819b1d56d34ebbe6f32",
     "changes": {
-      "createdGeneratedFiles": [
-        "src/types/field-error.ts",
-        "src/types/mail-marketing-consents-grant-response.ts",
-        "src/types/mail-marketing-consents-list-response.ts",
-        "src/types/mail-marketing-consents-revoke-response.ts",
-        "src/types/mail-provider-accounts-create-response.ts",
-        "src/types/mail-provider-accounts-list-response.ts",
-        "src/types/mail-provider-accounts-ping-response.ts",
-        "src/types/mail-provider-accounts-sync-response.ts",
-        "src/types/mail-provider-webhooks-events-receive-response202.ts",
-        "src/types/mail-templates-create-response.ts",
-        "src/types/mail-templates-list-response.ts",
-        "src/types/mail-templates-retrieve-response.ts",
-        "src/types/mail-templates-update-response.ts",
-        "src/types/mail-transactional-deliveries-list-response.ts",
-        "src/types/page-info.ts",
-        "src/types/sdk-work-api-response.ts",
-        "src/types/sdk-work-command-data.ts",
-        "src/types/sdk-work-command-response.ts",
-        "src/types/sdk-work-list-response.ts",
-        "src/types/sdk-work-page-data.ts",
-        "src/types/sdk-work-platform-error-code.ts",
-        "src/types/sdk-work-resource-data.ts",
-        "src/types/sdk-work-resource-response.ts"
-      ],
+      "createdGeneratedFiles": [],
       "updatedGeneratedFiles": [
-        "src/api/mail-marketing-consents.ts",
-        "src/api/mail-provider-accounts.ts",
-        "src/api/mail-templates.ts",
-        "src/api/mail-transactional-deliveries.ts",
-        "src/http/client.ts",
-        "src/types/index.ts",
-        "src/types/mail-provider-webhook-event-response.ts",
-        "src/types/problem-detail.ts"
+        "package.json",
+        "sdkwork-sdk.json"
       ],
       "unchangedGeneratedFiles": [
         "bin/publish-core.mjs",
@@ -241,14 +171,17 @@
         "bin/sdk-gen.sh",
         "CHANGELOG.md",
         "LICENSE",
-        "package.json",
         "README.md",
-        "sdkwork-sdk.json",
         "src/api/base.ts",
         "src/api/index.ts",
+        "src/api/mail-marketing-consents.ts",
+        "src/api/mail-provider-accounts.ts",
         "src/api/mail-provider-webhooks.ts",
+        "src/api/mail-templates.ts",
+        "src/api/mail-transactional-deliveries.ts",
         "src/api/paths.ts",
         "src/auth/index.ts",
+        "src/http/client.ts",
         "src/http/index.ts",
         "src/index.ts",
         "src/sdk.ts",
@@ -258,24 +191,50 @@
         "src/types/create-mail-provider-account-result.ts",
         "src/types/create-mail-provider-credential-input.ts",
         "src/types/create-mail-template-request.ts",
+        "src/types/field-error.ts",
         "src/types/grant-mail-marketing-consent-request.ts",
+        "src/types/index.ts",
         "src/types/mail-marketing-consent-list-response.ts",
         "src/types/mail-marketing-consent-response.ts",
         "src/types/mail-marketing-consent.ts",
+        "src/types/mail-marketing-consents-grant-response.ts",
+        "src/types/mail-marketing-consents-list-response.ts",
+        "src/types/mail-marketing-consents-revoke-response.ts",
         "src/types/mail-provider-account-list-response.ts",
         "src/types/mail-provider-account.ts",
+        "src/types/mail-provider-accounts-create-response.ts",
+        "src/types/mail-provider-accounts-list-response.ts",
+        "src/types/mail-provider-accounts-ping-response.ts",
+        "src/types/mail-provider-accounts-sync-response.ts",
         "src/types/mail-provider-credential.ts",
         "src/types/mail-provider-ping-response.ts",
         "src/types/mail-provider-ping-result.ts",
         "src/types/mail-provider-sync-response.ts",
         "src/types/mail-provider-sync-result.ts",
         "src/types/mail-provider-webhook-event-request.ts",
+        "src/types/mail-provider-webhook-event-response.ts",
         "src/types/mail-provider-webhook-event.ts",
+        "src/types/mail-provider-webhooks-events-receive-response202.ts",
         "src/types/mail-template-list-response.ts",
         "src/types/mail-template-response.ts",
         "src/types/mail-template.ts",
+        "src/types/mail-templates-create-response.ts",
+        "src/types/mail-templates-list-response.ts",
+        "src/types/mail-templates-retrieve-response.ts",
+        "src/types/mail-templates-update-response.ts",
+        "src/types/mail-transactional-deliveries-list-response.ts",
         "src/types/mail-transactional-delivery-list-response.ts",
         "src/types/mail-transactional-delivery.ts",
+        "src/types/page-info.ts",
+        "src/types/problem-detail.ts",
+        "src/types/sdk-work-api-response.ts",
+        "src/types/sdk-work-command-data.ts",
+        "src/types/sdk-work-command-response.ts",
+        "src/types/sdk-work-list-response.ts",
+        "src/types/sdk-work-page-data.ts",
+        "src/types/sdk-work-platform-error-code.ts",
+        "src/types/sdk-work-resource-data.ts",
+        "src/types/sdk-work-resource-response.ts",
         "src/types/sync-mail-provider-account-request.ts",
         "src/types/update-mail-template-request.ts",
         "tsconfig.json"
@@ -286,77 +245,38 @@
         "custom/build-runtime.mjs",
         "custom/README.md"
       ],
-      "backedUpFiles": []
+      "backedUpFiles": [
+        "package.json",
+        "sdkwork-sdk.json"
+      ]
     },
     "impact": {
       "schemaVersion": 1,
       "areas": [
-        "api-surface",
-        "models",
-        "runtime"
+        "build-metadata"
       ],
       "details": [
         {
-          "area": "api-surface",
+          "area": "build-metadata",
           "paths": [
-            "src/api/mail-marketing-consents.ts",
-            "src/api/mail-provider-accounts.ts",
-            "src/api/mail-templates.ts",
-            "src/api/mail-transactional-deliveries.ts",
-            "src/http/client.ts"
-          ]
-        },
-        {
-          "area": "models",
-          "paths": [
-            "src/types/field-error.ts",
-            "src/types/index.ts",
-            "src/types/mail-marketing-consents-grant-response.ts",
-            "src/types/mail-marketing-consents-list-response.ts",
-            "src/types/mail-marketing-consents-revoke-response.ts",
-            "src/types/mail-provider-accounts-create-response.ts",
-            "src/types/mail-provider-accounts-list-response.ts",
-            "src/types/mail-provider-accounts-ping-response.ts",
-            "src/types/mail-provider-accounts-sync-response.ts",
-            "src/types/mail-provider-webhook-event-response.ts",
-            "src/types/mail-provider-webhooks-events-receive-response202.ts",
-            "src/types/mail-templates-create-response.ts",
-            "src/types/mail-templates-list-response.ts",
-            "src/types/mail-templates-retrieve-response.ts",
-            "src/types/mail-templates-update-response.ts",
-            "src/types/mail-transactional-deliveries-list-response.ts",
-            "src/types/page-info.ts",
-            "src/types/problem-detail.ts",
-            "src/types/sdk-work-api-response.ts",
-            "src/types/sdk-work-command-data.ts",
-            "src/types/sdk-work-command-response.ts",
-            "src/types/sdk-work-list-response.ts",
-            "src/types/sdk-work-page-data.ts",
-            "src/types/sdk-work-platform-error-code.ts",
-            "src/types/sdk-work-resource-data.ts",
-            "src/types/sdk-work-resource-response.ts"
-          ]
-        },
-        {
-          "area": "runtime",
-          "paths": [
-            "src/http/client.ts"
+            "package.json",
+            "sdkwork-sdk.json"
           ]
         }
       ],
       "requiresVerification": true,
-      "summary": "Detected impact areas: api-surface, models, runtime. Verification is required."
+      "summary": "Detected impact areas: build-metadata. Verification is required."
     },
     "verificationPlan": {
       "shouldRun": true,
       "runPhase": "now",
-      "summary": "Detected impact areas: api-surface, models, runtime. Verification is required. Run the required verification commands now against the generated SDK output.",
+      "summary": "Detected impact areas: build-metadata. Verification is required. Run the required verification commands now against the generated SDK output.",
       "steps": [
         {
           "id": "check",
           "title": "Unified package check",
           "required": true,
-          "rationale": "Validate the generated package with the unified publish helper. Triggered by: api-surface, models, runtime.",
+          "rationale": "Validate the generated package with the unified publish helper. Triggered by: build-metadata.",
           "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
           "command": "node",
           "args": [
@@ -374,7 +294,7 @@
           "id": "build",
           "title": "Unified package build",
           "required": true,
-          "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: api-surface, models, runtime.",
+          "rationale": "Run the full package build because this language uses a lighter check path than the final build. Triggered by: build-metadata.",
           "workingDirectory": "E:\\sdkwork-space\\sdkwork-mail\\sdks\\sdkwork-mail-backend-sdk\\sdkwork-mail-backend-sdk-typescript\\generated\\server-openapi",
           "command": "node",
           "args": [
@@ -392,16 +312,21 @@
     },
     "executionDecision": {
       "schemaVersion": 1,
-      "riskLevel": "medium",
+      "riskLevel": "high",
       "nextAction": "verify",
       "requiresManualReview": false,
       "applyRequiresExpectedFingerprint": false,
       "summary": "Changes have been applied. Run the required verification plan now.",
       "reasons": [
+        "backed-up-generated-files",
+        "manual-review-required",
         "verification-required"
       ]
     },
-    "backedUpFiles": [],
+    "backedUpFiles": [
+      "package.json",
+      "sdkwork-sdk.json"
+    ],
     "preservedLegacyFiles": false
   }
 }

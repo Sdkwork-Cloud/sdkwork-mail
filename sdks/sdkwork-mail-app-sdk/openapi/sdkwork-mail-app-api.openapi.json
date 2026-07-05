@@ -333,6 +333,25 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Page size (max 200).",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Opaque cursor for cursor pagination.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {

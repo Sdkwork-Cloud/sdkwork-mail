@@ -1,5 +1,5 @@
 {
-  "name": "@sdkwork/Mail-sdk",
+  "name": "@sdkwork/mail-sdk",
   "version": "0.1.1",
   "description": "Provider-neutral Mail media SDK with JDBC-style provider package loading",
   "type": "module",

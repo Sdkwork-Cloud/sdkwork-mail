@@ -1,5 +1,5 @@
 import { getMailAppSdkClient } from "@sdkwork/Mail-pc-core";
-import type { SdkworkAppClient } from "sdkwork-mail-app-sdk-generated-typescript";
+import type { SdkworkAppClient } from "@sdkwork/mail-app-sdk";
 
 import { resolveEnvironment } from "./environment";
 

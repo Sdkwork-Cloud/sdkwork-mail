@@ -40,15 +40,15 @@
     },
     {
       "path": "package.json",
-      "sha256": "b663a4b20c0a887bff8592e2a4de4660c93559623fb02806b3618945173d458e"
+      "sha256": "54ef98cc42b3bfb7debdef96b38b3e465b2cd3e6250ac95ee8d00916aa78a00b"
     },
     {
       "path": "README.md",
-      "sha256": "3a498dd6b8c705c89e6468d25fe2d15c9fde6be83da8c76104d9a1ffc9f9dd00"
+      "sha256": "67d03629833f0d14946b1c7e2a906c42dc740c9485a1414d4b66290f677fdcb4"
     },
     {
       "path": "sdkwork-sdk.json",
-      "sha256": "793b822c5804cd91a19912f4b19a28b69310db22d3f7b8e7e98b13e1dc665002"
+      "sha256": "82380aa027469c195b09e14872f74c615bbecbd68c285daf97a2d8ed9fd0efaa"
     },
     {
       "path": "src/api/base.ts",
@@ -68,7 +68,7 @@
     },
     {
       "path": "src/api/mail-messages.ts",
-      "sha256": "48b4dc18adeaae5e9876aa223ab5bf0eeb4148b7c9df488087ab399597e0475e"
+      "sha256": "d40f86d87dab53c2eeaafa6e528925fccb8ec2165505c7ccad124d4367909efc"
     },
     {
       "path": "src/api/mail-threads.ts",

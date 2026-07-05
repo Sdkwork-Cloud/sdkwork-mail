@@ -1,4 +1,4 @@
-import type { MailAppSdkClient } from "@sdkwork/Mail-pc-core";
+import type { MailAppSdkClient } from "@sdkwork/mail-pc-core";
 
 import type { MailAccount, MailFolder, MailMessage } from "../types/appApi";
 

@@ -1,4 +1,4 @@
-import { SdkworkBackendClient } from "sdkwork-mail-backend-sdk-generated-typescript";
+import { SdkworkBackendClient } from "@sdkwork/mail-backend-sdk";
 import type { AuthTokenManager } from "@sdkwork/sdk-common";
 
 export interface MailBackendClientOptions {

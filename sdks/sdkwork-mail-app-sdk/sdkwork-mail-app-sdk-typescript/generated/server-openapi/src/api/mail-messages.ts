@@ -6,6 +6,8 @@ import type { CreateMailMessageRequest, MailMessage, MailMessageResponse, Update
 
 export interface MailMessagesMailMessagesListParams {
   folderId: string;
+  pageSize?: number;
+  cursor?: string;
 }
 
 export class MailMessagesMailMessagesApi {
@@ -19,6 +21,8 @@ export class MailMessagesMailMessagesApi {
 async list(params: MailMessagesMailMessagesListParams): Promise<Record<string, unknown>> {
     const query = buildQueryString([
       { name: 'folderId', value: params.folderId, style: 'form', explode: true, allowReserved: false },
+      { name: 'page_size', value: params.pageSize, style: 'form', explode: true, allowReserved: false },
+      { name: 'cursor', value: params.cursor, style: 'form', explode: true, allowReserved: false },
     ]);
     return this.client.get<Record<string, unknown>>(appendQueryString(appApiPath(`/mail/messages`), query));
   }

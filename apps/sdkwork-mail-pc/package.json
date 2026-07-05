@@ -1,5 +1,5 @@
 {
-  "name": "@sdkwork/Mail-pc",
+  "name": "@sdkwork/mail-pc",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -11,16 +11,16 @@
   "dependencies": {
     "@sdkwork/auth-pc-react": "workspace:*",
     "@sdkwork/auth-runtime-pc-react": "workspace:*",
-    "@sdkwork/Mail-pc-admin-core": "workspace:*",
-    "@sdkwork/Mail-pc-admin-shell": "workspace:*",
-    "@sdkwork/Mail-pc-core": "workspace:*",
-    "@sdkwork/Mail-pc-Mail": "workspace:*",
-    "@sdkwork/Mail-pc-shell": "workspace:*",
+    "@sdkwork/mail-pc-admin-core": "workspace:*",
+    "@sdkwork/mail-pc-admin-shell": "workspace:*",
+    "@sdkwork/mail-pc-core": "workspace:*",
+    "@sdkwork/mail-pc-Mail": "workspace:*",
+    "@sdkwork/mail-pc-shell": "workspace:*",
     "@sdkwork/sdk-common": "^1.0.2",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router-dom": "^7.17.0",
-    "sdkwork-mail-app-sdk-generated-typescript": "workspace:*",
+    "@sdkwork/mail-app-sdk": "workspace:*",
     "tailwindcss": "catalog:",
     "@tailwindcss/vite": "catalog:"
   },
@@ -30,5 +30,12 @@
     "@vitejs/plugin-react": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
   }
 }

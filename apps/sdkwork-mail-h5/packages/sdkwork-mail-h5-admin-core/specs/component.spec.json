@@ -25,7 +25,7 @@
       "."
     ],
     "sdkClients": [
-      "sdkwork-mail-backend-sdk-generated-typescript"
+      "@sdkwork/mail-backend-sdk"
     ],
     "sdkDependencies": [
       {

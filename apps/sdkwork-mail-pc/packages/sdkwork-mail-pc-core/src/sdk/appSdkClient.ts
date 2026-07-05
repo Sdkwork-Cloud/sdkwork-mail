@@ -1,4 +1,4 @@
-import type { SdkworkAppClient } from "sdkwork-mail-app-sdk-generated-typescript";
+import type { SdkworkAppClient } from "@sdkwork/mail-app-sdk";
 
 import { createMailAppSdkClient } from "./createAppSdkClient";
 import {

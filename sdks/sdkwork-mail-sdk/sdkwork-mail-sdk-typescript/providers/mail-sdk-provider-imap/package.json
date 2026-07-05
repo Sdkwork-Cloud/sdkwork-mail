@@ -1,5 +1,5 @@
 {
-  "name": "@sdkwork/Mail-sdk-provider-imap",
+  "name": "@sdkwork/mail-sdk-provider-imap",
   "version": "0.1.0",
   "private": true,
   "description": "Reserved TypeScript provider boundary for IMAP Mail Sync within sdkwork-mail-sdk",
@@ -20,11 +20,11 @@
     "README.md"
   ],
   "peerDependencies": {
-    "@sdkwork/Mail-sdk": "^0.1.1"
+    "@sdkwork/mail-sdk": "^0.1.1"
   },
   "peerDependenciesMeta": {},
   "devDependencies": {
-    "@sdkwork/Mail-sdk": "workspace:*"
+    "@sdkwork/mail-sdk": "workspace:*"
   },
   "sdkworkMailProvider": {
     "providerKey": "imap",

@@ -1,5 +1,5 @@
 {
-  "name": "@sdkwork/Mail-mp-core",
+  "name": "@sdkwork/mail-mp-core",
   "private": true,
   "version": "0.1.0",
   "main": "src/index.ts",
@@ -7,7 +7,7 @@
   "dependencies": {
     "@sdkwork/utils": "workspace:*",
     "@sdkwork/sdk-common": "^1.0.2",
-    "sdkwork-mail-app-sdk-generated-typescript": "workspace:*"
+    "@sdkwork/mail-app-sdk": "workspace:*"
   },
   "exports": {
     ".": {

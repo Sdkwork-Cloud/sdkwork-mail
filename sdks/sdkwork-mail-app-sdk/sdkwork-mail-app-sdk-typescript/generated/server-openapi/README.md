@@ -96,6 +96,8 @@ const result = await client.mailThreads.mail.threads.list(params);
 // GET /app/v3/api/mail/messages
 const params = {
   folderId: 'folderId',
+  page_size: 2,
+  cursor: 'cursor',
 };
 const result = await client.mailMessages.mail.messages.list(params);
 ```

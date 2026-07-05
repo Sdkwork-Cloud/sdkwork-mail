@@ -1,5 +1,5 @@
 {
-  "name": "@sdkwork/Mail-mini-program",
+  "name": "@sdkwork/mail-mini-program",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -8,17 +8,24 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "@sdkwork/Mail-mp-core": "workspace:*",
-    "@sdkwork/Mail-mp-host": "workspace:*",
-    "@sdkwork/Mail-mp-Mail": "workspace:*",
-    "@sdkwork/Mail-mp-shell": "workspace:*",
+    "@sdkwork/mail-mp-core": "workspace:*",
+    "@sdkwork/mail-mp-host": "workspace:*",
+    "@sdkwork/mail-mp-mail": "workspace:*",
+    "@sdkwork/mail-mp-shell": "workspace:*",
     "@sdkwork/sdk-common": "^1.0.2",
-    "sdkwork-mail-app-sdk-generated-typescript": "workspace:*"
+    "@sdkwork/mail-app-sdk": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",
     "esbuild": "^0.25.10",
     "miniprogram-api-typings": "^4.1.0",
     "typescript": "catalog:"
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
   }
 }
