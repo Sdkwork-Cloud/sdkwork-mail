@@ -50,7 +50,7 @@ export function InboxPage({ services, onOpenMessage }: InboxPageProps) {
     if (!selectedAccountId) {
       setFolders([]);
       setSelectedFolderId("");
-      return;
+      return undefined;
     }
     let cancelled = false;
     async function loadFolders() {
@@ -76,7 +76,7 @@ export function InboxPage({ services, onOpenMessage }: InboxPageProps) {
   useEffect(() => {
     if (!selectedFolderId) {
       setMessages([]);
-      return;
+      return undefined;
     }
     let cancelled = false;
     async function loadMessages() {
