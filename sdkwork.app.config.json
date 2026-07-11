@@ -29,9 +29,16 @@
   "runtime": {
     "family": "browser",
     "framework": "react",
-    "runtimes": ["WEB"],
-    "deliveryModes": ["WEB_URL"],
-    "supportedDeploymentProfiles": ["cloud"],
+    "runtimes": [
+      "WEB"
+    ],
+    "deliveryModes": [
+      "WEB_URL"
+    ],
+    "supportedDeploymentProfiles": [
+      "cloud",
+      "standalone"
+    ],
     "defaultDeploymentProfile": "cloud"
   }
 }
