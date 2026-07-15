@@ -64,7 +64,12 @@ export function loadAdminSession(): MailAdminSession | null {
     return null;
   }
 
-  const raw = window.sessionStorage.getItem(mail_ADMIN_SESSION_STORAGE_KEY);
+  const legacyRaw = window.sessionStorage.getItem(mail_ADMIN_SESSION_STORAGE_KEY);
+  const raw = window.localStorage.getItem(mail_ADMIN_SESSION_STORAGE_KEY) ?? legacyRaw;
+  if (legacyRaw && !window.localStorage.getItem(mail_ADMIN_SESSION_STORAGE_KEY)) {
+    window.localStorage.setItem(mail_ADMIN_SESSION_STORAGE_KEY, legacyRaw);
+    window.sessionStorage.removeItem(mail_ADMIN_SESSION_STORAGE_KEY);
+  }
   if (raw) {
     return parseStoredAdminSession(raw);
   }
@@ -76,7 +81,8 @@ export function saveAdminSession(session: MailAdminSession): void {
   if (typeof window === "undefined") {
     return;
   }
-  window.sessionStorage.setItem(mail_ADMIN_SESSION_STORAGE_KEY, JSON.stringify(session));
+  window.localStorage.setItem(mail_ADMIN_SESSION_STORAGE_KEY, JSON.stringify(session));
+  window.sessionStorage.removeItem(mail_ADMIN_SESSION_STORAGE_KEY);
   window.sessionStorage.removeItem(LEGACY_mail_ADMIN_SESSION_STORAGE_KEY);
 }
 
@@ -85,6 +91,7 @@ export function clearAdminSession(): void {
     return;
   }
   window.sessionStorage.removeItem(mail_ADMIN_SESSION_STORAGE_KEY);
+  window.localStorage.removeItem(mail_ADMIN_SESSION_STORAGE_KEY);
   window.sessionStorage.removeItem(LEGACY_mail_ADMIN_SESSION_STORAGE_KEY);
 }
 
