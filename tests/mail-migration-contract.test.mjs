@@ -148,7 +148,7 @@ test("sdkwork-mail migration contract exposes provider account create and ping A
 });
 
 test("sdkwork-mail migration contract aligns mail-sdk defaults to transport providers", () => {
-  const assembly = readFileSync("sdks/sdkwork-mail-sdk/.sdkwork-assembly.json", "utf8");
+  const assembly = readFileSync("sdks/sdkwork-mail-sdk/sdk-manifest.json", "utf8");
   const assemblyDefaults = assembly.split('"providerSelectionStandard"')[0];
   const catalog = readFileSync(
     "sdks/sdkwork-mail-sdk/sdkwork-mail-sdk-rust/src/provider_activation_catalog.rs",

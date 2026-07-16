@@ -2061,7 +2061,7 @@ function renderCapabilityMatrix(assembly) {
 
   return `# Mail SDK Multilanguage Capability Matrix
 
-This matrix is materialized from \`.sdkwork-assembly.json\` so the official provider tiers, language
+This matrix is materialized from \`sdk-manifest.json\` so the official provider tiers, language
 support boundaries, and maturity tiers stay exact and verifiable.
 
 ## Provider Tier Semantics
@@ -4149,7 +4149,7 @@ export function materializeMailSdkWorkspace(workspaceRoot) {
 }
 
 export function buildMailSdkMaterializationPlan(workspaceRoot) {
-  const assemblyPath = path.join(workspaceRoot, '.sdkwork-assembly.json');
+  const assemblyPath = path.join(workspaceRoot, 'sdk-manifest.json');
   const assembly = readJsonFile(assemblyPath);
   assertMailAssemblyWorkspaceBaseline(assembly);
 

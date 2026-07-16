@@ -139,7 +139,7 @@ export function createMailVerifierFixture(
 ) {
   const fixtureRoot = mkdtempSync(path.join(os.tmpdir(), 'sdkwork-mail-sdk-verify-'));
   const workspaceCopy = path.join(fixtureRoot, 'sdkwork-mail-sdk');
-  const assemblyPath = path.join(workspaceRoot, '.sdkwork-assembly.json');
+  const assemblyPath = path.join(workspaceRoot, 'sdk-manifest.json');
   const assemblySnapshot = readJsonFile(assemblyPath);
   const filesToCopy = buildMailVerifierFixtureFileList(assemblySnapshot);
 
@@ -150,7 +150,7 @@ export function createMailVerifierFixture(
     writeFileSync(targetPath, readFileSync(sourcePath));
   }
 
-  const copiedAssemblyPath = path.join(workspaceCopy, '.sdkwork-assembly.json');
+  const copiedAssemblyPath = path.join(workspaceCopy, 'sdk-manifest.json');
   const assembly = readJsonFile(copiedAssemblyPath);
   mutator(assembly);
   writePrettyJsonFile(copiedAssemblyPath, assembly);

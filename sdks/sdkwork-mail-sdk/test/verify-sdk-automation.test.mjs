@@ -24,7 +24,7 @@ import {
 import { verifyMailSdkWorkspace } from '../bin/verify-sdk.mjs';
 
 const workspaceRoot = resolveMailSdkWorkspaceRoot(import.meta.url);
-const assemblyPath = path.join(workspaceRoot, '.sdkwork-assembly.json');
+const assemblyPath = path.join(workspaceRoot, 'sdk-manifest.json');
 const sdksReadmePath = resolveMailSdkSdksReadmePath(import.meta.url);
 
 function joined(parts, separator = '') {

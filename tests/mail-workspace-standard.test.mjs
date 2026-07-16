@@ -70,7 +70,7 @@ test("sdkwork-mail mini program root exposes user Mail surface packages", () => 
   const appConfig = JSON.parse(read(`${appRoot}/sdkwork.app.config.json`));
   assert.equal(appConfig.app?.runtime?.family, "mini-program");
   const MailPackageSource = read(`${appRoot}/packages/sdkwork-mail-mp-Mail/package.json`);
-  assert.match(MailPackageSource, /sdkwork-mail-app-sdk-generated-typescript/u, "sdkwork-mail-mp-Mail must depend on the generated app SDK");
+  assert.match(MailPackageSource, /@sdkwork\/mail-app-sdk/u, "sdkwork-mail-mp-Mail must depend on the composed app SDK");
 });
 
 test("sdkwork-mail flutter mobile exposes app auth deep link surfaces", () => {
@@ -101,7 +101,7 @@ test("sdkwork-mail app roots expose dual app and admin surfaces", () => {
       `${appRoot}/src/App.tsx must default to user Mail routes`,
     );
     const MailPackageSource = read(`${appRoot}/packages/${MailPackage}/package.json`);
-    assert.match(MailPackageSource, /sdkwork-mail-app-sdk-generated-typescript/u, `${MailPackage} must depend on the generated app SDK`);
+    assert.match(MailPackageSource, /@sdkwork\/mail-app-sdk/u, `${MailPackage} must depend on the composed app SDK`);
   }
 });
 
@@ -535,7 +535,7 @@ test("sdkwork-mail provider webhook ingress declares framework rate-limit tier",
     read("sdks/_route-manifests/backend-api/sdkwork-routes-mail-backend-api.route-manifest.json"),
   );
   const webhookRoute = backendManifest.routes.find(
-    (route) => route.operationId === "mail.providerWebhooks.events.receive",
+    (route) => route.operationId === "mail.providerWebhooks.events.create",
   );
   assert.ok(webhookRoute, "backend manifest must declare provider webhook receive route");
   assert.equal(webhookRoute.rateLimitTier, "openApiDefault");
@@ -593,8 +593,8 @@ test("sdkwork-mail manifests and tools use standard paths and route crate names"
     "tools/materialize-mail-openapi-envelope.mjs",
     "sdks/sdkwork-mail-app-sdk/sdk-manifest.json",
     "sdks/sdkwork-mail-backend-sdk/sdk-manifest.json",
-    "sdks/sdkwork-mail-app-sdk/.sdkwork-assembly.json",
-    "sdks/sdkwork-mail-backend-sdk/.sdkwork-assembly.json",
+    "sdks/sdkwork-mail-app-sdk/sdk-manifest.json",
+    "sdks/sdkwork-mail-backend-sdk/sdk-manifest.json",
   ]) {
     const source = read(filePath);
     assert.doesNotMatch(source, /generated[\\/]openapi/u, `${filePath} must not reference generated/openapi`);

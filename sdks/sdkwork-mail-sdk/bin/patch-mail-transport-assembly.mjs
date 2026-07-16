@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const assemblyPath = path.resolve(scriptDir, '..', '.sdkwork-assembly.json');
+const assemblyPath = path.resolve(scriptDir, '..', 'sdk-manifest.json');
 
 const MAIL_RUNTIME_SURFACE_METHODS = [
   'connectTransport',
@@ -208,4 +208,4 @@ assembly.runtimeSurfaceStandard = {
 assembly.languages = (assembly.languages ?? []).map(patchLanguageEntry);
 
 writeFileSync(assemblyPath, `${JSON.stringify(assembly, null, 2)}\n`, 'utf8');
-console.log('[patch-mail-transport-assembly] updated .sdkwork-assembly.json for smtp/imap mail transport');
+console.log('[patch-mail-transport-assembly] updated sdk-manifest.json for smtp/imap mail transport');

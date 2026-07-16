@@ -319,7 +319,7 @@ function assertRuntimeDocs(workspaceRoot) {
 }
 
 export function verifyMailSdkWorkspace(workspaceRoot) {
-  const assembly = readJsonFile(path.join(workspaceRoot, '.sdkwork-assembly.json'));
+  const assembly = readJsonFile(path.join(workspaceRoot, 'sdk-manifest.json'));
   assertAssembly(assembly);
   assertFilesExist(workspaceRoot, mail_ROOT_REQUIRED_CONTRACT_FILES, 'root contract');
   assertFilesExist(workspaceRoot, mail_TYPESCRIPT_REQUIRED_STANDARD_FILES, 'TypeScript standard');

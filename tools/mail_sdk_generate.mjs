@@ -145,6 +145,11 @@ function operationKey(operation) {
   return `${operation.method} ${operation.path} ${operation.operationId}`;
 }
 
+function isProviderWebhookOperation(operation) {
+  return operation.method === "POST"
+    && operation.path === "/backend/v3/api/mail/provider_webhooks/{provider}/events";
+}
+
 function validateRouteManifest(family, openapiOperations) {
   const manifestPath = resolveRoot(family.routeManifest);
   if (!existsSync(manifestPath)) {
@@ -193,13 +198,12 @@ function validateRouteManifest(family, openapiOperations) {
       if (route.source?.packageName !== family.sourceRouteCrate) {
         throw new Error(`${route.operationId} manifest source package mismatch`);
       }
-      const expectedAuthMode =
-        route.operationId === "mail.providerWebhooks.events.receive" ? "public" : "dual-token";
+      const expectedAuthMode = isProviderWebhookOperation(route) ? "public" : "dual-token";
       if (route.auth?.mode !== expectedAuthMode) {
         throw new Error(`${route.operationId} manifest auth mode must be ${expectedAuthMode}`);
       }
       if (
-        route.operationId === "mail.providerWebhooks.events.receive" &&
+        isProviderWebhookOperation(route) &&
         route.auth?.providerWebhookSignature !== true
       ) {
         throw new Error(`${route.operationId} manifest must require provider webhook signature`);
@@ -247,7 +251,7 @@ function validateOpenapi(family, openapi) {
     if (!operation.permission?.startsWith("mail.")) {
       throw new Error(`${operation.operationId} permission mismatch`);
     }
-    if (operation.operationId === "mail.providerWebhooks.events.receive") {
+    if (isProviderWebhookOperation(operation)) {
       if (operation.authMode !== "anonymous") {
         throw new Error(`${operation.operationId} must use anonymous provider webhook auth mode`);
       }
@@ -343,7 +347,7 @@ function componentSpec(family, operations) {
       languages: OFFICIAL_LANGUAGE_ORDER,
       generated: true,
       private: true,
-      manifests: [".sdkwork-assembly.json"],
+      manifests: ["sdk-manifest.json"],
     },
     contracts: {
       publicExports: [],
@@ -373,9 +377,12 @@ function syncFamily(family) {
 
   writeJson(authorityPath, openapi);
   writeJson(sdkgenPath, openapi);
-  writeJson(path.join(familyRoot, ".sdkwork-assembly.json"), {
+  writeJson(path.join(familyRoot, "sdk-manifest.json"), {
     schemaVersion: 1,
     workspace: family.familyName,
+    sdkName: family.familyName,
+    sdkFamily: family.familyName,
+    sdkType: family.sdkType,
     sdkOwner: "sdkwork-mail",
     apiAuthority: family.authorityName,
     sourceAuthoritySpec: `../../${family.sourceOpenapi}`,
@@ -391,18 +398,6 @@ function syncFamily(family) {
       manualTransports: [],
     },
     languages: languageEntries(family),
-    sdkDependencies: family.sdkDependencies,
-  });
-  writeJson(path.join(familyRoot, "sdk-manifest.json"), {
-    schemaVersion: 1,
-    sdkName: family.familyName,
-    sdkOwner: "sdkwork-mail",
-    apiAuthority: family.authorityName,
-    sdkFamily: family.familyName,
-    sdkType: family.sdkType,
-    apiPrefix: family.apiPrefix,
-    sourceAuthoritySpec: `../../${family.sourceOpenapi}`,
-    generationInputSpec: `openapi/${family.authorityName}.sdkgen.json`,
     sdkDependencies: family.sdkDependencies,
     generatorName: "@sdkwork/sdk-generator",
     generatorEntryPoint: GENERATOR_BIN,
