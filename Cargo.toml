@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "crates/sdkwork-api-mail-assembly",
     "crates/sdkwork-mail-gateway-assembly",
     "plugins/mail-imap",
     "plugins/mail-smtp",
