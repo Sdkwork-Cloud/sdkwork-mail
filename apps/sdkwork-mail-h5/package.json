@@ -16,7 +16,7 @@
     "@sdkwork/mail-h5-admin-core": "workspace:*",
     "@sdkwork/mail-h5-admin-shell": "workspace:*",
     "@sdkwork/mail-h5-core": "workspace:*",
-    "@sdkwork/mail-h5-Mail": "workspace:*",
+    "@sdkwork/mail-h5-mail": "workspace:*",
     "@sdkwork/mail-h5-shell": "workspace:*",
     "@sdkwork/sdk-common": "^1.0.2",
     "@sdkwork/mail-app-sdk": "workspace:*"

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 4,
+  "schemaVersion": 5,
   "kind": "sdkwork.app.topology",
   "appId": "sdkwork-mail",
   "archetype": "application-http-gateway",
@@ -41,10 +41,7 @@
   "envKeys": {
     "environment": "sdkwork_mail_ENVIRONMENT",
     "profileId": "sdkwork_mail_PROFILE_ID",
-    "gatewayAutostart": "sdkwork_mail_PLATFORM_API_GATEWAY_AUTOSTART",
     "standaloneGatewayBind": "sdkwork_mail_APPLICATION_PUBLIC_INGRESS_BIND",
-    "cloudGatewayBind": "SDKWORK_API_CLOUD_GATEWAY_BIND",
-    "cloudGatewayConfig": "SDKWORK_API_CLOUD_GATEWAY_CONFIG",
     "clientApiGatewayBaseUrl": "VITE_sdkwork_mail_PC_PLATFORM_API_GATEWAY_HTTP_URL",
     "apiGatewayBaseUrl": "sdkwork_mail_PLATFORM_API_GATEWAY_HTTP_URL",
     "deploymentProfile": "sdkwork_mail_DEPLOYMENT_PROFILE",
@@ -65,11 +62,8 @@
       "protocols": [
         "http"
       ],
-      "owner": "sdkwork-api-cloud-gateway",
-      "bindEnv": "SDKWORK_API_CLOUD_GATEWAY_BIND",
       "httpUrlEnv": "sdkwork_mail_PLATFORM_API_GATEWAY_HTTP_URL",
-      "clientHttpEnv": "VITE_sdkwork_mail_PC_PLATFORM_API_GATEWAY_HTTP_URL",
-      "autostartEnv": "sdkwork_mail_PLATFORM_API_GATEWAY_AUTOSTART"
+      "clientHttpEnv": "VITE_sdkwork_mail_PC_PLATFORM_API_GATEWAY_HTTP_URL"
     }
   },
   "cloudPublicHosts": {
@@ -87,12 +81,6 @@
     "applicationApiServer": {
       "crate": "sdkwork-mail-standalone-gateway",
       "binary": "sdkwork-mail-standalone-gateway"
-    },
-    "cloudGateway": {
-      "crate": "sdkwork-api-cloud-gateway",
-      "binary": "sdkwork-api-cloud-gateway",
-      "repository": "sdkwork-api-cloud-gateway",
-      "configGlob": "configs/sdkwork-api-cloud-gateway.sdkwork-mail.{profile}.toml"
     }
   },
   "orchestration": {
@@ -103,7 +91,8 @@
             "id": "application.public-ingress",
             "crate": "sdkwork-mail-standalone-gateway",
             "binary": "sdkwork-mail-standalone-gateway",
-            "required": true
+            "required": true,
+            "role": "api-standalone-gateway"
           }
         ],
         "capabilitySubset": [
@@ -114,52 +103,27 @@
         ]
       },
       "cloud.development": {
-        "processes": [
-          {
-            "id": "platform.api-gateway",
-            "crate": "sdkwork-api-cloud-gateway",
-            "binary": "sdkwork-api-cloud-gateway",
-            "repository": "sdkwork-api-cloud-gateway",
-            "required": true
-          },
-          {
-            "id": "application.public-ingress",
-            "crate": "sdkwork-mail-standalone-gateway",
-            "binary": "sdkwork-mail-standalone-gateway",
-            "required": true
-          },
-          {
-            "id": "pc-renderer",
-            "package": "apps/sdkwork-mail-pc",
-            "script": "dev",
-            "required": false
-          }
-        ],
+        "processes": [],
         "healthSurfaces": [
-          "platform.api-gateway",
-          "application.public-ingress"
+          "application.public-ingress",
+          "platform.api-gateway"
         ]
       },
       "cloud.production": {
         "processes": [
           {
-            "id": "platform.api-gateway",
-            "crate": "sdkwork-api-cloud-gateway",
-            "binary": "sdkwork-api-cloud-gateway",
-            "repository": "sdkwork-api-cloud-gateway",
-            "required": false
-          },
-          {
             "id": "application.public-ingress",
             "crate": "sdkwork-mail-standalone-gateway",
             "binary": "sdkwork-mail-standalone-gateway",
-            "required": true
+            "required": true,
+            "role": "api-standalone-gateway"
           },
           {
             "id": "pc-renderer",
             "package": "apps/sdkwork-mail-pc",
             "script": "dev",
-            "required": false
+            "required": false,
+            "role": "client"
           }
         ],
         "healthSurfaces": [
@@ -173,7 +137,8 @@
             "id": "application.public-ingress",
             "crate": "sdkwork-mail-standalone-gateway",
             "binary": "sdkwork-mail-standalone-gateway",
-            "required": true
+            "required": true,
+            "role": "api-standalone-gateway"
           }
         ],
         "capabilitySubset": [
@@ -186,10 +151,7 @@
     }
   },
   "packaging": {
-    "cloudConfigFiles": [
-      "sdkwork-api-cloud-gateway.sdkwork-mail.development.toml",
-      "sdkwork-api-cloud-gateway.sdkwork-mail.production.toml"
-    ],
+    "cloudConfigFiles": [],
     "targets": [
       {
         "id": "platform-config-bundle-tar-gz",
@@ -205,8 +167,7 @@
     ]
   },
   "scripts": {
-    "mailDev": "scripts/mail-dev.mjs",
-    "gatewayCloudBundle": "scripts/gateway-cloud-bundle.mjs"
+    "mailDev": "scripts/mail-dev.mjs"
   },
   "retired": {
     "vocabulary": {
