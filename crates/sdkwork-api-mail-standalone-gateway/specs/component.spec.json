@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "kind": "sdkwork.component.spec",
   "component": {
-    "name": "sdkwork-mail-standalone-gateway",
+    "name": "sdkwork-api-mail-standalone-gateway",
     "displayName": "SDKWork Mail API Server",
     "version": "0.1.0",
-    "type": "rust-crate",
-    "root": "sdkwork-mail/crates/sdkwork-mail-standalone-gateway",
+    "type": "rust-api-standalone-gateway",
+    "root": "crates/sdkwork-api-mail-standalone-gateway",
     "domain": "communication",
     "declaredDomain": null,
-    "capability": "mail",
+    "capability": "api-gateway",
     "status": "standardizing",
     "languages": [
       "rust"
@@ -18,7 +18,8 @@
     "private": false,
     "manifests": [
       "Cargo.toml"
-    ]
+    ],
+    "surface": "gateway-api"
   },
   "canonicalSpecs": [
     {
@@ -83,7 +84,8 @@
     "dependencyApiExports": [],
     "dependencyApiSurfaces": [],
     "events": [],
-    "configKeys": []
+    "configKeys": [],
+    "layerRole": "runtime-gateway"
   },
   "integration": {
     "authority": "Root SDKWork specs remain authoritative. Local specs may extend but must not contradict them.",
@@ -93,7 +95,7 @@
   },
   "verification": {
     "commands": [
-      "cargo test -p sdkwork-mail-standalone-gateway"
+      "cargo test -p sdkwork-api-mail-standalone-gateway"
     ]
   },
   "metadata": {

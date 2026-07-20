@@ -12,5 +12,9 @@ path = "src/lib.rs"
 [dependencies]
 axum.workspace = true
 tokio.workspace = true
+anyhow = "1.0.98"
+sdkwork-communication-mail-repository-sqlx.workspace = true
+sdkwork-mail-adapter-smtp.workspace = true
+sdkwork-mail-service-host.workspace = true
 sdkwork-routes-mail-app-api.workspace = true
 sdkwork-routes-mail-backend-api.workspace = true

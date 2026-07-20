@@ -95,7 +95,7 @@ IM integration is one-way: `sdkwork-im` may consume Mail SDKs; Mail must not dep
 
 ## 7. Deployment And Runtime Topology
 
-Standalone gateway: `sdkwork-mail-standalone-gateway` bundles app + backend routes for local/dev.
+Standalone gateway: `sdkwork-api-mail-standalone-gateway` bundles app + backend routes for local/dev.
 
 Key environment variables:
 

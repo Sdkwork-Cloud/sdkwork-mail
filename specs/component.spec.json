@@ -99,7 +99,7 @@
       "sdks/sdkwork-mail-backend-sdk"
     ],
     "runtimeEntrypoints": [
-      "crates/sdkwork-mail-standalone-gateway/src/main.rs",
+      "crates/sdkwork-api-mail-standalone-gateway/src/main.rs",
       "package.json#scripts.verify"
     ],
     "routeManifest": [

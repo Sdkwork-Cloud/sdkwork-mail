@@ -48,11 +48,11 @@ coverage = "Mail-backend-api-upstream-routes"
 
 [[upstreams]]
 serviceId = "sdkwork-mail-app-api"
-baseUrl = "http://sdkwork-mail-standalone-gateway:18090"
+baseUrl = "http://sdkwork-api-mail-standalone-gateway:18090"
 
 [[upstreams]]
 serviceId = "sdkwork-mail-backend-api"
-baseUrl = "http://sdkwork-mail-standalone-gateway:18090"
+baseUrl = "http://sdkwork-api-mail-standalone-gateway:18090"
 
 [cors]
 allowAnyOrigin = false

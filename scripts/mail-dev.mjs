@@ -153,9 +153,9 @@ function createPlatformGatewayProcess(env) {
 
 function createMailApiServerProcess(env) {
   return {
-    label: 'sdkwork-mail-standalone-gateway',
+    label: 'sdkwork-api-mail-standalone-gateway',
     command: cargoCommand(),
-    args: ['run', '-p', 'sdkwork-mail-standalone-gateway'],
+    args: ['run', '-p', 'sdkwork-api-mail-standalone-gateway'],
     cwd: REPO_ROOT,
     env,
   };

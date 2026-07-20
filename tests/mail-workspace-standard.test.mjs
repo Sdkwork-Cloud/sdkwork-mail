@@ -279,7 +279,7 @@ test("sdkwork-mail core Rust runtime crates declare component specs", () => {
     "crates/sdkwork-routes-mail-app-api",
     "crates/sdkwork-routes-mail-backend-api",
     "crates/sdkwork-mail-service-host",
-    "crates/sdkwork-mail-standalone-gateway",
+    "crates/sdkwork-api-mail-standalone-gateway",
     "crates/sdkwork-mail-app-context",
     "crates/sdkwork-mail-openapi",
     "crates/sdkwork-mail-api-registry",
@@ -297,7 +297,7 @@ test("sdkwork-mail core Rust runtime crates declare component specs", () => {
 test("sdkwork-mail integrates sdkwork-database framework for persistence bootstrap", () => {
   const repositoryCargo = read("crates/sdkwork-communication-mail-repository-sqlx/Cargo.toml");
   const databaseModule = read("crates/sdkwork-communication-mail-repository-sqlx/src/database.rs");
-  const apiBootstrap = read("crates/sdkwork-mail-standalone-gateway/src/bootstrap.rs");
+  const apiBootstrap = read("crates/sdkwork-api-mail-standalone-gateway/src/bootstrap.rs");
 
   for (const dependency of [
     "sdkwork-database-config",
@@ -498,7 +498,7 @@ test("sdkwork-mail route manifests declare WebRequestContext and apiSurface", ()
 });
 
 test("sdkwork-mail service host wires drive attachment port from env", () => {
-  const bootstrapSource = read("crates/sdkwork-mail-standalone-gateway/src/bootstrap.rs");
+  const bootstrapSource = read("crates/sdkwork-api-mail-standalone-gateway/src/bootstrap.rs");
   const portSource = read("crates/sdkwork-mail-service-host/src/drive_attachment_port.rs");
   const serviceHostLib = read("crates/sdkwork-mail-service-host/src/lib.rs");
 
@@ -511,9 +511,9 @@ test("sdkwork-mail service host wires drive attachment port from env", () => {
 });
 
 test("sdkwork-mail standalone-gateway wires database readiness when persistence pool is configured", () => {
-  const mainSource = read("crates/sdkwork-mail-standalone-gateway/src/main.rs");
-  const bootstrapSource = read("crates/sdkwork-mail-standalone-gateway/src/bootstrap.rs");
-  const readinessSource = read("crates/sdkwork-mail-standalone-gateway/src/readiness.rs");
+  const mainSource = read("crates/sdkwork-api-mail-standalone-gateway/src/main.rs");
+  const bootstrapSource = read("crates/sdkwork-api-mail-standalone-gateway/src/bootstrap.rs");
+  const readinessSource = read("crates/sdkwork-api-mail-standalone-gateway/src/readiness.rs");
   const databaseModule = read("crates/sdkwork-communication-mail-repository-sqlx/src/database.rs");
 
   assert.match(databaseModule, /connect_mail_persistence_bootstrap_from_env/u);

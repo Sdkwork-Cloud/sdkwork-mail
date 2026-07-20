@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use sdkwork_mail_gateway_assembly::assemble_application_router_with_service;
+use sdkwork_api_mail_assembly::assemble_api_router_with_service;
 use sdkwork_web_bootstrap::{ServiceRouterConfig, service_router};
 
 mod bootstrap;
@@ -15,7 +15,7 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let bootstrap = build_mail_api_bootstrap().await?;
-    let assembly = assemble_application_router_with_service(bootstrap.service).await;
+    let assembly = assemble_api_router_with_service(bootstrap.service).await;
 
     let service_router_config = if let Some(pool) = bootstrap.database_pool {
         ServiceRouterConfig::default()
@@ -29,12 +29,12 @@ async fn main() -> anyhow::Result<()> {
     let bind_addr = std::env::var("SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND")
         .unwrap_or_else(|_| "127.0.0.1:18090".into());
     let listener = tokio::net::TcpListener::bind(bind_addr.as_str()).await?;
-    tracing::info!(%bind_addr, "sdkwork-mail-standalone-gateway listening");
+    tracing::info!(%bind_addr, "sdkwork-api-mail-standalone-gateway listening");
 
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
         .await?;
-    tracing::info!("sdkwork-mail-standalone-gateway stopped");
+    tracing::info!("sdkwork-api-mail-standalone-gateway stopped");
     Ok(())
 }
 

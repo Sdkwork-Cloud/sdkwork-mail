@@ -81,7 +81,7 @@ test("sdkwork-mail migration contract resolves SMTP transport from provider cred
 test("sdkwork-mail migration contract wires transactional delivery through SMTP transport", () => {
   const smtpPlugin = readFileSync("plugins/mail-smtp/src/lib.rs", "utf8");
   const serviceHost = readFileSync("crates/sdkwork-mail-service-host/src/service.rs", "utf8");
-  const apiBootstrap = readFileSync("crates/sdkwork-mail-standalone-gateway/src/bootstrap.rs", "utf8");
+  const apiBootstrap = readFileSync("crates/sdkwork-api-mail-standalone-gateway/src/bootstrap.rs", "utf8");
   assert.match(smtpPlugin, /SmtpMailTransport/u);
   assert.match(smtpPlugin, /MailTransportPort/u);
   assert.match(serviceHost, /with_transport/u);

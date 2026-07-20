@@ -2,7 +2,7 @@
 resolver = "2"
 members = [
     "crates/sdkwork-api-mail-assembly",
-    "crates/sdkwork-mail-gateway-assembly",
+    "crates/sdkwork-api-mail-assembly",
     "plugins/mail-imap",
     "plugins/mail-smtp",
     "crates/sdkwork-mail-database-host",
@@ -15,7 +15,7 @@ members = [
     "crates/sdkwork-routes-mail-app-api",
     "crates/sdkwork-routes-mail-backend-api",
     "crates/sdkwork-mail-service-host",
-    "crates/sdkwork-mail-standalone-gateway",
+    "crates/sdkwork-api-mail-standalone-gateway",
 ]
 
 [workspace.package]
@@ -49,7 +49,7 @@ sdkwork-routes-mail-common = { path = "crates/sdkwork-routes-mail-common" }
 sdkwork-routes-mail-app-api = { path = "crates/sdkwork-routes-mail-app-api" }
 sdkwork-routes-mail-backend-api = { path = "crates/sdkwork-routes-mail-backend-api" }
 sdkwork-mail-service-host = { path = "crates/sdkwork-mail-service-host" }
-sdkwork-mail-standalone-gateway = { path = "crates/sdkwork-mail-standalone-gateway" }
+sdkwork-api-mail-standalone-gateway = { path = "crates/sdkwork-api-mail-standalone-gateway" }
 sdkwork-database-config = { path = "../sdkwork-database/crates/sdkwork-database-config", package = "sdkwork-database-config" }
 sdkwork-database-lifecycle = { path = "../sdkwork-database/crates/sdkwork-database-lifecycle", package = "sdkwork-database-lifecycle" }
 sdkwork-database-spi = { path = "../sdkwork-database/crates/sdkwork-database-spi", package = "sdkwork-database-spi" }

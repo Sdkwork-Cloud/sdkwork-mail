@@ -1,15 +1,15 @@
 [package]
-name = "sdkwork-mail-standalone-gateway"
+name = "sdkwork-api-mail-standalone-gateway"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 
 [[bin]]
-name = "sdkwork-mail-standalone-gateway"
+name = "sdkwork-api-mail-standalone-gateway"
 path = "src/main.rs"
 
 [dependencies]
-sdkwork_mail_gateway_assembly = { package = "sdkwork-mail-gateway-assembly", path = "../sdkwork-mail-gateway-assembly" }
+sdkwork_api_mail_assembly = { package = "sdkwork-api-mail-assembly", path = "../sdkwork-api-mail-assembly" }
 anyhow = "1.0.98"
 axum.workspace = true
 sdkwork-communication-mail-repository-sqlx.workspace = true
