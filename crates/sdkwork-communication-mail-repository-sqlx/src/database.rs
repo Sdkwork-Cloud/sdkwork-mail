@@ -12,25 +12,22 @@ pub struct MailPersistenceBootstrap {
     pub pool: Option<DatabasePool>,
 }
 
-const MAIL_DATABASE_ENV_KEYS: &[&str] = &[
-    "SDKWORK_MAIL_DATABASE_URL",
-    "SDKWORK_MAIL_DATABASE_FILE",
-    "SDKWORK_MAIL_DATABASE_ENGINE",
-    "SDKWORK_MAIL_DATABASE_HOST",
-    "SDKWORK_MAIL_DATABASE_PORT",
-    "SDKWORK_MAIL_DATABASE_NAME",
-    "SDKWORK_MAIL_DATABASE_SCHEMA",
-    "SDKWORK_MAIL_DATABASE_USERNAME",
-    "SDKWORK_MAIL_DATABASE_PASSWORD",
-    "SDKWORK_MAIL_DATABASE_PASSWORD_FILE",
-    "SDKWORK_MAIL_DATABASE_SSL_MODE",
-    "SDKWORK_MAIL_DATABASE_MODE",
-    "SDKWORK_MAIL_DATABASE_TABLE_PREFIX",
-    "SDKWORK_MAIL_DATABASE_MAX_CONNECTIONS",
-    "SDKWORK_MAIL_DATABASE_MIN_CONNECTIONS",
-    "SDKWORK_MAIL_DATABASE_ACQUIRE_TIMEOUT",
-    "SDKWORK_MAIL_DATABASE_IDLE_TIMEOUT",
-    "SDKWORK_MAIL_DATABASE_MAX_LIFETIME",
+const WORKSPACE_DATABASE_ENV_KEYS: &[&str] = &[
+    "SDKWORK_DATABASE_URL",
+    "SDKWORK_DATABASE_ENGINE",
+    "SDKWORK_DATABASE_HOST",
+    "SDKWORK_DATABASE_PORT",
+    "SDKWORK_DATABASE_NAME",
+    "SDKWORK_DATABASE_SCHEMA",
+    "SDKWORK_DATABASE_USERNAME",
+    "SDKWORK_DATABASE_PASSWORD",
+    "SDKWORK_DATABASE_PASSWORD_FILE",
+    "SDKWORK_DATABASE_SSL_MODE",
+    "SDKWORK_DATABASE_MAX_CONNECTIONS",
+    "SDKWORK_DATABASE_MIN_CONNECTIONS",
+    "SDKWORK_DATABASE_ACQUIRE_TIMEOUT",
+    "SDKWORK_DATABASE_IDLE_TIMEOUT",
+    "SDKWORK_DATABASE_MAX_LIFETIME",
 ];
 
 pub async fn connect_mail_persistence_from_env()
@@ -43,7 +40,10 @@ pub async fn connect_mail_persistence_from_env()
 pub async fn connect_mail_persistence_bootstrap_from_env()
 -> Result<Option<MailPersistenceBootstrap>, PoolError> {
     if !mail_database_env_explicitly_configured() {
-        return Ok(None);
+        return Err(PoolError::DatabaseConfig(
+            "mail server persistence requires SDKWORK_DATABASE_* PostgreSQL configuration"
+                .to_string(),
+        ));
     }
 
     if let Some(host) = sdkwork_mail_database_host::installed_mail_database_host() {
@@ -77,7 +77,7 @@ pub fn mail_database_env_explicitly_configured() -> bool {
 pub fn mail_database_env_values_explicitly_configured(
     lookup: impl Fn(&str) -> Option<String>,
 ) -> bool {
-    MAIL_DATABASE_ENV_KEYS.iter().any(|key| {
+    WORKSPACE_DATABASE_ENV_KEYS.iter().any(|key| {
         lookup(key)
             .map(|value| !value.trim().is_empty())
             .unwrap_or(false)
@@ -127,10 +127,10 @@ mod tests {
     }
 
     #[test]
-    fn mail_database_env_is_configured_when_mail_database_url_is_set() {
+    fn mail_database_env_is_configured_when_workspace_database_url_is_set() {
         let values = HashMap::from([(
-            "SDKWORK_MAIL_DATABASE_URL".to_string(),
-            "postgres://localhost/mail".to_string(),
+            "SDKWORK_DATABASE_URL".to_string(),
+            "postgres://localhost/sdkwork_ai_test".to_string(),
         )]);
         assert!(mail_database_env_values_explicitly_configured(|key| {
             values.get(key).cloned()

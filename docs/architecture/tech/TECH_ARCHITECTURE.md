@@ -101,7 +101,7 @@ Key environment variables:
 
 | Variable | Purpose |
 |----------|---------|
-| `SDKWORK_MAIL_DATABASE_URL` | Opt-in Postgres persistence |
+| `SDKWORK_DATABASE_*` | Required shared PostgreSQL persistence identity |
 | `SDKWORK_DRIVE_FACADE_URL` | Drive node validation for attachments |
 | `SDKWORK_AUTH_TOKEN` / `SDKWORK_ACCESS_TOKEN` | Service credentials for Drive facade |
 | `SDKWORK_MAIL_SMTP_*` / `SDKWORK_MAIL_IMAP_*` | Transport plugin configuration |
