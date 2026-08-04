@@ -11,18 +11,24 @@
   "dependencies": {
     "@sdkwork/auth-pc-react": "workspace:*",
     "@sdkwork/auth-runtime-pc-react": "workspace:*",
+    "@sdkwork/iam-contracts": "workspace:*",
+    "@sdkwork/mail-app-sdk": "workspace:*",
     "@sdkwork/mail-pc-admin-core": "workspace:*",
+    "@sdkwork/Mail-pc-admin-core": "workspace:*",
     "@sdkwork/mail-pc-admin-shell": "workspace:*",
+    "@sdkwork/Mail-pc-admin-shell": "workspace:*",
     "@sdkwork/mail-pc-core": "workspace:*",
+    "@sdkwork/Mail-pc-core": "workspace:*",
     "@sdkwork/mail-pc-mail": "workspace:*",
+    "@sdkwork/Mail-pc-Mail": "workspace:*",
     "@sdkwork/mail-pc-shell": "workspace:*",
+    "@sdkwork/Mail-pc-shell": "workspace:*",
     "@sdkwork/sdk-common": "^1.0.2",
+    "@tailwindcss/vite": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-router-dom": "^7.17.0",
-    "@sdkwork/mail-app-sdk": "workspace:*",
-    "tailwindcss": "catalog:",
-    "@tailwindcss/vite": "catalog:"
+    "tailwindcss": "catalog:"
   },
   "devDependencies": {
     "@types/react": "catalog:",

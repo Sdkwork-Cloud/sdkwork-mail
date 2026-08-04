@@ -8,12 +8,16 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@sdkwork/mail-app-sdk": "workspace:*",
     "@sdkwork/mail-mp-core": "workspace:*",
+    "@sdkwork/Mail-mp-core": "workspace:*",
     "@sdkwork/mail-mp-host": "workspace:*",
+    "@sdkwork/Mail-mp-host": "workspace:*",
     "@sdkwork/mail-mp-mail": "workspace:*",
+    "@sdkwork/Mail-mp-Mail": "workspace:*",
     "@sdkwork/mail-mp-shell": "workspace:*",
-    "@sdkwork/sdk-common": "^1.0.2",
-    "@sdkwork/mail-app-sdk": "workspace:*"
+    "@sdkwork/Mail-mp-shell": "workspace:*",
+    "@sdkwork/sdk-common": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "^25.9.2",

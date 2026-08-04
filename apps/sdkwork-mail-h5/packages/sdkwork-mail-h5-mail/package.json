@@ -5,9 +5,10 @@
   "main": "./src/index.ts",
   "types": "src/index.ts",
   "dependencies": {
+    "@sdkwork/mail-app-sdk": "workspace:*",
     "@sdkwork/mail-h5-core": "workspace:*",
-    "react": "catalog:",
-    "@sdkwork/mail-app-sdk": "workspace:*"
+    "@sdkwork/Mail-h5-core": "workspace:*",
+    "react": "catalog:"
   },
   "exports": {
     ".": {

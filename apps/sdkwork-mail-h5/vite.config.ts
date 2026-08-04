@@ -17,21 +17,11 @@ export default defineConfig(({ mode }) => {
             plugins: [react()],
     resolve: {
       alias: {
-        "@sdkwork/auth-runtime-pc-react": path.resolve(iamRoot, "apps/sdkwork-iam-pc/packages/sdkwork-auth-runtime-pc-react/src/index.ts",
         ),
-        "@sdkwork/iam-app-sdk": path.resolve(iamRoot, "sdks/sdkwork-iam-app-sdk/sdkwork-iam-app-sdk-typescript/src/index.ts",
         ),
-        "@sdkwork/iam-contracts": path.resolve(iamRoot, "apps/sdkwork-iam-common/packages/sdkwork-iam-contracts/src/index.ts",
         ),
-        "@sdkwork/iam-runtime": path.resolve(iamRoot, "apps/sdkwork-iam-common/packages/sdkwork-iam-runtime/src/index.ts",
         ),
-        "@sdkwork/iam-sdk-ports": path.resolve(iamRoot, "apps/sdkwork-iam-common/packages/sdkwork-iam-sdk-ports/src/index.ts",
         ),
-        "@sdkwork/iam-service": path.resolve(iamRoot, "apps/sdkwork-iam-common/packages/sdkwork-iam-service/src/index.ts",
-        ),
-        "@sdkwork/runtime-bootstrap": path.resolve(
-          appbaseRoot,
-          "packages/common/foundation/sdkwork-runtime-bootstrap/src/index.ts",
         ),
       },
     },
