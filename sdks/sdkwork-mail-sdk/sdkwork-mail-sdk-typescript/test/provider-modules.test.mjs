@@ -105,7 +105,7 @@ test('registerMailProviderModules keeps driver manager unchanged when any regist
         },
         {
           providerModule: {
-            packageName: '@sdkwork/Mail-sdk-provider-imap-drift',
+            packageName: '@sdkwork/mail-sdk-provider-imap-drift',
             metadata,
             builtin: metadata.builtin,
             typescriptAdapter: metadata.typescriptAdapter,
@@ -141,7 +141,7 @@ test('registerMailProviderModule rejects provider module package contract drift'
       registerMailProviderModule(
         new MailDriverManager(),
         {
-          packageName: '@sdkwork/Mail-sdk-provider-imap-drift',
+          packageName: '@sdkwork/mail-sdk-provider-imap-drift',
           metadata,
           builtin: metadata.builtin,
           typescriptAdapter: metadata.typescriptAdapter,

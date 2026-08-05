@@ -3,7 +3,7 @@ import {
   MailProviderAccountService,
   MailTemplateAdminService,
   MailTransactionalDeliveryAdminService,
-} from "@sdkwork/Mail-h5-admin-core";
+} from "@sdkwork/mail-h5-admin-core";
 
 import {
   bootstrapAdminAuth,

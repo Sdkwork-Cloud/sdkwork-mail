@@ -27,7 +27,7 @@ const providerRuntimeSdkDependency = {
   apiPrefix: null,
   generatedTransportImportPolicy: "forbidden",
   packageByLanguage: {
-    typescript: "@sdkwork/Mail-sdk",
+    typescript: "@sdkwork/mail-sdk",
     rust: "sdkwork-mail-sdk",
     java: "com.sdkwork:sdkwork-mail-sdk",
     python: "sdkwork-mail-sdk",

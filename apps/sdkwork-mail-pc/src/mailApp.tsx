@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { AppLayout } from "@sdkwork/Mail-pc-shell";
+import { AppLayout } from "@sdkwork/mail-pc-shell";
 import {
   InboxPage,
   MessagePage,
   createMailInboxWorkspaceManifest,
-} from "@sdkwork/Mail-pc-Mail";
+} from "@sdkwork/mail-pc-mail";
 
 import { createAppServices } from "./bootstrap/appServices";
 

@@ -3,7 +3,7 @@ import {
   MailProviderAccountService,
   MailTemplateAdminService,
   MailTransactionalDeliveryAdminService,
-} from "@sdkwork/Mail-pc-admin-core";
+} from "@sdkwork/mail-pc-admin-core";
 
 import {
   bootstrapAdminAuth,

@@ -1,5 +1,5 @@
-import { AdminRoutes } from "@sdkwork/Mail-pc-admin-shell";
-import { createMailAppRoutes } from "@sdkwork/Mail-pc-shell";
+import { AdminRoutes } from "@sdkwork/mail-pc-admin-shell";
+import { createMailAppRoutes } from "@sdkwork/mail-pc-shell";
 
 export function createRoutes() {
   return [...createMailAppRoutes(), ...AdminRoutes().routes];

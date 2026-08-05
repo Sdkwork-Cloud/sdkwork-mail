@@ -1,4 +1,4 @@
-import { createMailAppRoutes } from "@sdkwork/Mail-mp-shell";
+import { createMailAppRoutes } from "@sdkwork/mail-mp-shell";
 
 export function createRoutes() {
   return createMailAppRoutes();

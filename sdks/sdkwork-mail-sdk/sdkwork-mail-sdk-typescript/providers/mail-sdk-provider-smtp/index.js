@@ -2,7 +2,7 @@ import {
   SMTP_mail_PROVIDER_CATALOG_ENTRY,
   createMailProviderDriver,
   createMailProviderModule,
-} from '@sdkwork/Mail-sdk';
+} from '@sdkwork/mail-sdk';
 
 
 export const SMTP_mail_PROVIDER_METADATA = SMTP_mail_PROVIDER_CATALOG_ENTRY;

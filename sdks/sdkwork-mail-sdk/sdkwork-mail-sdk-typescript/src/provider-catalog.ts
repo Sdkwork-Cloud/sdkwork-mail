@@ -28,7 +28,7 @@ export const SMTP_mail_PROVIDER_CATALOG_ENTRY: MailProviderCatalogEntry = freeze
     officialVendorSdkRequirement: 'not-declared-until-bridge',
   },
   typescriptPackage: {
-    packageName: '@sdkwork/Mail-sdk-provider-smtp',
+    packageName: '@sdkwork/mail-sdk-provider-smtp',
     sourceModule: './index.js',
     driverFactory: 'createSmtpMailDriver',
     metadataSymbol: 'SMTP_mail_PROVIDER_METADATA',
@@ -57,7 +57,7 @@ export const IMAP_mail_PROVIDER_CATALOG_ENTRY: MailProviderCatalogEntry = freeze
     officialVendorSdkRequirement: 'not-declared-until-bridge',
   },
   typescriptPackage: {
-    packageName: '@sdkwork/Mail-sdk-provider-imap',
+    packageName: '@sdkwork/mail-sdk-provider-imap',
     sourceModule: './index.js',
     driverFactory: 'createImapMailDriver',
     metadataSymbol: 'IMAP_mail_PROVIDER_METADATA',

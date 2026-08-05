@@ -3,7 +3,7 @@ import type {
   MailProviderCatalogEntry,
   MailProviderDriver,
   MailProviderModule,
-} from '@sdkwork/Mail-sdk';
+} from '@sdkwork/mail-sdk';
 
 export const IMAP_mail_PROVIDER_METADATA: MailProviderCatalogEntry;
 

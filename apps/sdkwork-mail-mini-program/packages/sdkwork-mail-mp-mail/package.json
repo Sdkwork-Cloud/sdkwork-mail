@@ -7,7 +7,7 @@
   "dependencies": {
     "@sdkwork/mail-app-sdk": "workspace:*",
     "@sdkwork/mail-mp-core": "workspace:*",
-    "@sdkwork/Mail-mp-core": "workspace:*"
+    "@sdkwork/mail-mp-core": "workspace:*"
   },
   "exports": {
     ".": {

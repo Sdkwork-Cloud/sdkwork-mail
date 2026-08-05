@@ -89,7 +89,7 @@ export class MailTemplateAdminService {
     command: UpdateMailTemplateCommand,
   ): Promise<MailTemplateRecord> {
     const response = unwrapEnvelope(
-      await this.client.mailTemplates.mail.templates.update({ templateId }, command),
+      await this.client.mailTemplates.mail.templates.update(templateId, command),
     );
     if (!response) {
       throw new Error("Invalid response: missing template data");

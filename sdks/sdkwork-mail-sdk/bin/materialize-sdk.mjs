@@ -2204,7 +2204,7 @@ function renderProviderPackageManifest(provider) {
   const hasReferenceRuntimeBridge =
     provider.typescriptAdapter.runtimeBridgeStatus === 'reference-baseline';
   const peerDependencies = {
-    '@sdkwork/Mail-sdk': '^0.1.1',
+    '@sdkwork/mail-sdk': '^0.1.1',
   };
   const peerDependenciesMeta = {};
   if (provider.providerKey === 'volcengine' && hasReferenceRuntimeBridge) {
@@ -2243,7 +2243,7 @@ function renderProviderPackageManifest(provider) {
     peerDependencies,
     peerDependenciesMeta,
     devDependencies: {
-      '@sdkwork/Mail-sdk': 'workspace:*',
+      '@sdkwork/mail-sdk': 'workspace:*',
     },
     sdkworkMailProvider: {
       providerKey: provider.providerKey,
@@ -2276,7 +2276,7 @@ function renderProviderPackageManifest(provider) {
 function renderProviderPackageImportPrelude(symbols) {
   return `import {
   ${symbols.join(',\n  ')},
-} from '@sdkwork/Mail-sdk';
+} from '@sdkwork/mail-sdk';
 `;
 }
 
@@ -3438,7 +3438,7 @@ function renderProviderPackageDeclarationEntrypoint(provider) {
   MailProviderModule,
   MailResolvedClientConfig,
   MailSessionDescriptor,
-} from '@sdkwork/Mail-sdk';
+} from '@sdkwork/mail-sdk';
 
 export interface MailVolcengineWebSdkModule {
   createEngine(appId: string, config?: Record<string, unknown>): MailVolcengineWebEngineLike;
@@ -3530,7 +3530,7 @@ export const ${packageContract.moduleSymbol}: MailProviderModule;
   MailProviderModule,
   MailResolvedClientConfig,
   MailSessionDescriptor,
-} from '@sdkwork/Mail-sdk';
+} from '@sdkwork/mail-sdk';
 
 export interface MailTencentWebSdkModule {
   create(): MailTencentWebTMailLike;
@@ -3634,7 +3634,7 @@ export const ${packageContract.moduleSymbol}: MailProviderModule;
   MailProviderCatalogEntry,
   MailProviderDriver,
   MailProviderModule,
-} from '@sdkwork/Mail-sdk';
+} from '@sdkwork/mail-sdk';
 
 export const ${packageContract.metadataSymbol}: MailProviderCatalogEntry;
 
@@ -3709,13 +3709,13 @@ Rules:
 
 - ${boundaryLabel}
 ${bridgeRules.join('\n')}
-- depends on the core \`@sdkwork/Mail-sdk\` contracts
+- depends on the core \`@sdkwork/mail-sdk\` contracts
 - registers through the \`MailProviderModule\` adapter contract
 - ships executable \`index.js\` and \`index.d.ts\` entrypoints
 - declares \`exports\` so \`import\` and \`default\` resolve to \`index.js\` and \`types\` resolve
   to \`index.d.ts\`
 - driver factories and provider module symbols live only behind this provider package boundary
-- the root \`@sdkwork/Mail-sdk\` package exposes provider-neutral SPI, catalogs, loader, manager, and
+- the root \`@sdkwork/mail-sdk\` package exposes provider-neutral SPI, catalogs, loader, manager, and
   data-source contracts but does not re-export this provider implementation
 `;
 }

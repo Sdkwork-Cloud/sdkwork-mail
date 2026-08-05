@@ -9,14 +9,14 @@ import {
   readMailIamSessionTokens,
   mail_IAM_SESSION_CHANGED_EVENT,
   type MailIamSession,
-} from "@sdkwork/Mail-pc-core";
+} from "@sdkwork/mail-pc-core";
 
-import { getMailIamRuntimeForAuth } from "./bootstrap/MailAppAuthRuntime";
+import { getMailIamRuntimeForAuth } from "./bootstrap/mailAppAuthRuntime";
 import {
   resolveMailAuthAppearance,
   resolveMailAuthLocale,
   resolveMailAuthRuntimeConfig,
-} from "./bootstrap/MailAuthConfig";
+} from "./bootstrap/mailAuthConfig";
 
 const AUTH_BASE_PATH = "/auth";
 export const mail_APP_HOME_PATH = "/mail/inbox";
@@ -93,7 +93,7 @@ export function AppAuthGate({ children, homePath = mail_APP_HOME_PATH }: AppAuth
     <SdkworkIamAuthRoutes
       appearance={resolveMailAuthAppearance()}
       basePath={AUTH_BASE_PATH}
-      getRuntime={getMailIamRuntimeForAuth as SdkworkIamAuthRoutesProps["getRuntime"]}
+      getRuntime={getMailIamRuntimeForAuth as unknown as SdkworkIamAuthRoutesProps["getRuntime"]}
       homePath={homePath}
       locale={resolveMailAuthLocale()}
       routerContextMode="external"

@@ -46,7 +46,7 @@ const FORBIDDEN_APP_COUPLING_PATTERN = buildForbiddenAppCouplingPattern();
 
 function getVendorPeerDependencies(manifest) {
   return Object.keys(manifest.peerDependencies ?? {}).filter(
-    (dependencyName) => dependencyName !== '@sdkwork/Mail-sdk',
+    (dependencyName) => dependencyName !== '@sdkwork/mail-sdk',
   );
 }
 
@@ -120,16 +120,16 @@ test('materialized provider package catalog matches the assembly-driven package 
     packageCatalog.IMAP_mail_PROVIDER_PACKAGE_ENTRY,
   );
   assert.deepEqual(
-    packageCatalog.getMailProviderPackageByPackageIdentity('@sdkwork/Mail-sdk-provider-imap'),
+    packageCatalog.getMailProviderPackageByPackageIdentity('@sdkwork/mail-sdk-provider-imap'),
     packageCatalog.IMAP_mail_PROVIDER_PACKAGE_ENTRY,
   );
   assert.deepEqual(
-    rootSdk.getMailProviderPackageByPackageIdentity('@sdkwork/Mail-sdk-provider-imap'),
+    rootSdk.getMailProviderPackageByPackageIdentity('@sdkwork/mail-sdk-provider-imap'),
     packageCatalog.IMAP_mail_PROVIDER_PACKAGE_ENTRY,
   );
   assert.equal(packageCatalog.getMailProviderPackageByProviderKey('vendor-x'), undefined);
   assert.equal(
-    packageCatalog.getMailProviderPackageByPackageIdentity('@sdkwork/Mail-sdk-provider-vendor-x'),
+    packageCatalog.getMailProviderPackageByPackageIdentity('@sdkwork/mail-sdk-provider-vendor-x'),
     undefined,
   );
 });
@@ -171,8 +171,8 @@ test('provider packages expose manifest-declared entrypoints and symbols', async
     assert.equal(manifest.exports['.'].default, './index.js');
     assert.equal(manifest.exports['.'].types, './index.d.ts');
     assert.equal(manifest.name, provider.typescriptPackage.packageName);
-    assert.equal(manifest.peerDependencies?.['@sdkwork/Mail-sdk'], '^0.1.1');
-    assert.equal(manifest.devDependencies?.['@sdkwork/Mail-sdk'], 'workspace:*');
+    assert.equal(manifest.peerDependencies?.['@sdkwork/mail-sdk'], '^0.1.1');
+    assert.equal(manifest.devDependencies?.['@sdkwork/mail-sdk'], 'workspace:*');
     assert.equal(manifest.peerDependencies?.['@volcengine/Mail'], undefined);
     assert.equal(manifest.peerDependenciesMeta?.['@volcengine/Mail'], undefined);
     assert.equal(manifest.peerDependencies?.['tMail-sdk-v5'], undefined);

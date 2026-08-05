@@ -1,17 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@sdkwork/utils": ["../sdkwork-utils/packages/sdkwork-utils-typescript/dist/index.d.ts"]
-    },
-    "ignoreDeprecations": "6.0",
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
     "declaration": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
@@ -23,7 +22,10 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2023",
-    "types": ["node", "vitest/globals"]
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
   },
   "exclude": [
     "**/dist/**",

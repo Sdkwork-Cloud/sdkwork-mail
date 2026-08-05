@@ -1,4 +1,4 @@
-import { getMailAppSdkClient } from "@sdkwork/Mail-pc-core";
+import { getMailAppSdkClient } from "@sdkwork/mail-pc-core";
 import type { SdkworkAppClient } from "@sdkwork/mail-app-sdk";
 
 import { resolveEnvironment } from "./environment";

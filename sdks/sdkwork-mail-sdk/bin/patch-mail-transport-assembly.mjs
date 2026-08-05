@@ -69,7 +69,7 @@ const MAIL_TRANSPORT_PROVIDERS = [
     extensionKeys: ['smtp.transport'],
     typescriptAdapter: MAIL_TRANSPORT_ADAPTER,
     typescriptPackage: {
-      packageName: '@sdkwork/Mail-sdk-provider-smtp',
+      packageName: '@sdkwork/mail-sdk-provider-smtp',
       sourceModule: './index.js',
       driverFactory: 'createSmtpMailDriver',
       metadataSymbol: 'SMTP_mail_PROVIDER_METADATA',
@@ -91,7 +91,7 @@ const MAIL_TRANSPORT_PROVIDERS = [
     extensionKeys: ['imap.sync'],
     typescriptAdapter: MAIL_TRANSPORT_ADAPTER,
     typescriptPackage: {
-      packageName: '@sdkwork/Mail-sdk-provider-imap',
+      packageName: '@sdkwork/mail-sdk-provider-imap',
       sourceModule: './index.js',
       driverFactory: 'createImapMailDriver',
       metadataSymbol: 'IMAP_mail_PROVIDER_METADATA',
@@ -138,8 +138,8 @@ function patchLanguageEntry(languageEntry) {
 
   if (next.runtimeBaseline) {
     if (next.language === 'typescript') {
-      next.runtimeBaseline.vendorSdkPackage = '@sdkwork/Mail-sdk-provider-smtp';
-      next.runtimeBaseline.vendorSdkImportPath = '@sdkwork/Mail-sdk-provider-smtp';
+      next.runtimeBaseline.vendorSdkPackage = '@sdkwork/mail-sdk-provider-smtp';
+      next.runtimeBaseline.vendorSdkImportPath = '@sdkwork/mail-sdk-provider-smtp';
     } else if (next.language === 'flutter') {
       next.runtimeBaseline.vendorSdkPackage = 'mail_sdk_provider_smtp';
       next.runtimeBaseline.vendorSdkImportPath =

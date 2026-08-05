@@ -2,9 +2,9 @@ import {
   applyMailIamSessionTokens,
   parseAppbaseCallbackSession,
   stripAppbaseCallbackFromLocation,
-} from "@sdkwork/Mail-h5-core";
+} from "@sdkwork/mail-h5-core";
 
-import { createMailAppAuthRuntime } from "./MailAppAuthRuntime";
+import { createMailAppAuthRuntime } from "./mailAppAuthRuntime";
 import { resolveEnvironment } from "./environment";
 
 export function createIamRuntime() {

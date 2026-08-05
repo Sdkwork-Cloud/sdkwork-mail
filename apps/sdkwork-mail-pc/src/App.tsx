@@ -3,11 +3,11 @@ import { SdkworkSessionAuthBrowserRoot } from '@sdkwork/auth-pc-react';
 
 import { AdminApp } from "./AdminApp";
 import { AppAuthGate, mail_APP_HOME_PATH } from "./AppAuthGate";
-import { MailApp } from "./MailApp";
+import { MailApp } from "./mailApp";
 import { bootstrap } from "./bootstrap/runtime";
 
-import "@sdkwork/Mail-pc-Mail/src/Mail-app-styles.css";
-import "@sdkwork/Mail-pc-admin-core/src/admin-styles.css";
+import "@sdkwork/mail-pc-mail/src/Mail-app-styles.css";
+import "@sdkwork/mail-pc-admin-core/src/admin-styles.css";
 
 bootstrap();
 

@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { AdminLayout } from "@sdkwork/Mail-pc-admin-shell";
+import { AdminLayout } from "@sdkwork/mail-pc-admin-shell";
 import {
   MailMarketingConsentForm,
   MailMarketingConsentList,
@@ -8,7 +8,7 @@ import {
   MailTemplateForm,
   MailTemplateList,
   MailTransactionalDeliveryList,
-} from "@sdkwork/Mail-pc-admin-core";
+} from "@sdkwork/mail-pc-admin-core";
 
 import { AuthGate } from "./AuthGate";
 import { createAdminServices } from "./bootstrap/adminServices";

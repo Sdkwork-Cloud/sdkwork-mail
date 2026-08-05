@@ -280,8 +280,8 @@ test('materialized Mail language workspace catalog matches the assembly language
     languageWorkspaceCatalog.FLUTTER_mail_LANGUAGE_WORKSPACE_ENTRY,
   );
   assert.deepEqual(languageWorkspaceCatalog.TYPESCRIPT_mail_LANGUAGE_WORKSPACE_ENTRY.runtimeBaseline, {
-    vendorSdkPackage: '@sdkwork/Mail-sdk-provider-smtp',
-    vendorSdkImportPath: '@sdkwork/Mail-sdk-provider-smtp',
+    vendorSdkPackage: '@sdkwork/mail-sdk-provider-smtp',
+    vendorSdkImportPath: '@sdkwork/mail-sdk-provider-smtp',
     recommendedEntrypoint: 'installMailProviderPackage',
     smokeCommand: 'npm run smoke',
     smokeMode: 'runtime-backed',

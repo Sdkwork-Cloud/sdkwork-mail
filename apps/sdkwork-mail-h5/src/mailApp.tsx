@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { AppLayout } from "@sdkwork/Mail-h5-shell";
+import { AppLayout } from "@sdkwork/mail-h5-shell";
 import {
   InboxPage,
   MessagePage,
   createMailInboxWorkspaceManifest,
-} from "@sdkwork/Mail-h5-Mail";
+} from "@sdkwork/mail-h5-mail";
 
 import { createAppServices } from "./bootstrap/appServices";
 

@@ -7,7 +7,7 @@ const packageRoot = path.resolve(resolverDir, '..');
 const rootSdkUrl = pathToFileURL(path.join(packageRoot, 'dist/index.js')).href;
 
 export async function resolve(specifier, context, nextResolve) {
-  if (specifier === '@sdkwork/Mail-sdk') {
+  if (specifier === '@sdkwork/mail-sdk') {
     return {
       url: rootSdkUrl,
       shortCircuit: true,

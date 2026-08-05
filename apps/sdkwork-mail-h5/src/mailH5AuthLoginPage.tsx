@@ -4,7 +4,7 @@ import {
   buildAppbaseLoginUrl,
   DEFAULT_APP_SESSION,
   applyMailIamSessionTokens,
-} from "@sdkwork/Mail-h5-core";
+} from "@sdkwork/mail-h5-core";
 
 import { resolveEnvironment } from "./bootstrap/environment";
 import { mail_APP_HOME_PATH } from "./constants/appRoutes";

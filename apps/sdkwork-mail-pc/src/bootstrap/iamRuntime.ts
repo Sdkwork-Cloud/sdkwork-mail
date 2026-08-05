@@ -2,9 +2,9 @@ import {
   applyMailIamSessionTokens,
   parseAppbaseCallbackSession,
   stripAppbaseCallbackFromLocation,
-} from "@sdkwork/Mail-pc-core";
+} from "@sdkwork/mail-pc-core";
 
-import { createMailAppAuthRuntime } from "./MailAppAuthRuntime";
+import { createMailAppAuthRuntime } from "./mailAppAuthRuntime";
 import { resolveEnvironment } from "./environment";
 
 export function createIamRuntime() {

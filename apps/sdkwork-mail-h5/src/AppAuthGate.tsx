@@ -5,9 +5,9 @@ import {
   readMailIamSessionTokens,
   mail_IAM_SESSION_CHANGED_EVENT,
   type MailIamSession,
-} from "@sdkwork/Mail-h5-core";
+} from "@sdkwork/mail-h5-core";
 
-import { MailH5AuthLoginPage } from "./MailH5AuthLoginPage";
+import { MailH5AuthLoginPage } from "./mailH5AuthLoginPage";
 import { mail_APP_HOME_PATH } from "./constants/appRoutes";
 
 export { mail_APP_HOME_PATH };

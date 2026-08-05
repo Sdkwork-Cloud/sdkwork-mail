@@ -1,4 +1,4 @@
-import { installWeixinFetch } from "@sdkwork/Mail-mp-host";
+import { installWeixinFetch } from "@sdkwork/mail-mp-host";
 
 import { bootstrap } from "./iamRuntime";
 import { createAppServices } from "./appServices";

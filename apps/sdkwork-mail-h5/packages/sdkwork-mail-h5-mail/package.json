@@ -7,7 +7,7 @@
   "dependencies": {
     "@sdkwork/mail-app-sdk": "workspace:*",
     "@sdkwork/mail-h5-core": "workspace:*",
-    "@sdkwork/Mail-h5-core": "workspace:*",
+    "@sdkwork/mail-h5-core": "workspace:*",
     "react": "catalog:"
   },
   "exports": {

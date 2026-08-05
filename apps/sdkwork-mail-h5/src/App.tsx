@@ -3,11 +3,11 @@ import { HashRouter, Navigate, useLocation } from "react-router-dom";
 import { AdminApp } from "./AdminApp";
 import { AppAuthGate } from "./AppAuthGate";
 import { mail_APP_HOME_PATH } from "./constants/appRoutes";
-import { MailApp } from "./MailApp";
+import { MailApp } from "./mailApp";
 import { bootstrap } from "./bootstrap/runtime";
 
-import "@sdkwork/Mail-h5-Mail/src/Mail-app-styles.css";
-import "@sdkwork/Mail-h5-admin-core/src/admin-styles.css";
+import "@sdkwork/mail-h5-mail/src/Mail-app-styles.css";
+import "@sdkwork/mail-h5-admin-core/src/admin-styles.css";
 
 bootstrap();
 

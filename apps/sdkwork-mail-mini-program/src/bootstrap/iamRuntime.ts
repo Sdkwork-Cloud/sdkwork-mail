@@ -1,4 +1,4 @@
-import { installWeixinFetch } from "@sdkwork/Mail-mp-host";
+import { installWeixinFetch } from "@sdkwork/mail-mp-host";
 
 import { bootstrapAppAuth, consumeAppbaseCallbackSession } from "./appAuth";
 import { registerHostAdapters } from "./hostAdapters";

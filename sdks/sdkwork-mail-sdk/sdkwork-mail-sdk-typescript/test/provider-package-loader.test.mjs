@@ -46,12 +46,12 @@ test('provider package entrypoints avoid top-level await for browser production 
     assert.doesNotMatch(
       source,
       /\bawait\s+importMailSdk\s*\(/u,
-      `${path.relative(packageRoot, entrypointPath)} must not use top-level await to import @sdkwork/Mail-sdk`,
+      `${path.relative(packageRoot, entrypointPath)} must not use top-level await to import @sdkwork/mail-sdk`,
     );
     assert.match(
       source,
       /from '@sdkwork\/Mail-sdk';/u,
-      `${path.relative(packageRoot, entrypointPath)} must statically import @sdkwork/Mail-sdk`,
+      `${path.relative(packageRoot, entrypointPath)} must statically import @sdkwork/mail-sdk`,
     );
   }
 });
@@ -74,9 +74,9 @@ test('loadMailProviderModule resolves provider packages by providerKey and packa
     loader,
   );
 
-  assert.equal(byProviderKey.packageName, '@sdkwork/Mail-sdk-provider-smtp');
+  assert.equal(byProviderKey.packageName, '@sdkwork/mail-sdk-provider-smtp');
   assert.equal(byProviderKey.metadata.providerKey, 'smtp');
-  assert.equal(byPackageIdentity.packageName, '@sdkwork/Mail-sdk-provider-smtp');
+  assert.equal(byPackageIdentity.packageName, '@sdkwork/mail-sdk-provider-smtp');
   assert.equal(byPackageIdentity.metadata.providerKey, 'smtp');
   assert.deepEqual(
     getMailProviderPackageByPackageIdentity(smtpPackage.packageIdentity),
@@ -222,7 +222,7 @@ test('loadMailProviderModule exposes stable package-loading failures', async () 
       loadMailProviderModule(
         {
           providerKey: 'smtp',
-          packageIdentity: '@sdkwork/Mail-sdk-provider-imap',
+          packageIdentity: '@sdkwork/mail-sdk-provider-imap',
         },
         createMailProviderPackageLoader(createPackageImporter()),
       ),

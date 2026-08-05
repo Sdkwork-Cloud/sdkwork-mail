@@ -15,5 +15,12 @@
     "apps/sdkwork-mail-h5/src/**",
     "apps/sdkwork-mail-h5/vite.config.ts",
     "apps/sdkwork-mail-mini-program/src/**"
-  ]
+  ],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "noImplicitOverride": false
+  }
 }

@@ -5,7 +5,7 @@ import {
   parseAppbaseCallbackSession,
   mail_MP_SESSION_STORAGE_KEY,
   type MailAppSession,
-} from "@sdkwork/Mail-mp-core";
+} from "@sdkwork/mail-mp-core";
 import {
   createTokenManager,
   setTokenManager,

@@ -11,7 +11,7 @@ import {
   resetMailAppSdkClient,
   resolveAppSdkBaseUrl,
   type MailIamSession,
-} from "@sdkwork/Mail-pc-core";
+} from "@sdkwork/mail-pc-core";
 
 import { getAppSdkClient } from "./appClient";
 

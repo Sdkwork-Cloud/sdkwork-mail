@@ -1,4 +1,4 @@
-import { createMailAppServices, type MailAppServices } from "@sdkwork/Mail-mp-Mail";
+import { createMailAppServices, type MailAppServices } from "@sdkwork/mail-mp-mail";
 
 import { getAppSdkClient } from "./appClient";
 

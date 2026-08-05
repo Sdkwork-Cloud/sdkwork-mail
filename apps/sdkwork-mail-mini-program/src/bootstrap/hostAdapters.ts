@@ -1,4 +1,4 @@
-import { createWeixinSecureStorage } from "@sdkwork/Mail-mp-host";
+import { createWeixinSecureStorage } from "@sdkwork/mail-mp-host";
 
 export interface MailHostAdapters {
   secureStorage: ReturnType<typeof createWeixinSecureStorage> | null;

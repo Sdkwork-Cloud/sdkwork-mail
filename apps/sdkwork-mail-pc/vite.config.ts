@@ -17,18 +17,7 @@ export default defineConfig(({ mode }) => {
       "process.env.SDKWORK_ACCESS_TOKEN": JSON.stringify(env.SDKWORK_ACCESS_TOKEN ?? ""),
     },
             plugins: [react(), tailwindcss()],
-    resolve: {
-      alias: {
-        ),
-        ),
-        ),
-        ),
-        ),
-        ),
-        ),
-        ),
-      },
-    },
+
     server: { port: 3000 },
   };
 });

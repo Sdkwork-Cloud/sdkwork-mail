@@ -2,7 +2,7 @@ import {
   IMAP_mail_PROVIDER_CATALOG_ENTRY,
   createMailProviderDriver,
   createMailProviderModule,
-} from '@sdkwork/Mail-sdk';
+} from '@sdkwork/mail-sdk';
 
 
 export const IMAP_mail_PROVIDER_METADATA = IMAP_mail_PROVIDER_CATALOG_ENTRY;

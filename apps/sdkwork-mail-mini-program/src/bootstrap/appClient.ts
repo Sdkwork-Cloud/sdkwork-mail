@@ -1,4 +1,4 @@
-import { createMailAppSdkClient } from "@sdkwork/Mail-mp-core";
+import { createMailAppSdkClient } from "@sdkwork/mail-mp-core";
 import type { SdkworkAppClient } from "@sdkwork/mail-app-sdk";
 
 import { loadAppSession } from "./appAuth";

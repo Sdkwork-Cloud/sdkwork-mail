@@ -381,7 +381,7 @@ export const DEFAULT_TYPESCRIPT_ADAPTER_CONTRACT = Object.freeze({
 });
 
 export const DEFAULT_TYPESCRIPT_PACKAGE_STANDARD = Object.freeze({
-  packageNamePattern: '@sdkwork/Mail-sdk-provider-{providerKey}',
+  packageNamePattern: '@sdkwork/mail-sdk-provider-{providerKey}',
   sourceModulePattern: './index.js',
   driverFactoryPattern: 'create{providerPascal}MailDriver',
   metadataSymbolPattern: '{providerUpperSnake}_mail_PROVIDER_METADATA',

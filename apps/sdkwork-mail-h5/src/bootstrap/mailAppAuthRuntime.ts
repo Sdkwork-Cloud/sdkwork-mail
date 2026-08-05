@@ -11,7 +11,7 @@ import {
   resetMailAppSdkClient,
   resolveAppSdkBaseUrl,
   type MailIamSession,
-} from "@sdkwork/Mail-h5-core";
+} from "@sdkwork/mail-h5-core";
 
 import { getAppSdkClient } from "./appClient";
 

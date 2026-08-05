@@ -1,5 +1,5 @@
-import { AdminRoutes } from "@sdkwork/Mail-h5-admin-shell";
-import { createMailAppRoutes } from "@sdkwork/Mail-h5-shell";
+import { AdminRoutes } from "@sdkwork/mail-h5-admin-shell";
+import { createMailAppRoutes } from "@sdkwork/mail-h5-shell";
 
 export function createRoutes() {
   return [...createMailAppRoutes(), ...AdminRoutes().routes];

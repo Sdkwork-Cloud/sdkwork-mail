@@ -10,7 +10,7 @@
       "workspaceCatalogRelativePath": "src/language-workspace-catalog.ts",
       "runtimeBridge": true,
       "controlSdk": true,
-      "publicPackage": "@sdkwork/Mail-sdk",
+      "publicPackage": "@sdkwork/mail-sdk",
       "maturityTier": "reference",
       "displayName": "TypeScript",
       "currentRole": "Executable reference implementation",
@@ -31,8 +31,8 @@
         "TypeScript runtime bridge baseline loads provider packages through the provider-package loader SPI"
       ],
       "runtimeBaseline": {
-        "vendorSdkPackage": "@sdkwork/Mail-sdk-provider-smtp",
-        "vendorSdkImportPath": "@sdkwork/Mail-sdk-provider-smtp",
+        "vendorSdkPackage": "@sdkwork/mail-sdk-provider-smtp",
+        "vendorSdkImportPath": "@sdkwork/mail-sdk-provider-smtp",
         "recommendedEntrypoint": "installMailProviderPackage",
         "smokeCommand": "npm run smoke",
         "smokeMode": "runtime-backed",
@@ -1091,7 +1091,7 @@
         }
       },
       "typescriptPackageStandard": {
-        "packageNamePattern": "@sdkwork/Mail-sdk-provider-{providerKey}",
+        "packageNamePattern": "@sdkwork/mail-sdk-provider-{providerKey}",
         "sourceModulePattern": "./index.js",
         "driverFactoryPattern": "create{providerPascal}MailDriver",
         "metadataSymbolPattern": "{providerUpperSnake}_mail_PROVIDER_METADATA",
@@ -1246,7 +1246,7 @@
             "officialVendorSdkRequirement": "not-declared-until-bridge"
           },
           "typescriptPackage": {
-            "packageName": "@sdkwork/Mail-sdk-provider-smtp",
+            "packageName": "@sdkwork/mail-sdk-provider-smtp",
             "sourceModule": "./index.js",
             "driverFactory": "createSmtpMailDriver",
             "metadataSymbol": "SMTP_mail_PROVIDER_METADATA",
@@ -1286,7 +1286,7 @@
             "officialVendorSdkRequirement": "not-declared-until-bridge"
           },
           "typescriptPackage": {
-            "packageName": "@sdkwork/Mail-sdk-provider-imap",
+            "packageName": "@sdkwork/mail-sdk-provider-imap",
             "sourceModule": "./index.js",
             "driverFactory": "createImapMailDriver",
             "metadataSymbol": "IMAP_mail_PROVIDER_METADATA",

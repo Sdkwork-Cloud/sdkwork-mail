@@ -12,7 +12,7 @@ export const SMTP_mail_PROVIDER_ACTIVATION_ENTRY: MailProviderActivationEntry = 
   rootPublic: false,
   packageBoundary: true,
   builtin: true,
-  packageIdentity: '@sdkwork/Mail-sdk-provider-smtp',
+  packageIdentity: '@sdkwork/mail-sdk-provider-smtp',
 });
 
 export const IMAP_mail_PROVIDER_ACTIVATION_ENTRY: MailProviderActivationEntry = freezeMailRuntimeValue({
@@ -24,7 +24,7 @@ export const IMAP_mail_PROVIDER_ACTIVATION_ENTRY: MailProviderActivationEntry = 
   rootPublic: false,
   packageBoundary: true,
   builtin: true,
-  packageIdentity: '@sdkwork/Mail-sdk-provider-imap',
+  packageIdentity: '@sdkwork/mail-sdk-provider-imap',
 });
 
 export const mail_PROVIDER_ACTIVATION_CATALOG: readonly MailProviderActivationEntry[] = freezeMailRuntimeValue([
