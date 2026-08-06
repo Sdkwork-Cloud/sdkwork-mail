@@ -1,4 +1,6 @@
--- Default transactional mail templates (tenant 0 / org 0 for bootstrap).
+-- Default transactional mail templates for the bootstrap tenant (tenant 100001,
+-- organization_id 0 = tenant-level scope per SUBJECT_ID_SPEC §2, matching the
+-- tenant-scoped mail_template queries).
 
 INSERT INTO mail_template (
     id, uuid, tenant_id, organization_id, template_key, name, category, purpose, locale,
@@ -6,7 +8,7 @@ INSERT INTO mail_template (
     created_at, updated_at, version
 ) VALUES
 (
-    910001, 'tpl-login-verification-zh-cn', 0, 0,
+    910001, 'tpl-login-verification-zh-cn', 100001, 0,
     'login_verification', 'Login Verification', 'transactional', 'login_verification', 'zh-CN',
     'Your login code: {{code}}',
     '<p>Hello,</p><p>Your login verification code is <strong>{{code}}</strong>.</p><p>It expires in {{expiresMinutes}} minutes.</p>',
@@ -14,7 +16,7 @@ INSERT INTO mail_template (
     1, NOW(), NOW(), 0
 ),
 (
-    910002, 'tpl-password-reset-zh-cn', 0, 0,
+    910002, 'tpl-password-reset-zh-cn', 100001, 0,
     'password_reset', 'Password Reset', 'transactional', 'password_reset', 'zh-CN',
     'Reset your password',
     '<p>Hello,</p><p>Use code <strong>{{code}}</strong> to reset your password.</p>',
@@ -22,7 +24,7 @@ INSERT INTO mail_template (
     1, NOW(), NOW(), 0
 ),
 (
-    910003, 'tpl-marketing-welcome-zh-cn', 0, 0,
+    910003, 'tpl-marketing-welcome-zh-cn', 100001, 0,
     'marketing_welcome', 'Marketing Welcome', 'marketing', 'marketing', 'zh-CN',
     'Welcome to SDKWork Mail',
     '<p>Hello {{name}},</p><p>Welcome to our platform.</p>',
