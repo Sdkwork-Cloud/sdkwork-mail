@@ -8,8 +8,12 @@ use sdkwork_web_core::{DomainContextInjector, HttpRouteManifest, WebRequestConte
 
 include!(concat!(env!("OUT_DIR"), "/mail_app_http_routes.rs"));
 
+pub fn gateway_route_manifest() -> HttpRouteManifest {
+    HttpRouteManifest::new(MAIL_APP_HTTP_ROUTES)
+}
+
 #[derive(Clone, Default)]
-struct MailAppContextInjector;
+pub struct MailAppContextInjector;
 
 impl DomainContextInjector for MailAppContextInjector {
     fn inject(&self, request: &mut axum::extract::Request, context: &WebRequestContext) {

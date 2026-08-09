@@ -10,8 +10,12 @@ use sdkwork_web_core::{
 
 include!(concat!(env!("OUT_DIR"), "/mail_backend_http_routes.rs"));
 
+pub fn gateway_route_manifest() -> HttpRouteManifest {
+    HttpRouteManifest::new(MAIL_BACKEND_HTTP_ROUTES)
+}
+
 #[derive(Clone, Default)]
-struct MailBackendContextInjector;
+pub struct MailBackendContextInjector;
 
 impl DomainContextInjector for MailBackendContextInjector {
     fn inject(&self, request: &mut axum::extract::Request, context: &WebRequestContext) {
