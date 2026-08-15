@@ -1,12 +1,7 @@
-use std::sync::Arc;
-
-use sdkwork_api_mail_assembly::assemble_api_router_with_service;
-use sdkwork_web_bootstrap::{ServiceRouterConfig, service_router};
-
-mod bootstrap;
-mod readiness;
-use bootstrap::build_mail_api_bootstrap;
-use readiness::MailDatabaseReadinessCheck;
+use sdkwork_api_mail_assembly::{
+    assemble_api_router_with_bootstrap, bootstrap_mail_api_service_from_env,
+};
+use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -14,17 +9,13 @@ async fn main() -> anyhow::Result<()> {
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
         .init();
 
-    let bootstrap = build_mail_api_bootstrap().await?;
-    let assembly = assemble_api_router_with_service(bootstrap.service).await;
+    let bootstrap = bootstrap_mail_api_service_from_env().await?;
+    let assembly = assemble_api_router_with_bootstrap(bootstrap).await?;
 
-    let service_router_config = if let Some(pool) = bootstrap.database_pool {
-        ServiceRouterConfig::default()
-            .with_readiness_check(Arc::new(MailDatabaseReadinessCheck::new(pool)))
-    } else {
-        ServiceRouterConfig::default().with_always_ready()
-    };
-
-    let app = service_router(assembly.router, service_router_config);
+    let app = service_router(
+        assembly.router,
+        ServiceRouterConfig::default().with_readiness_check(assembly.readiness_check),
+    );
 
     let bind_addr = std::env::var("SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND")
         .unwrap_or_else(|_| "127.0.0.1:18090".into());

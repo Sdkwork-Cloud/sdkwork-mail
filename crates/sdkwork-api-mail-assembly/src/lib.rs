@@ -4,10 +4,12 @@
 
 mod bootstrap;
 mod generated;
+mod readiness;
 
 pub use bootstrap::{
-    assemble_api_router, assemble_api_router_with_pool, assemble_api_router_with_service,
-    ApiAssembly,
+    assemble_api_router, assemble_api_router_with_bootstrap, assemble_api_router_with_pool,
+    assemble_api_router_with_service, bootstrap_mail_api_service_from_env, ApiAssembly,
+    MailApiBootstrap,
 };
 
 pub fn assembly_route_count() -> usize {
