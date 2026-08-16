@@ -1,7 +1,25 @@
-use sdkwork_api_mail_assembly::{
-    assemble_api_router_with_bootstrap, bootstrap_mail_api_service_from_env,
+use std::sync::Arc;
+
+use sdkwork_api_mail_assembly::bootstrap_mail_api_service_from_env;
+use sdkwork_iam_web_adapter::{
+    IamAuditEmitter, IamSecurityEventEmitter, build_web_framework_builder,
+    iam_web_request_context_resolver_from_database_pool_for_audiences,
+    iam_web_request_context_resolver_from_env,
 };
-use sdkwork_web_bootstrap::{service_router, ServiceRouterConfig};
+use sdkwork_web_bootstrap::{ComposedApiAssembly, infra_public_path_prefixes};
+use sdkwork_web_core::{RateLimitPolicy, SecurityPolicy};
+
+const APPLICATION_ID: &str = "sdkwork-mail";
+
+fn mail_security_policy() -> SecurityPolicy {
+    SecurityPolicy {
+        rate_limit: RateLimitPolicy {
+            enabled: true,
+            ..RateLimitPolicy::default()
+        },
+        ..SecurityPolicy::default()
+    }
+}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -10,12 +28,56 @@ async fn main() -> anyhow::Result<()> {
         .init();
 
     let bootstrap = bootstrap_mail_api_service_from_env().await?;
-    let assembly = assemble_api_router_with_bootstrap(bootstrap).await?;
-
-    let app = service_router(
-        assembly.router,
-        ServiceRouterConfig::default().with_readiness_check(assembly.readiness_check),
+    let database_pool = bootstrap.database_pool.clone();
+    let contribution =
+        sdkwork_api_mail_assembly::assemble_api_router_with_bootstrap(bootstrap).await?;
+    let environment = std::env::var("SDKWORK_ENVIRONMENT")
+        .or_else(|_| std::env::var("SDKWORK_MAIL_ENVIRONMENT"))
+        .unwrap_or_else(|_| "development".to_owned());
+    let production = matches!(
+        environment.trim().to_ascii_lowercase().as_str(),
+        "prod" | "production"
     );
+    let resolver = if production {
+        let pool = database_pool
+            .clone()
+            .ok_or_else(|| anyhow::anyhow!("production Mail gateway requires PostgreSQL"))?;
+        iam_web_request_context_resolver_from_database_pool_for_audiences(
+            pool,
+            &[APPLICATION_ID, "mail"],
+        )
+        .await
+        .map_err(anyhow::Error::msg)?
+    } else {
+        iam_web_request_context_resolver_from_env().await
+    };
+    let mut framework = build_web_framework_builder(
+        resolver,
+        contribution.route_manifest.clone(),
+        infra_public_path_prefixes(),
+    )
+    .security_policy(mail_security_policy());
+    if production {
+        let postgres_pool = database_pool
+            .as_ref()
+            .and_then(|pool| pool.as_postgres())
+            .cloned()
+            .ok_or_else(|| anyhow::anyhow!("production Mail gateway requires PostgreSQL"))?;
+        framework = framework
+            .audit_emitter(Arc::new(IamAuditEmitter::new(
+                postgres_pool.clone(),
+                APPLICATION_ID,
+                environment.clone(),
+            )))
+            .security_event_emitter(Arc::new(IamSecurityEventEmitter::new(
+                postgres_pool,
+                environment,
+            )));
+    }
+    let app = ComposedApiAssembly::try_compose("SDKWork Mail API", vec![contribution])
+        .map_err(anyhow::Error::msg)?
+        .into_hosted(framework)
+        .router;
 
     let bind_addr = std::env::var("SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND")
         .unwrap_or_else(|_| "127.0.0.1:18090".into());

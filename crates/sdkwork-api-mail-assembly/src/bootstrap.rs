@@ -13,12 +13,8 @@ use sdkwork_communication_mail_repository_sqlx::{
 };
 use sdkwork_database_sqlx::DatabasePool;
 use sdkwork_mail_adapter_smtp::build_mail_transport_from_env_arc;
-use sdkwork_mail_service_host::{
-    build_mail_drive_attachment_port_from_env, MailProductService,
-};
-use sdkwork_web_bootstrap::{
-    ApiAssemblyContribution, DatabasePoolReadinessCheck, ReadinessCheck,
-};
+use sdkwork_mail_service_host::{MailProductService, build_mail_drive_attachment_port_from_env};
+use sdkwork_web_bootstrap::{ApiAssemblyContribution, DatabasePoolReadinessCheck, ReadinessCheck};
 use sdkwork_web_core::HttpRouteManifest;
 
 use crate::readiness::MailDatabaseReadinessCheck;
@@ -47,7 +43,9 @@ fn openapi_documents() -> Result<Vec<serde_json::Value>, String> {
         ),
         (
             "sdkwork-mail-backend-api",
-            include_str!("../../../apis/backend-api/communication/sdkwork-mail-backend-api.openapi.json"),
+            include_str!(
+                "../../../apis/backend-api/communication/sdkwork-mail-backend-api.openapi.json"
+            ),
         ),
     ]
     .into_iter()
@@ -75,20 +73,11 @@ fn contribution_from(
     )
 }
 
-pub async fn assemble_api_router_with_service(
-    service: Arc<MailProductService>,
-) -> ApiAssembly {
-    let app_router = sdkwork_routes_mail_app_api::wrap_router_with_web_framework_from_env(
-        sdkwork_routes_mail_app_api::gateway_mount(service.clone()),
-    )
-    .await;
-    let backend_router = sdkwork_routes_mail_backend_api::wrap_router_with_web_framework_from_env(
-        sdkwork_routes_mail_backend_api::gateway_mount(service),
-    )
-    .await;
-
+pub async fn assemble_api_router_with_service(service: Arc<MailProductService>) -> ApiAssembly {
     contribution_from(
-        Router::new().merge(app_router).merge(backend_router),
+        Router::new()
+            .merge(sdkwork_routes_mail_app_api::gateway_mount(service.clone()))
+            .merge(sdkwork_routes_mail_backend_api::gateway_mount(service)),
         Arc::new(sdkwork_web_bootstrap::AlwaysReady),
     )
     .expect("mail contribution contract is valid")
@@ -164,8 +153,5 @@ pub async fn assemble_api_router_with_pool(pool: DatabasePool) -> Result<ApiAsse
     let router = Router::new()
         .merge(sdkwork_routes_mail_app_api::gateway_mount(service.clone()))
         .merge(sdkwork_routes_mail_backend_api::gateway_mount(service));
-    contribution_from(
-        router,
-        Arc::new(DatabasePoolReadinessCheck::new(pool)),
-    )
+    contribution_from(router, Arc::new(DatabasePoolReadinessCheck::new(pool)))
 }

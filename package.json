@@ -85,5 +85,10 @@
       "import": "./src/index.ts",
       "default": "./src/index.ts"
     }
+  },
+  "pnpm": {
+    "overrides": {
+      "@sdkwork/sdk-common": "workspace:*"
+    }
   }
 }

@@ -23,58 +23,36 @@
   },
   "canonicalSpecs": [
     {
-      "file": "README.md",
-      "path": "../../../../sdkwork-specs/README.md",
-      "purpose": "SDKWork root standards entrypoint."
+      "file": "API_ASSEMBLY_SPEC.md",
+      "path": "../../../sdkwork-specs/API_ASSEMBLY_SPEC.md",
+      "purpose": "Owner assembly contribution and standalone parity."
     },
     {
-      "file": "COMPONENT_SPEC.md",
-      "path": "../../../../sdkwork-specs/COMPONENT_SPEC.md",
-      "purpose": "Local component specs directory and manifest rules."
-    },
-    {
-      "file": "CODE_STYLE_SPEC.md",
-      "path": "../../../../sdkwork-specs/CODE_STYLE_SPEC.md",
-      "purpose": "Authored code organization and testing rules."
-    },
-    {
-      "file": "NAMING_SPEC.md",
-      "path": "../../../../sdkwork-specs/NAMING_SPEC.md",
-      "purpose": "Canonical SDKWork naming."
-    },
-    {
-      "file": "RUST_CODE_SPEC.md",
-      "path": "../../../../sdkwork-specs/RUST_CODE_SPEC.md",
-      "purpose": "Rust crate shape and verification rules."
-    },
-    {
-      "file": "TEST_SPEC.md",
-      "path": "../../../../sdkwork-specs/TEST_SPEC.md",
-      "purpose": "Contract and verification rules."
-    },
-    {
-      "file": "API_SPEC.md",
-      "path": "../../../../sdkwork-specs/API_SPEC.md",
-      "purpose": "HTTP API contract rules."
+      "file": "APPLICATION_GATEWAY_SPEC.md",
+      "path": "../../../sdkwork-specs/APPLICATION_GATEWAY_SPEC.md",
+      "purpose": "Standalone gateway host ownership."
     },
     {
       "file": "WEB_FRAMEWORK_SPEC.md",
-      "path": "../../../../sdkwork-specs/WEB_FRAMEWORK_SPEC.md",
-      "purpose": "Mandatory web framework integration rules."
+      "path": "../../../sdkwork-specs/WEB_FRAMEWORK_SPEC.md",
+      "purpose": "Process-level HTTP framework composition."
     },
     {
-      "file": "WEB_BACKEND_SPEC.md",
-      "path": "../../../../sdkwork-specs/WEB_BACKEND_SPEC.md",
-      "purpose": "Web backend layering rules."
-    },
-    {
-      "file": "DATABASE_SPEC.md",
-      "path": "../../../../sdkwork-specs/DATABASE_SPEC.md",
-      "purpose": "Database contract rules."
+      "file": "TEST_SPEC.md",
+      "path": "../../../sdkwork-specs/TEST_SPEC.md",
+      "purpose": "Verification tests."
     }
   ],
   "contracts": {
     "publicExports": [],
+    "providedPorts": [],
+    "requiredPorts": [
+      {
+        "name": "mailApiAssembly",
+        "export": "sdkwork_api_mail_assembly::assemble_api_router_with_bootstrap",
+        "provider": "sdkwork-api-mail-assembly"
+      }
+    ],
     "runtimeEntrypoints": [
       "src/main.rs"
     ],
@@ -84,7 +62,12 @@
     "dependencyApiExports": [],
     "dependencyApiSurfaces": [],
     "events": [],
-    "configKeys": [],
+    "configKeys": [
+      "SDKWORK_MAIL_APPLICATION_PUBLIC_INGRESS_BIND",
+      "SDKWORK_MAIL_ENVIRONMENT",
+      "SDKWORK_CORS_ALLOWED_ORIGINS",
+      "SDKWORK_DATABASE_URL"
+    ],
     "layerRole": "runtime-gateway"
   },
   "integration": {
