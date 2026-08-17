@@ -24,7 +24,7 @@
   },
   "peerDependenciesMeta": {},
   "devDependencies": {
-    "@sdkwork/mail-sdk": "workspace:*"
+    "@sdkwork/mail-sdk": "^0.1.2"
   },
   "sdkworkMailProvider": {
     "providerKey": "smtp",

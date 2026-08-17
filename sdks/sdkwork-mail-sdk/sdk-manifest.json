@@ -1296,5 +1296,11 @@
         }
       ]
     }
+  },
+  "typescript": {
+    "composedRoot": "sdkwork-mail-sdk-typescript",
+    "composedEntry": "sdkwork-mail-sdk-typescript/src/index.ts",
+    "transportRoot": "sdkwork-mail-sdk-typescript/generated/server-openapi",
+    "transportEntry": "sdkwork-mail-sdk-typescript/generated/server-openapi/src/index.ts"
   }
 }
