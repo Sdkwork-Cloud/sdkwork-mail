@@ -1,5 +1,5 @@
 import { backendApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { MailTransactionalDelivery } from '../types';
 
@@ -17,32 +17,28 @@ export class MailTransactionalDeliveriesMailTransactionalDeliveriesApi {
   }
 
 
-async list(params?: MailTransactionalDeliveriesMailTransactionalDeliveriesListParams): Promise<Record<string, unknown>> {
+async list(params?: MailTransactionalDeliveriesMailTransactionalDeliveriesListParams, requestOptions?: ApiRequestOptions): Promise<{ items: MailTransactionalDelivery[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
     const query = buildQueryString([
       { name: 'businessKind', value: params?.businessKind, style: 'form', explode: true, allowReserved: false },
       { name: 'recipientEmail', value: params?.recipientEmail, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<Record<string, unknown>>(appendQueryString(backendApiPath(`/mail/transactional_deliveries`), query));
+    return this.client.request<{ items: MailTransactionalDelivery[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(appendQueryString(backendApiPath(`/mail/transactional_deliveries`), query), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 }
 
 export class MailTransactionalDeliveriesMailApi {
-  private client: HttpClient;
   public readonly transactionalDeliveries: MailTransactionalDeliveriesMailTransactionalDeliveriesApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.transactionalDeliveries = new MailTransactionalDeliveriesMailTransactionalDeliveriesApi(client);
   }
 
 }
 
 export class MailTransactionalDeliveriesApi {
-  private client: HttpClient;
   public readonly mail: MailTransactionalDeliveriesMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailTransactionalDeliveriesMailApi(client);
   }
 

@@ -2,7 +2,7 @@ import type { MailTransactionalDeliveryResponse } from './mail-transactional-del
 
 export interface MailTransactionalSendResponse {
   code: 0;
-  data: unknown & Record<string, unknown>;
+  data: unknown & { item: MailTransactionalDeliveryResponse; };
   /** Server-owned request correlation id. */
   traceId: string;
 }

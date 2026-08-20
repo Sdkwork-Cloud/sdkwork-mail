@@ -1,5 +1,5 @@
 import { appApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { MailAccount } from '../types';
 
@@ -12,28 +12,24 @@ export class MailAccountsMailAccountsApi {
   }
 
 
-async list(): Promise<Record<string, unknown>> {
-    return this.client.get<Record<string, unknown>>(appApiPath(`/mail/accounts`));
+async list(requestOptions?: ApiRequestOptions): Promise<{ items: MailAccount[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
+    return this.client.request<{ items: MailAccount[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(appApiPath(`/mail/accounts`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 }
 
 export class MailAccountsMailApi {
-  private client: HttpClient;
   public readonly accounts: MailAccountsMailAccountsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.accounts = new MailAccountsMailAccountsApi(client);
   }
 
 }
 
 export class MailAccountsApi {
-  private client: HttpClient;
   public readonly mail: MailAccountsMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailAccountsMailApi(client);
   }
 
@@ -41,12 +37,4 @@ export class MailAccountsApi {
 
 export function createMailAccountsApi(client: HttpClient): MailAccountsApi {
   return new MailAccountsApi(client);
-}
-
-function appendQueryString(path: string, rawQueryString: string): string {
-  const query = rawQueryString.replace(/^\?+/, '');
-  if (!query) {
-    return path;
-  }
-  return path.includes('?') ? `${path}&${query}` : `${path}?${query}`;
 }

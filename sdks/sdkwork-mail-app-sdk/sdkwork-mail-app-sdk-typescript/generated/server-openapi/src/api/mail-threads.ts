@@ -1,5 +1,5 @@
 import { appApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { MailThread } from '../types';
 
@@ -16,31 +16,27 @@ export class MailThreadsMailThreadsApi {
   }
 
 
-async list(params: MailThreadsMailThreadsListParams): Promise<Record<string, unknown>> {
+async list(params: MailThreadsMailThreadsListParams, requestOptions?: ApiRequestOptions): Promise<{ items: MailThread[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
     const query = buildQueryString([
       { name: 'folderId', value: params.folderId, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<Record<string, unknown>>(appendQueryString(appApiPath(`/mail/threads`), query));
+    return this.client.request<{ items: MailThread[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(appendQueryString(appApiPath(`/mail/threads`), query), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 }
 
 export class MailThreadsMailApi {
-  private client: HttpClient;
   public readonly threads: MailThreadsMailThreadsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.threads = new MailThreadsMailThreadsApi(client);
   }
 
 }
 
 export class MailThreadsApi {
-  private client: HttpClient;
   public readonly mail: MailThreadsMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailThreadsMailApi(client);
   }
 

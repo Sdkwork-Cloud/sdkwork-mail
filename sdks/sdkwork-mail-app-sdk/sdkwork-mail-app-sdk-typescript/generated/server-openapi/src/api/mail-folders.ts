@@ -1,5 +1,5 @@
 import { appApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { MailFolder } from '../types';
 
@@ -16,31 +16,27 @@ export class MailFoldersMailFoldersApi {
   }
 
 
-async list(params: MailFoldersMailFoldersListParams): Promise<Record<string, unknown>> {
+async list(params: MailFoldersMailFoldersListParams, requestOptions?: ApiRequestOptions): Promise<{ items: MailFolder[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
     const query = buildQueryString([
       { name: 'accountId', value: params.accountId, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<Record<string, unknown>>(appendQueryString(appApiPath(`/mail/folders`), query));
+    return this.client.request<{ items: MailFolder[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(appendQueryString(appApiPath(`/mail/folders`), query), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 }
 
 export class MailFoldersMailApi {
-  private client: HttpClient;
   public readonly folders: MailFoldersMailFoldersApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.folders = new MailFoldersMailFoldersApi(client);
   }
 
 }
 
 export class MailFoldersApi {
-  private client: HttpClient;
   public readonly mail: MailFoldersMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailFoldersMailApi(client);
   }
 

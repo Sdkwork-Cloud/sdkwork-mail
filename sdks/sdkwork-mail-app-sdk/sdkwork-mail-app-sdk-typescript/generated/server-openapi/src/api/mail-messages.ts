@@ -1,5 +1,5 @@
 import { appApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { CreateMailMessageRequest, MailMessage, MailMessageResponse, UpdateMailMessageRequest } from '../types';
 
@@ -18,49 +18,45 @@ export class MailMessagesMailMessagesApi {
   }
 
 
-async list(params: MailMessagesMailMessagesListParams): Promise<Record<string, unknown>> {
+async list(params: MailMessagesMailMessagesListParams, requestOptions?: ApiRequestOptions): Promise<{ items: MailMessage[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
     const query = buildQueryString([
       { name: 'folderId', value: params.folderId, style: 'form', explode: true, allowReserved: false },
       { name: 'page_size', value: params.pageSize, style: 'form', explode: true, allowReserved: false },
       { name: 'cursor', value: params.cursor, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<Record<string, unknown>>(appendQueryString(appApiPath(`/mail/messages`), query));
+    return this.client.request<{ items: MailMessage[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(appendQueryString(appApiPath(`/mail/messages`), query), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 
-async create(body: CreateMailMessageRequest): Promise<MailMessageResponse> {
-    return this.client.post<MailMessageResponse>(appApiPath(`/mail/messages`), body, undefined, undefined, 'application/json');
+async create(body: CreateMailMessageRequest, requestOptions?: ApiRequestOptions): Promise<MailMessageResponse> {
+    return this.client.request<MailMessageResponse>(appApiPath(`/mail/messages`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 
-async retrieve(messageId: string): Promise<MailMessageResponse> {
-    return this.client.get<MailMessageResponse>(appApiPath(`/mail/messages/${serializePathParameter(messageId, { name: 'messageId', style: 'simple', explode: false })}`));
+async retrieve(messageId: string, requestOptions?: ApiRequestOptions): Promise<MailMessageResponse> {
+    return this.client.request<MailMessageResponse>(appApiPath(`/mail/messages/${serializePathParameter(messageId, { name: 'messageId', style: 'simple', explode: false })}`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'item' });
   }
 
-async update(messageId: string, body: UpdateMailMessageRequest): Promise<MailMessageResponse> {
-    return this.client.patch<MailMessageResponse>(appApiPath(`/mail/messages/${serializePathParameter(messageId, { name: 'messageId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
+async update(messageId: string, body: UpdateMailMessageRequest, requestOptions?: ApiRequestOptions): Promise<MailMessageResponse> {
+    return this.client.request<MailMessageResponse>(appApiPath(`/mail/messages/${serializePathParameter(messageId, { name: 'messageId', style: 'simple', explode: false })}`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'PATCH' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 
-async delete(messageId: string): Promise<void> {
-    return this.client.delete<void>(appApiPath(`/mail/messages/${serializePathParameter(messageId, { name: 'messageId', style: 'simple', explode: false })}`));
+async delete(messageId: string, requestOptions?: ApiRequestOptions): Promise<void> {
+    return this.client.request<void>(appApiPath(`/mail/messages/${serializePathParameter(messageId, { name: 'messageId', style: 'simple', explode: false })}`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'DELETE' as any });
   }
 }
 
 export class MailMessagesMailApi {
-  private client: HttpClient;
   public readonly messages: MailMessagesMailMessagesApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.messages = new MailMessagesMailMessagesApi(client);
   }
 
 }
 
 export class MailMessagesApi {
-  private client: HttpClient;
   public readonly mail: MailMessagesMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailMessagesMailApi(client);
   }
 

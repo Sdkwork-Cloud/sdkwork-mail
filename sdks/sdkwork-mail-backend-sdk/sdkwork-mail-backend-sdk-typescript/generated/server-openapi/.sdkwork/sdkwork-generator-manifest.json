@@ -12,7 +12,7 @@
   "generatedFiles": [
     {
       "path": "bin/publish-core.mjs",
-      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+      "sha256": "a47e95119bf3eafcbcb2102f7024c147f967924e4e3f343d1a29effb4b6765df"
     },
     {
       "path": "bin/publish.ps1",
@@ -40,11 +40,11 @@
     },
     {
       "path": "package.json",
-      "sha256": "731480c06d680094f672dfc7754dd2b84e73f8e303fb8db7f8531864872d8c1c"
+      "sha256": "e10ff83491252cafcb7eaae282707e5f5c4b77eea919864f85f341e456c82aba"
     },
     {
       "path": "README.md",
-      "sha256": "4561424a893b61c8cc5ad139df865f8705755b8c89788a2e8f51866eb38a10b4"
+      "sha256": "639bf3b20730903db538bcb0d3a47d4d30ed04edc296a06b0690fe21c72bb904"
     },
     {
       "path": "sdkwork-sdk.json",
@@ -52,7 +52,7 @@
     },
     {
       "path": "src/api/base.ts",
-      "sha256": "02ad25e6bf331ff241ba387c2947ddf1900dd849038e08c2757416a3aa788a04"
+      "sha256": "94d136c54a008dfe7602e373a0b2c79176bbf2fc6e7c899fc23b1f12f750380f"
     },
     {
       "path": "src/api/index.ts",
@@ -60,23 +60,23 @@
     },
     {
       "path": "src/api/mail-marketing-consents.ts",
-      "sha256": "64430c0d06c8f895ebbec7db3977fc0c4711f0f43404451f6fdaf212be80d0b1"
+      "sha256": "0d370aa34bfd821f15aeeed7adba3f0e95c202dc7c054c9fc9fc5ba333e86f25"
     },
     {
       "path": "src/api/mail-provider-accounts.ts",
-      "sha256": "fed03c7252fd878a43b25a0728c5323e0bfdbf13db992e58f44cf1c8b1058cfe"
+      "sha256": "f2bd84aa737739952d9d85b22934db85de1ee975d61ecc197e959e62907d82ea"
     },
     {
       "path": "src/api/mail-provider-webhooks.ts",
-      "sha256": "2895b4c4d85916e21243d49ec38b7c7bd7f2e0dc1ea969462e6ecb999af4b64d"
+      "sha256": "8e3e192e224e2547c372467245928ee4ffe80605668ba40aa16dce36f3b8fc0b"
     },
     {
       "path": "src/api/mail-templates.ts",
-      "sha256": "312a6c8233f905bb49c7beb77092ae4b9990ec0dab2888280e0213dc0cbda3f3"
+      "sha256": "3942e1c2499d7dedff3660cbe4b35deaf9376fcd52c22ebb2f738ad8403ed48b"
     },
     {
       "path": "src/api/mail-transactional-deliveries.ts",
-      "sha256": "be1fd6f34cf58cd07910478351cd4bef6c55373a54fa3c49a5851efdb1ee74f2"
+      "sha256": "c4fe9c415ff76ba048aa6a64363a176fe1b582a811890bff4cdcd29ee2ab6aa3"
     },
     {
       "path": "src/api/paths.ts",
@@ -88,7 +88,7 @@
     },
     {
       "path": "src/http/client.ts",
-      "sha256": "6e389d5c14fb5845365972b6776af185d8af8eb8da7bb398e59be6c29e394ddf"
+      "sha256": "bab0f740731f04f1f6e3c591cba91b1577f0ca521054d187755f437925d3dc6d"
     },
     {
       "path": "src/http/index.ts",
@@ -136,7 +136,7 @@
     },
     {
       "path": "src/types/index.ts",
-      "sha256": "e3ac5fc3fbd984074e988b909241282f2cf7f7e0b71dffad434f9cad5140b52f"
+      "sha256": "9f39f6daac5b52d80c2fe6e89258d30fd76150fb187d1519b8b36f19526bd336"
     },
     {
       "path": "src/types/mail-marketing-consent-list-response.ts",
@@ -151,16 +151,16 @@
       "sha256": "198d079f813681210a6f3d90da4c24b51f4394d5bcd4386aaf96607e19f55d32"
     },
     {
-      "path": "src/types/mail-marketing-consents-grant-response.ts",
-      "sha256": "b62f89429356721efc0ccaccd6be7a629a967b1886af3e22bcf2e14991240176"
+      "path": "src/types/mail-marketing-consents-create-response201.ts",
+      "sha256": "b059120a49bced562b1e979f5eaaeb342fa09059c5581d430916845b776ea565"
     },
     {
       "path": "src/types/mail-marketing-consents-list-response.ts",
-      "sha256": "51c6d3b0b5234c480ec3210ae21a6be33d44b7a903b7efc36fa36dccb9c33515"
+      "sha256": "ea284b874358ef283893d9aa2b62424b20b887d3ac22f8d1dcae39397f6cfa4a"
     },
     {
       "path": "src/types/mail-marketing-consents-revoke-response.ts",
-      "sha256": "1f26d4d18a345c4ac7f18710490c78e0700a706fe012ef4489c274ef47ada045"
+      "sha256": "4933513b25cfbd5e6efc0554a2f8dc8af3d172d0f864c7483d2d8ac3a6bbdaf6"
     },
     {
       "path": "src/types/mail-provider-account-list-response.ts",
@@ -171,20 +171,20 @@
       "sha256": "8d8bd8230c9eb5361b4d885977f88759b43655cc09eaf93198a645ae6738663a"
     },
     {
-      "path": "src/types/mail-provider-accounts-create-response.ts",
-      "sha256": "6b342d4b81b56e5b5c174bb3edd201895b660b58c989df10da798965d333a7c7"
+      "path": "src/types/mail-provider-accounts-create-response201.ts",
+      "sha256": "ddcf663c78daf1b6dd17f1740348faad2e932f904ec9bd6dfc695a7d652109a1"
     },
     {
       "path": "src/types/mail-provider-accounts-list-response.ts",
-      "sha256": "4c9fc5c822fffec7cbf03fa325cb3a2ff3b92aac0960e1f6cce48bd6ef5f7481"
+      "sha256": "443f76acf3ce77a1e87fac3e0d4a21df84e77345afeb5deba4eaa8c32a362f76"
     },
     {
       "path": "src/types/mail-provider-accounts-ping-response.ts",
-      "sha256": "134885cc5a080b9782e95c204ed5ea068fd51f5d114377a5f0e34e0782443990"
+      "sha256": "dc9ac95736dc5804424429ee927ae5ae4829bccdd7316e0842ceffbea37a41d4"
     },
     {
       "path": "src/types/mail-provider-accounts-sync-response.ts",
-      "sha256": "dc3d1c3eb98afd90c05ca77103fa6d6d4643d7af7c520f30aa9853a0f76f02c6"
+      "sha256": "ac4207e748cd2f574cd66f835af3d3dfee21bc001dfd29dc059c08195ddce60e"
     },
     {
       "path": "src/types/mail-provider-credential.ts",
@@ -219,8 +219,8 @@
       "sha256": "24037461517af037b4bf18541d07da369eb757355f2552225941c2a65df2edf6"
     },
     {
-      "path": "src/types/mail-provider-webhooks-events-receive-response202.ts",
-      "sha256": "8052293f8fb9bff681a8c60ddfdcb791a62f419d3257b560fc3c4c8d55c503d7"
+      "path": "src/types/mail-provider-webhooks-events-create-response201.ts",
+      "sha256": "692f2c94556dbae218fa924122e332ad787fa884d41702ce4ac33e43749fff7c"
     },
     {
       "path": "src/types/mail-template-list-response.ts",
@@ -235,24 +235,24 @@
       "sha256": "1a2a2e2336251c51ac3e08a96791016664b0b385a97fcaa465447219d2544fd0"
     },
     {
-      "path": "src/types/mail-templates-create-response.ts",
-      "sha256": "7094ae4614719921b4ab2a11c052765978bbfb0332971eda3ca568fdf3cd3319"
+      "path": "src/types/mail-templates-create-response201.ts",
+      "sha256": "baa3f98dc700e5217eed88c01d60c83fe6f435742b5adf481f40cb611485100b"
     },
     {
       "path": "src/types/mail-templates-list-response.ts",
-      "sha256": "4ab79dd7508cd97b45f7c5a0c84d331949d905ddc280a6f0fc687ffd78a998ec"
+      "sha256": "4143d551e26df733fac014672d0a5462da78314002efaf4ddbf8f50b01a9d14b"
     },
     {
       "path": "src/types/mail-templates-retrieve-response.ts",
-      "sha256": "8b3bcc468ee1a4eb4a4dd230c4fd0777e8dea07eae264b199e2c84b70ccad29b"
+      "sha256": "64b54144bd89df2536b15ceb15390d23e1439d8696f0609a81d9c57bb5fb0737"
     },
     {
       "path": "src/types/mail-templates-update-response.ts",
-      "sha256": "3e997b4ab79574b7821e8e453f13448942b5039c9adf125c409df32bea13731d"
+      "sha256": "c6911f472585fc73e32ddf15b4e635299f704df7bcdb771caf291cc0a20852cc"
     },
     {
       "path": "src/types/mail-transactional-deliveries-list-response.ts",
-      "sha256": "0dcf8d818edced1171f4967a8c02d2de1bd0c0290e0afd4bb4ae935ab7682429"
+      "sha256": "b27493ca1a926615770bd48e130f3b5ac612c056f61082fb9cc9f720523ee41b"
     },
     {
       "path": "src/types/mail-transactional-delivery-list-response.ts",

@@ -1,5 +1,5 @@
 import { backendApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { CreateMailProviderAccountRequest, CreateMailProviderAccountResponse, MailProviderAccount, MailProviderPingResponse, MailProviderSyncResponse, SyncMailProviderAccountRequest } from '../types';
 
@@ -12,40 +12,36 @@ export class MailProviderAccountsMailProviderAccountsApi {
   }
 
 
-async list(): Promise<Record<string, unknown>> {
-    return this.client.get<Record<string, unknown>>(backendApiPath(`/mail/provider_accounts`));
+async list(requestOptions?: ApiRequestOptions): Promise<{ items: MailProviderAccount[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
+    return this.client.request<{ items: MailProviderAccount[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(backendApiPath(`/mail/provider_accounts`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 
-async create(body: CreateMailProviderAccountRequest): Promise<CreateMailProviderAccountResponse> {
-    return this.client.post<CreateMailProviderAccountResponse>(backendApiPath(`/mail/provider_accounts`), body, undefined, undefined, 'application/json');
+async create(body: CreateMailProviderAccountRequest, requestOptions?: ApiRequestOptions): Promise<CreateMailProviderAccountResponse> {
+    return this.client.request<CreateMailProviderAccountResponse>(backendApiPath(`/mail/provider_accounts`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 
-async ping(accountId: string): Promise<MailProviderPingResponse> {
-    return this.client.post<MailProviderPingResponse>(backendApiPath(`/mail/provider_accounts/${serializePathParameter(accountId, { name: 'accountId', style: 'simple', explode: false })}/ping`));
+async ping(accountId: string, requestOptions?: ApiRequestOptions): Promise<MailProviderPingResponse> {
+    return this.client.request<MailProviderPingResponse>(backendApiPath(`/mail/provider_accounts/${serializePathParameter(accountId, { name: 'accountId', style: 'simple', explode: false })}/ping`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, sdkworkUnwrapKind: 'item' });
   }
 
-async sync(accountId: string, body?: SyncMailProviderAccountRequest): Promise<MailProviderSyncResponse> {
-    return this.client.post<MailProviderSyncResponse>(backendApiPath(`/mail/provider_accounts/${serializePathParameter(accountId, { name: 'accountId', style: 'simple', explode: false })}/sync`), body, undefined, undefined, 'application/json');
+async sync(accountId: string, body?: SyncMailProviderAccountRequest, requestOptions?: ApiRequestOptions): Promise<MailProviderSyncResponse> {
+    return this.client.request<MailProviderSyncResponse>(backendApiPath(`/mail/provider_accounts/${serializePathParameter(accountId, { name: 'accountId', style: 'simple', explode: false })}/sync`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, ...(body !== undefined ? { body, contentType: 'application/json' } : {}), sdkworkUnwrapKind: 'item' });
   }
 }
 
 export class MailProviderAccountsMailApi {
-  private client: HttpClient;
   public readonly providerAccounts: MailProviderAccountsMailProviderAccountsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.providerAccounts = new MailProviderAccountsMailProviderAccountsApi(client);
   }
 
 }
 
 export class MailProviderAccountsApi {
-  private client: HttpClient;
   public readonly mail: MailProviderAccountsMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailProviderAccountsMailApi(client);
   }
 
@@ -55,13 +51,7 @@ export function createMailProviderAccountsApi(client: HttpClient): MailProviderA
   return new MailProviderAccountsApi(client);
 }
 
-function appendQueryString(path: string, rawQueryString: string): string {
-  const query = rawQueryString.replace(/^\?+/, '');
-  if (!query) {
-    return path;
-  }
-  return path.includes('?') ? `${path}&${query}` : `${path}?${query}`;
-}
+
 
 interface PathParameterSpec {
   name: string;

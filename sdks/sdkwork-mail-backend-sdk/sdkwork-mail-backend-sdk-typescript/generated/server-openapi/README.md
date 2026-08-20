@@ -27,7 +27,9 @@ client.setAuthToken('your-auth-token');
 client.setAccessToken('your-access-token');
 
 // Use the SDK
-const result = await client.mailProviderAccounts.mail.providerAccounts.list();
+const provider = 'provider';
+const body = {};
+const result = await client.mailProviderWebhooks.mail.providerWebhooks.events.create(provider, body);
 ```
 
 ## Authentication
@@ -75,7 +77,7 @@ const result = await client.mailProviderAccounts.mail.providerAccounts.list();
 // POST /backend/v3/api/mail/provider_webhooks/{provider}/events
 const provider = 'provider';
 const body = {};
-const result = await client.mailProviderWebhooks.mail.providerWebhooks.events.receive(provider, body);
+const result = await client.mailProviderWebhooks.mail.providerWebhooks.events.create(provider, body);
 ```
 
 ### mail_templates
@@ -116,7 +118,9 @@ const result = await client.mailMarketingConsents.mail.marketingConsents.list(pa
 import { SdkworkBackendClient, NetworkError, TimeoutError, AuthenticationError } from 'sdkwork-mail-backend-sdk-generated-typescript';
 
 try {
-  const result = await client.mailProviderAccounts.mail.providerAccounts.list();
+  const provider = 'provider';
+  const body = {};
+  const result = await client.mailProviderWebhooks.mail.providerWebhooks.events.create(provider, body);
 } catch (error) {
   if (error instanceof AuthenticationError) {
     console.error('Authentication failed:', error.message);
@@ -136,6 +140,8 @@ This SDK includes cross-platform publish scripts in `bin/`:
 - `bin/publish-core.mjs`
 - `bin/publish.sh`
 - `bin/publish.ps1`
+
+TypeScript check and publish commands use pnpm to materialize workspace dependency versions in a temporary tarball. They reject local-only dependency protocols before npm publication and do not rewrite the source `package.json`.
 
 ### Check
 

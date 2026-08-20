@@ -12,7 +12,7 @@
   "generatedFiles": [
     {
       "path": "bin/publish-core.mjs",
-      "sha256": "98ad0918a78bfbe22bf8f12fec709b0bed545b9e01edd40f5e4abf31a23378a5"
+      "sha256": "a47e95119bf3eafcbcb2102f7024c147f967924e4e3f343d1a29effb4b6765df"
     },
     {
       "path": "bin/publish.ps1",
@@ -40,11 +40,11 @@
     },
     {
       "path": "package.json",
-      "sha256": "54ef98cc42b3bfb7debdef96b38b3e465b2cd3e6250ac95ee8d00916aa78a00b"
+      "sha256": "d5077b8d88a91e541e2fc9e1f069cd342c606eefb777cb5bd7897ec2bb40d014"
     },
     {
       "path": "README.md",
-      "sha256": "67d03629833f0d14946b1c7e2a906c42dc740c9485a1414d4b66290f677fdcb4"
+      "sha256": "45fe84d720c0ea6975fbc58db2ca9b00611a0a172fab9c9f634710c94b4f74df"
     },
     {
       "path": "sdkwork-sdk.json",
@@ -52,7 +52,7 @@
     },
     {
       "path": "src/api/base.ts",
-      "sha256": "02ad25e6bf331ff241ba387c2947ddf1900dd849038e08c2757416a3aa788a04"
+      "sha256": "94d136c54a008dfe7602e373a0b2c79176bbf2fc6e7c899fc23b1f12f750380f"
     },
     {
       "path": "src/api/index.ts",
@@ -60,27 +60,27 @@
     },
     {
       "path": "src/api/mail-accounts.ts",
-      "sha256": "a365c01025dc10eb556b2b12bd8ffd0952f51d84d8b85355a277f0f09fd6442a"
+      "sha256": "a45bf499fc4cee5df9e929c1213eaa19cecf5f9cf71115d9d0b74608bdccf32d"
     },
     {
       "path": "src/api/mail-folders.ts",
-      "sha256": "1666642e73c17e045eccf7889d411dd31338a52ae8f1853e2c8de379fa1a2eba"
+      "sha256": "4cdd81c41a5bd5dd95a04926d1825558a158ebfa4886d67aaed65c0ee1462407"
     },
     {
       "path": "src/api/mail-messages.ts",
-      "sha256": "d40f86d87dab53c2eeaafa6e528925fccb8ec2165505c7ccad124d4367909efc"
+      "sha256": "d267fe7acab2c8739913ebf5b07cf21d86f74a1d5cc64024d26f783ae76d80eb"
     },
     {
       "path": "src/api/mail-threads.ts",
-      "sha256": "8a52f75116fed597ab547aff23910b723ac68732190722234885373d47c63f45"
+      "sha256": "6aac0c145c853cee7831c94d669050cf8263bb6e7139fe379f1bb3fb19dde972"
     },
     {
       "path": "src/api/mail-transactional.ts",
-      "sha256": "f8d4b5879b826ac6f3b3f17861287440e2bf7762c0dbaeaf6357c7c238a57d8c"
+      "sha256": "b3afdf03312d0d1c4945fdbd87516acb3bfac2a21426f3079556010104eff52e"
     },
     {
       "path": "src/api/mail-verification.ts",
-      "sha256": "cde2815c1b1e476afb1d0bf403068d90c4d93601996223e2854c6303b74a424d"
+      "sha256": "3f2094d8211d96572bf342c2329abdcf38dbb97b705d9f373793c1eced1c94ae"
     },
     {
       "path": "src/api/paths.ts",
@@ -92,7 +92,7 @@
     },
     {
       "path": "src/http/client.ts",
-      "sha256": "902ecbf9b15072c147ac9716f22209cd50b770e517b55d1ce1583671ab4d2c3e"
+      "sha256": "868b7785497a93658b628de2d9b520d9d2456406bcf2ef717319beaa6913146d"
     },
     {
       "path": "src/http/index.ts",
@@ -136,7 +136,7 @@
     },
     {
       "path": "src/types/mail-accounts-list-response.ts",
-      "sha256": "cac7d4e75918a751fddc29ae5d452d835941a03887047ba84a2578fb3c5acd06"
+      "sha256": "0ae9ccc5066c0ca4caf30ce9f4e54747cdba920a0c6a5428fd07f39a360e8bb7"
     },
     {
       "path": "src/types/mail-folder-list-response.ts",
@@ -148,7 +148,7 @@
     },
     {
       "path": "src/types/mail-folders-list-response.ts",
-      "sha256": "d57cef92184869f8575b7727828c30b650a035e2e1d289d9345482c178ff28dd"
+      "sha256": "dc527e202f8a7d20cf5758ea2306d222937e3f081e4927abb071efe342ca593b"
     },
     {
       "path": "src/types/mail-message-list-response.ts",
@@ -164,19 +164,19 @@
     },
     {
       "path": "src/types/mail-messages-create-response201.ts",
-      "sha256": "328b939f9cf152b866e732d4af823d07384f3d2484bfbaa5e6a934e936606eaf"
+      "sha256": "d8a2c60105d62606276897814963d9dfadb582404cb5f6d7f0863f686ada49d6"
     },
     {
       "path": "src/types/mail-messages-list-response.ts",
-      "sha256": "a0ef4922276b28d08bc45d30103b048402677aae7507339f04a3507611e7679d"
+      "sha256": "31a6371b67ad14e66f1af17bc7067d17a0923e2c092551cfc1ab2f66eed75909"
     },
     {
       "path": "src/types/mail-messages-retrieve-response.ts",
-      "sha256": "486b190ff7add84e0761208c24983fc94cb0f6be674e2a17f5938d57dac53911"
+      "sha256": "6bbed5dfcbdaad4f67fa94b40a6af93b5e25af2be434dc62b8b56e4bdd076fb2"
     },
     {
       "path": "src/types/mail-messages-update-response.ts",
-      "sha256": "3d8301c165adb73f12708a3e9c359a6beab910259f94bcbf5a3686e8e7018c96"
+      "sha256": "86100e5ab2c5e4af753141fc71d7627f7a4cc05867d43c92e3d866143b452d3e"
     },
     {
       "path": "src/types/mail-thread-list-response.ts",
@@ -188,7 +188,7 @@
     },
     {
       "path": "src/types/mail-threads-list-response.ts",
-      "sha256": "9a04f48c173029df2411dfa1dcda11479a7c9982a4d65aa08e8f94949d88cada"
+      "sha256": "3282932be78fe81bfa04e662400287dc185e8e86b44bf7bfc7a10c9c90d40d24"
     },
     {
       "path": "src/types/mail-transactional-delivery-response.ts",
@@ -200,15 +200,15 @@
     },
     {
       "path": "src/types/mail-transactional-send-response.ts",
-      "sha256": "fd8783ec81186de84784ecce6c669c42f08fbaa3f193170ea6b12d48cd12ed32"
+      "sha256": "85896c15bf115ce9f2b47cf9bc783c113d2043b03b690d4dd01b736d0526f3f8"
     },
     {
       "path": "src/types/mail-verification-send-response.ts",
-      "sha256": "708a74f4c662ddcbc8037178eede67e02a8c012648b0e9a79304a3950077f612"
+      "sha256": "c4070f89cfc6f80291cd46233c942b521bccc3a46022f9ad469f3ad1d94b5886"
     },
     {
       "path": "src/types/mail-verification-verify-response.ts",
-      "sha256": "4d1f7b60b3fd233562af929f2e09050c7a4abe2a7340cb22fd5f19dc22243a64"
+      "sha256": "5750553dbb1763fe149412491e7be0b1bba6f35f9114a0b780834072294dc42a"
     },
     {
       "path": "src/types/page-info.ts",

@@ -1,8 +1,8 @@
 import type { MailMarketingConsentResponse } from './mail-marketing-consent-response';
 
-export interface MailMarketingConsentsGrantResponse {
+export interface MailMarketingConsentsCreateResponse201 {
   code: 0;
-  data: unknown & Record<string, unknown>;
+  data: unknown & { item: MailMarketingConsentResponse; };
   /** Server-owned request correlation id. */
   traceId: string;
 }

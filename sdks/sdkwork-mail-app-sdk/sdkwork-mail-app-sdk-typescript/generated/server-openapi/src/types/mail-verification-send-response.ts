@@ -2,7 +2,7 @@ import type { SendMailVerificationResponse } from './send-mail-verification-resp
 
 export interface MailVerificationSendResponse {
   code: 0;
-  data: unknown & Record<string, unknown>;
+  data: unknown & { item: SendMailVerificationResponse; };
   /** Server-owned request correlation id. */
   traceId: string;
 }

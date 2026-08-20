@@ -1,5 +1,5 @@
 import { appApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { SendMailVerificationRequest, SendMailVerificationResponse, VerifyMailCodeRequest, VerifyMailCodeResponse } from '../types';
 
@@ -12,32 +12,28 @@ export class MailVerificationMailVerificationApi {
   }
 
 
-async send(body: SendMailVerificationRequest): Promise<SendMailVerificationResponse> {
-    return this.client.post<SendMailVerificationResponse>(appApiPath(`/mail/verification/send`), body, undefined, undefined, 'application/json');
+async send(body: SendMailVerificationRequest, requestOptions?: ApiRequestOptions): Promise<SendMailVerificationResponse> {
+    return this.client.request<SendMailVerificationResponse>(appApiPath(`/mail/verification/send`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 
-async verify(body: VerifyMailCodeRequest): Promise<VerifyMailCodeResponse> {
-    return this.client.post<VerifyMailCodeResponse>(appApiPath(`/mail/verification/verify`), body, undefined, undefined, 'application/json');
+async verify(body: VerifyMailCodeRequest, requestOptions?: ApiRequestOptions): Promise<VerifyMailCodeResponse> {
+    return this.client.request<VerifyMailCodeResponse>(appApiPath(`/mail/verification/verify`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 }
 
 export class MailVerificationMailApi {
-  private client: HttpClient;
   public readonly verification: MailVerificationMailVerificationApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.verification = new MailVerificationMailVerificationApi(client);
   }
 
 }
 
 export class MailVerificationApi {
-  private client: HttpClient;
   public readonly mail: MailVerificationMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailVerificationMailApi(client);
   }
 
@@ -45,12 +41,4 @@ export class MailVerificationApi {
 
 export function createMailVerificationApi(client: HttpClient): MailVerificationApi {
   return new MailVerificationApi(client);
-}
-
-function appendQueryString(path: string, rawQueryString: string): string {
-  const query = rawQueryString.replace(/^\?+/, '');
-  if (!query) {
-    return path;
-  }
-  return path.includes('?') ? `${path}&${query}` : `${path}?${query}`;
 }

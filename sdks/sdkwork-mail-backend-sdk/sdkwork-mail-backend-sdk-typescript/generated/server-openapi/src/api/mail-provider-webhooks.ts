@@ -1,5 +1,5 @@
 import { backendApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { MailProviderWebhookEventRequest, MailProviderWebhookEventResponse } from '../types';
 
@@ -12,39 +12,33 @@ export class MailProviderWebhooksMailProviderWebhooksEventsApi {
   }
 
 
-async receive(provider: string, body: MailProviderWebhookEventRequest): Promise<MailProviderWebhookEventResponse> {
-    return this.client.request<MailProviderWebhookEventResponse>(backendApiPath(`/mail/provider_webhooks/${serializePathParameter(provider, { name: 'provider', style: 'simple', explode: false })}/events`), { method: 'POST' as any, body, contentType: 'application/json', skipAuth: true });
+async create(provider: string, body: MailProviderWebhookEventRequest, requestOptions?: ApiRequestOptions): Promise<MailProviderWebhookEventResponse> {
+    return this.client.request<MailProviderWebhookEventResponse>(backendApiPath(`/mail/provider_webhooks/${serializePathParameter(provider, { name: 'provider', style: 'simple', explode: false })}/events`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', skipAuth: true, sdkworkUnwrapKind: 'item' });
   }
 }
 
 export class MailProviderWebhooksMailProviderWebhooksApi {
-  private client: HttpClient;
   public readonly events: MailProviderWebhooksMailProviderWebhooksEventsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.events = new MailProviderWebhooksMailProviderWebhooksEventsApi(client);
   }
 
 }
 
 export class MailProviderWebhooksMailApi {
-  private client: HttpClient;
   public readonly providerWebhooks: MailProviderWebhooksMailProviderWebhooksApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.providerWebhooks = new MailProviderWebhooksMailProviderWebhooksApi(client);
   }
 
 }
 
 export class MailProviderWebhooksApi {
-  private client: HttpClient;
   public readonly mail: MailProviderWebhooksMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailProviderWebhooksMailApi(client);
   }
 
@@ -54,13 +48,7 @@ export function createMailProviderWebhooksApi(client: HttpClient): MailProviderW
   return new MailProviderWebhooksApi(client);
 }
 
-function appendQueryString(path: string, rawQueryString: string): string {
-  const query = rawQueryString.replace(/^\?+/, '');
-  if (!query) {
-    return path;
-  }
-  return path.includes('?') ? `${path}&${query}` : `${path}?${query}`;
-}
+
 
 interface PathParameterSpec {
   name: string;

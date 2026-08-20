@@ -1,5 +1,5 @@
 import { backendApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { CreateMailTemplateRequest, MailTemplate, MailTemplateResponse, UpdateMailTemplateRequest } from '../types';
 
@@ -17,48 +17,44 @@ export class MailTemplatesMailTemplatesApi {
   }
 
 
-async list(params?: MailTemplatesMailTemplatesListParams): Promise<Record<string, unknown>> {
+async list(params?: MailTemplatesMailTemplatesListParams, requestOptions?: ApiRequestOptions): Promise<{ items: MailTemplate[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
     const query = buildQueryString([
       { name: 'category', value: params?.category, style: 'form', explode: true, allowReserved: false },
       { name: 'purpose', value: params?.purpose, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<Record<string, unknown>>(appendQueryString(backendApiPath(`/mail/templates`), query));
+    return this.client.request<{ items: MailTemplate[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(appendQueryString(backendApiPath(`/mail/templates`), query), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 
-async create(body: CreateMailTemplateRequest): Promise<MailTemplateResponse> {
-    return this.client.post<MailTemplateResponse>(backendApiPath(`/mail/templates`), body, undefined, undefined, 'application/json');
+async create(body: CreateMailTemplateRequest, requestOptions?: ApiRequestOptions): Promise<MailTemplateResponse> {
+    return this.client.request<MailTemplateResponse>(backendApiPath(`/mail/templates`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 
-async retrieve(templateId: string): Promise<MailTemplateResponse> {
-    return this.client.get<MailTemplateResponse>(backendApiPath(`/mail/templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`));
+async retrieve(templateId: string, requestOptions?: ApiRequestOptions): Promise<MailTemplateResponse> {
+    return this.client.request<MailTemplateResponse>(backendApiPath(`/mail/templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'item' });
   }
 
-async update(templateId: string, body: UpdateMailTemplateRequest): Promise<MailTemplateResponse> {
-    return this.client.patch<MailTemplateResponse>(backendApiPath(`/mail/templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`), body, undefined, undefined, 'application/json');
+async update(templateId: string, body: UpdateMailTemplateRequest, requestOptions?: ApiRequestOptions): Promise<MailTemplateResponse> {
+    return this.client.request<MailTemplateResponse>(backendApiPath(`/mail/templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'PATCH' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 
-async delete(templateId: string): Promise<void> {
-    return this.client.delete<void>(backendApiPath(`/mail/templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`));
+async delete(templateId: string, requestOptions?: ApiRequestOptions): Promise<void> {
+    return this.client.request<void>(backendApiPath(`/mail/templates/${serializePathParameter(templateId, { name: 'templateId', style: 'simple', explode: false })}`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'DELETE' as any });
   }
 }
 
 export class MailTemplatesMailApi {
-  private client: HttpClient;
   public readonly templates: MailTemplatesMailTemplatesApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.templates = new MailTemplatesMailTemplatesApi(client);
   }
 
 }
 
 export class MailTemplatesApi {
-  private client: HttpClient;
   public readonly mail: MailTemplatesMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailTemplatesMailApi(client);
   }
 

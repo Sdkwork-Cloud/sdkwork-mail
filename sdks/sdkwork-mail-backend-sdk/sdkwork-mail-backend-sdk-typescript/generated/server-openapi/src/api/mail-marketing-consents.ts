@@ -1,5 +1,5 @@
 import { backendApiPath } from './paths';
-import type { HttpClient } from '../http/client';
+import type { ApiRequestOptions, HttpClient } from '../http/client';
 
 import type { GrantMailMarketingConsentRequest, MailMarketingConsent, MailMarketingConsentResponse } from '../types';
 
@@ -16,39 +16,35 @@ export class MailMarketingConsentsMailMarketingConsentsApi {
   }
 
 
-async list(params?: MailMarketingConsentsMailMarketingConsentsListParams): Promise<Record<string, unknown>> {
+async list(params?: MailMarketingConsentsMailMarketingConsentsListParams, requestOptions?: ApiRequestOptions): Promise<{ items: MailMarketingConsent[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }> {
     const query = buildQueryString([
       { name: 'recipientEmail', value: params?.recipientEmail, style: 'form', explode: true, allowReserved: false },
     ]);
-    return this.client.get<Record<string, unknown>>(appendQueryString(backendApiPath(`/mail/marketing_consents`), query));
+    return this.client.request<{ items: MailMarketingConsent[]; pageInfo: { mode: 'cursor'; nextCursor?: string | null; hasMore: boolean; }; }>(appendQueryString(backendApiPath(`/mail/marketing_consents`), query), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'GET' as any, sdkworkUnwrapKind: 'page' });
   }
 
-async grant(body: GrantMailMarketingConsentRequest): Promise<MailMarketingConsentResponse> {
-    return this.client.post<MailMarketingConsentResponse>(backendApiPath(`/mail/marketing_consents`), body, undefined, undefined, 'application/json');
+async create(body: GrantMailMarketingConsentRequest, requestOptions?: ApiRequestOptions): Promise<MailMarketingConsentResponse> {
+    return this.client.request<MailMarketingConsentResponse>(backendApiPath(`/mail/marketing_consents`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, body, contentType: 'application/json', sdkworkUnwrapKind: 'item' });
   }
 
-async revoke(consentId: string): Promise<MailMarketingConsentResponse> {
-    return this.client.post<MailMarketingConsentResponse>(backendApiPath(`/mail/marketing_consents/${serializePathParameter(consentId, { name: 'consentId', style: 'simple', explode: false })}/revoke`));
+async revoke(consentId: string, requestOptions?: ApiRequestOptions): Promise<MailMarketingConsentResponse> {
+    return this.client.request<MailMarketingConsentResponse>(backendApiPath(`/mail/marketing_consents/${serializePathParameter(consentId, { name: 'consentId', style: 'simple', explode: false })}/revoke`), { ...(requestOptions?.signal !== undefined ? { signal: requestOptions.signal } : {}), ...(requestOptions?.timeout !== undefined ? { timeout: requestOptions.timeout } : {}), method: 'POST' as any, sdkworkUnwrapKind: 'item' });
   }
 }
 
 export class MailMarketingConsentsMailApi {
-  private client: HttpClient;
   public readonly marketingConsents: MailMarketingConsentsMailMarketingConsentsApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.marketingConsents = new MailMarketingConsentsMailMarketingConsentsApi(client);
   }
 
 }
 
 export class MailMarketingConsentsApi {
-  private client: HttpClient;
   public readonly mail: MailMarketingConsentsMailApi;
 
   constructor(client: HttpClient) {
-    this.client = client;
     this.mail = new MailMarketingConsentsMailApi(client);
   }
 
