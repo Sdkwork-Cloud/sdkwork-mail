@@ -1,13 +1,13 @@
 > Migrated from `docs/topology-standard.md` on 2026-06-24.
 > Owner: SDKWork maintainers
 
-Archetype: `application-http-gateway` (`specs/topology.spec.json`, `schemaVersion: 2`).
+Archetype: `application-http-gateway` (`specs/topology.spec.json`, `schemaVersion: 5`).
 
 Platform standard: `../sdkwork-specs/APP_RUNTIME_TOPOLOGY_ADOPTION.md`
 
 ## Default dev profile
 
-`standalone.split-services.development` — start the Mail API server and a client renderer:
+`standalone.development` — start the Mail API server and a client renderer:
 
 ```bash
 pnpm dev
@@ -38,7 +38,7 @@ Product OpenAPI SDKs use `application.public-ingress` on port `18090` in develop
 
 ## IAM tenant application bootstrap
 
-Cloud split-services dev must inject `SDKWORK_APP_ROOT`, `SDKWORK_IAM_APP_ROOT`, and `SDKWORK_MAIL_APP_ROOT` so `sdkwork-iam-database-host` can register the tenant application when the platform gateway bootstraps IAM schema. The dev orchestrator merges `resolveIamDevEnv()` and `IAM_APPLICATION_BOOTSTRAP_ENV` from `scripts/lib/mail-topology.mjs`.
+Cloud development profile must inject `SDKWORK_APP_ROOT`, `SDKWORK_IAM_APP_ROOT`, and `SDKWORK_MAIL_APP_ROOT` so `sdkwork-iam-database-host` can register the tenant application when the platform gateway bootstraps IAM schema. The dev orchestrator merges `resolveIamDevEnv()` and `IAM_APPLICATION_BOOTSTRAP_ENV` from `scripts/lib/mail-topology.mjs`.
 
 Loader: `scripts/lib/mail-topology.mjs` → `@sdkwork/app-topology`.
 

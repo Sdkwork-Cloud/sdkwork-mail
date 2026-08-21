@@ -4,12 +4,14 @@
   "appId": "sdkwork-mail",
   "applicationCode": "mail",
   "archetype": "application-http-gateway",
-  "profileRoot": "configs/topology",
+  "profileRoot": "etc/topology",
   "profilePattern": "{deploymentProfile}.{environment}.env",
   "vocabulary": {
     "environment": {
       "allowed": [
         "development",
+        "test",
+        "staging",
         "production"
       ]
     },
@@ -34,10 +36,14 @@
     "gatewayBind": "127.0.0.1:3900"
   },
   "profileFiles": {
-    "standalone.development": "configs/topology/standalone.development.env",
-    "standalone.production": "configs/topology/standalone.production.env",
-    "cloud.development": "configs/topology/cloud.development.env",
-    "cloud.production": "configs/topology/cloud.production.env"
+    "standalone.development": "etc/topology/standalone.development.env",
+    "standalone.test": "etc/topology/standalone.test.env",
+    "standalone.staging": "etc/topology/standalone.staging.env",
+    "standalone.production": "etc/topology/standalone.production.env",
+    "cloud.development": "etc/topology/cloud.development.env",
+    "cloud.test": "etc/topology/cloud.test.env",
+    "cloud.staging": "etc/topology/cloud.staging.env",
+    "cloud.production": "etc/topology/cloud.production.env"
   },
   "envKeys": {
     "environment": "sdkwork_mail_ENVIRONMENT",
@@ -91,6 +97,20 @@
             "binary": "sdkwork-api-mail-standalone-gateway",
             "required": true,
             "role": "api-standalone-gateway"
+          },
+          {
+            "id": "mail-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "bindEnv": "SDKWORK_MAIL_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
           }
         ],
         "capabilitySubset": [
@@ -98,13 +118,92 @@
         ],
         "healthSurfaces": [
           "application.public-ingress"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "mail-adaptive-web",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "mail-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-mail-pc",
+                "script": "dev",
+                "defaultPort": 4501,
+                "portEnv": "SDKWORK_MAIL_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-mail-h5",
+                "script": "dev",
+                "defaultPort": 4502,
+                "portEnv": "SDKWORK_MAIL_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
         ]
       },
       "cloud.development": {
-        "processes": [],
+        "processes": [
+          {
+            "id": "mail-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "bindEnv": "SDKWORK_MAIL_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
+          }
+        ],
         "healthSurfaces": [
           "application.public-ingress",
           "platform.api-gateway"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "mail-adaptive-web",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "mail-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-mail-pc",
+                "script": "dev",
+                "defaultPort": 4501,
+                "portEnv": "SDKWORK_MAIL_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-mail-h5",
+                "script": "dev",
+                "defaultPort": 4502,
+                "portEnv": "SDKWORK_MAIL_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
         ]
       },
       "cloud.production": {
@@ -144,6 +243,162 @@
         ],
         "healthSurfaces": [
           "application.public-ingress"
+        ]
+      },
+      "standalone.test": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-mail-standalone-gateway",
+            "binary": "sdkwork-api-mail-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          },
+          {
+            "id": "mail-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "bindEnv": "SDKWORK_MAIL_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
+          }
+        ],
+        "capabilitySubset": [
+          "application-http"
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "mail-adaptive-web",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "mail-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-mail-pc",
+                "script": "dev",
+                "defaultPort": 4501,
+                "portEnv": "SDKWORK_MAIL_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-mail-h5",
+                "script": "dev",
+                "defaultPort": 4502,
+                "portEnv": "SDKWORK_MAIL_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
+        ]
+      },
+      "standalone.staging": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-mail-standalone-gateway",
+            "binary": "sdkwork-api-mail-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          }
+        ],
+        "capabilitySubset": [
+          "application-http"
+        ],
+        "healthSurfaces": [
+          "application.public-ingress"
+        ]
+      },
+      "cloud.test": {
+        "processes": [
+          {
+            "id": "mail-browser",
+            "role": "client",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "bindEnv": "SDKWORK_MAIL_WEB_DEV_INGRESS_BIND",
+            "runtimeTargets": [
+              "browser"
+            ],
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "required": true
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress",
+          "platform.api-gateway"
+        ],
+        "browserDeliveries": [
+          {
+            "id": "mail-adaptive-web",
+            "applicationRoot": "apps/sdkwork-mail-pc",
+            "clientArchitectures": [
+              "pc-web",
+              "h5"
+            ],
+            "originMode": "same-origin",
+            "deliveryMode": "dev-server-proxy",
+            "clientProcessId": "mail-browser",
+            "apiSurfaceId": "application.public-ingress",
+            "preserveCanonicalPaths": true,
+            "tabletArchitecture": "pc-web",
+            "renderers": {
+              "pc-web": {
+                "applicationRoot": "apps/sdkwork-mail-pc",
+                "script": "dev",
+                "defaultPort": 4501,
+                "portEnv": "SDKWORK_MAIL_PC_INTERNAL_DEV_PORT",
+                "env": {}
+              },
+              "h5": {
+                "applicationRoot": "apps/sdkwork-mail-h5",
+                "script": "dev",
+                "defaultPort": 4502,
+                "portEnv": "SDKWORK_MAIL_H5_INTERNAL_DEV_PORT",
+                "env": {}
+              }
+            }
+          }
+        ]
+      },
+      "cloud.staging": {
+        "processes": [
+          {
+            "id": "application.public-ingress",
+            "crate": "sdkwork-api-mail-standalone-gateway",
+            "binary": "sdkwork-api-mail-standalone-gateway",
+            "required": true,
+            "role": "api-standalone-gateway"
+          },
+          {
+            "id": "pc-renderer",
+            "package": "apps/sdkwork-mail-pc",
+            "script": "dev",
+            "required": false,
+            "role": "client"
+          }
+        ],
+        "healthSurfaces": [
+          "application.public-ingress",
+          "platform.api-gateway"
         ]
       }
     }

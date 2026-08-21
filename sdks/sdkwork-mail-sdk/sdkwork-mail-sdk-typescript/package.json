@@ -1,6 +1,6 @@
 {
   "name": "@sdkwork/mail-sdk",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Provider-neutral Mail media SDK with JDBC-style provider package loading",
   "type": "module",
   "main": "./dist/index.js",
